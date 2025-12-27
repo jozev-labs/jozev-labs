@@ -104,6 +104,21 @@ section {
   color: var(--muted);
 }
 
+.role h5 {
+  margin: 0.3rem 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.role ul {
+  margin-top: 1rem;
+  padding-left: 1.2rem;
+}
+
+.role li {
+  margin-bottom: 0.6rem;
+}
+
 /* MOBILE */
 @media (max-width: 900px) {
   .layout {
