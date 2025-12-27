@@ -1,4 +1,7 @@
 :root {
+  --font-main: "Segoe UI", Calibri, Inter, system-ui, -apple-system, sans-serif;
+  --font-mono: "Courier New", Courier, monospace;
+
   --bg: #ffffff;
   --alt-bg: #f5f7fa;
   --text: #1f2933;
@@ -6,17 +9,12 @@
   --accent: #2563eb;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-main);
   color: var(--text);
   background: var(--bg);
-  line-height: 1.6;
-}
+  l
 
 .container {
   max-width: 1000px;
