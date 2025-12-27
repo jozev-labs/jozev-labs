@@ -1,8 +1,9 @@
 :root {
+  --bg: #ffffff;
+  --alt-bg: #f5f7fa;
   --text: #1f2933;
   --muted: #5f6c7b;
   --accent: #2563eb;
-  --bg: #ffffff;
 }
 
 * {
@@ -18,39 +19,63 @@ body {
 }
 
 .container {
-  max-width: 880px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 4rem 1.5rem;
 }
 
-header h1 {
-  font-size: 2.4rem;
-  margin-bottom: 0.2rem;
-}
-
-header h2 {
-  font-size: 1.3rem;
-  color: var(--muted);
-  font-weight: 500;
-  margin-top: 0;
-}
-
-.intro {
-  font-size: 1.1rem;
-  margin-top: 1.5rem;
+.container.narrow {
   max-width: 700px;
 }
 
-h3 {
-  margin-top: 3rem;
-  font-size: 1.4rem;
+.hero {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #ffffff;
 }
 
-h4 {
-  margin-bottom: 0.3rem;
+.hero h1 {
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
 }
 
-.date {
+.hero h2 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #cbd5f5;
+}
+
+.hero p {
+  max-width: 720px;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+}
+
+.section.alt {
+  background: var(--alt-bg);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.experience {
+  margin-top: 2rem;
+}
+
+.experience span {
   font-size: 0.9rem;
   color: var(--muted);
 }
@@ -59,27 +84,21 @@ ul {
   padding-left: 1.2rem;
 }
 
-li {
-  margin-bottom: 0.5rem;
-}
-
-section p {
-  max-width: 760px;
-}
-
-.contact a {
+.cta {
+  display: inline-block;
+  margin-top: 1.5rem;
   color: var(--accent);
+  font-weight: 600;
   text-decoration: none;
-  font-weight: 500;
 }
 
-.contact a:hover {
+.cta:hover {
   text-decoration: underline;
 }
 
 footer {
-  border-top: 1px solid #e5e7eb;
-  margin-top: 4rem;
+  text-align: center;
+  padding: 2rem;
   font-size: 0.9rem;
   color: var(--muted);
 }
