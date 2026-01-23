@@ -74,16 +74,51 @@ h2 { font-size: 2.5rem; margin-bottom: 1rem; }
 }
 
 /* Feature Cards */
-.features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 5% 5%;
+/* style.css - Refined for Image Integrity */
+
+.feature-card {
+    padding: 0; /* Remove padding to let the image go edge-to-edge in the card */
     background: var(--matte-graphite);
+    border: 1px solid #333;
+    overflow: hidden; /* Keeps the image corners tidy */
+    display: flex;
+    flex-direction: column;
 }
 
-.feature-card { padding: 2rem; border-left: 1px solid #333; }
-.img-placeholder { height: 300px; background: #222; margin-bottom: 1.5rem; }
+.img-placeholder {
+    width: 100%;
+    /* This is the magic line. It forces the box to always be a perfect rectangle 
+       regardless of the screen size, keeping the bike in frame. */
+    aspect-ratio: 16 / 10; 
+    
+    background-color: #111;
+    overflow: hidden;
+}
+
+.img-placeholder img {
+    width: 100%;
+    height: 100%;
+    /* 'cover' fills the box, but 'center' ensures we see the heart of the bike.
+       If your images are still being cut too much, change this to 'contain'. */
+    object-fit: cover; 
+    object-position: center; 
+    transition: transform 0.8s ease;
+}
+
+.feature-card:hover .img-placeholder img {
+    transform: scale(1.05); /* Subtle luxury zoom effect */
+}
+
+.feature-card h3, 
+.feature-card p {
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.feature-card p {
+    padding-bottom: 2rem;
+    color: #999;
+    font-size: 0.95rem;
+}
 
 /* Animations */
 .reveal { opacity: 0; transform: translateY(30px); transition: var(--transition); }
