@@ -16,10 +16,25 @@ body {
     overflow-x: hidden;
 }
 
+/* Container to keep content centered and away from edges */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+/* Vertical spacing between large sections */
+.section {
+    padding: 8rem 0; /* Creates breath between sections */
+}
+
 /* Typography */
 h1, h2 { font-family: 'Playfair Display', serif; font-weight: 300; letter-spacing: -1px; }
-h1 { font-size: 4rem; margin-bottom: 1.5rem; }
-h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+
+h1 { font-size: 4rem; margin-bottom: 2rem; line-height: 1.1; }
+h2 { font-size: 3rem; margin-bottom: 2rem; line-height: 1.2; }
+p { margin-bottom: 1.5rem; }
+
 
 /* Navigation */
 .navbar {
@@ -75,6 +90,14 @@ h2 { font-size: 2.5rem; margin-bottom: 1rem; }
 
 /* Feature Cards */
 /* style.css - Refined for Image Integrity */
+/* Feature Grid Layout */
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;       /* Space between boxes */
+    padding: 8rem 5%; /* Space around the whole grid */
+    background: var(--matte-graphite);
+}
 
 .feature-card {
     padding: 0; /* Remove padding to let the image go edge-to-edge in the card */
