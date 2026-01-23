@@ -120,6 +120,61 @@ h2 { font-size: 2.5rem; margin-bottom: 1rem; }
     font-size: 0.95rem;
 }
 
+/* style.css - Additions for Specs and Contact */
+
+/* Table Styling */
+.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 3rem;
+    font-size: 0.95rem;
+}
+
+.spec-table th, .spec-table td {
+    padding: 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.spec-table th {
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+.spec-table tr:hover {
+    background: rgba(197, 160, 89, 0.05); /* Very subtle gold tint on hover */
+}
+
+/* Inquiry Section */
+.inquiry {
+    padding: 10% 5%;
+    background: #000;
+    text-align: center;
+}
+
+.inquiry h2 { margin-bottom: 2rem; }
+
+.contact-box {
+    margin-top: 3rem;
+}
+
+.subtitle {
+    display: block;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .spec-table { font-size: 0.8rem; }
+    .spec-table th, .spec-table td { padding: 1rem 0.5rem; }
+}
+
 /* Animations */
 .reveal { opacity: 0; transform: translateY(30px); transition: var(--transition); }
 .reveal.active { opacity: 1; transform: translateY(0); }
