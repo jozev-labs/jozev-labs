@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JozEV | The Dream Wall</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <section class="dream-wall-container">
+        <header class="wall-header">
+            <h1>The Dream Wall</h1>
+            <p>Cities are closing to cars. The future is silent. <br> <strong>What will you do with your extra hour?</strong></p>
+        </header>
+
+        <div class="input-area">
+            <input type="text" id="userName" placeholder="Your Name">
+            <textarea id="userDream" placeholder="If I had an extra hour of silence, I would..."></textarea>
+            <button onclick="addDream()">Post to the Wall</button>
+        </div>
+
+        <div id="wallGrid" class="wall-grid">
+            <div class="dream-card founder">
+                <span class="card-number">#001</span>
+                <h3>[Your Name]</h3>
+                <p>"My dream is to replace the roar of Amsterdam traffic with a silence so deep you can actually hear your own thoughts again."</p>
+                <span class="tagline">Founder & Solutions Engineer</span>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
