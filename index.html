@@ -2,135 +2,687 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JozEV Labs · Jose Jose Rojas</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <title>Jose Jose Rojas | Solutions Engineer & Prototyping Consultant</title>
+    /* ── CLAUDE-INSPIRED PALETTE ── */
+    :root {
+      --clay:    #cc785c;   /* Claude's signature coral/terracotta */
+      --clay-d:  #a85a3e;   /* darker clay for hover */
+      --clay-l:  #e8a088;   /* lighter clay for accents on dark */
+      --sand:    #f0ebe3;   /* warm off-white background */
+      --cream:   #faf8f5;   /* lightest surface */
+      --dusk:    #1c2333;   /* Claude's dark navy */
+      --dusk-m:  #2a3347;   /* mid-dark for cards */
+      --ash:     #6b6660;   /* muted body text */
+      --rule:    #ddd8d0;   /* dividers */
+      --serif:   Georgia, 'Times New Roman', serif;
+      --sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
 
-  <meta name="description" content="Solutions Engineer and technical consultant specializing in rapid prototyping, system architecture, and API integration." />
+    html { scroll-behavior: smooth; }
 
-  <link rel="stylesheet" href="styles.css" />
+    body {
+      background: var(--sand);
+      color: var(--dusk);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 1.2rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(240, 235, 227, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dusk);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-cta {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--cream);
+      background: var(--clay);
+      text-decoration: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--clay-d); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 0;
+      align-items: stretch;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 72px;
+    }
+
+    .hero-left {
+      padding: 7rem 5rem 5rem 5%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--clay);
+      margin-bottom: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 2px;
+      background: var(--clay);
+      flex-shrink: 0;
+    }
+
+    h1.hero-name {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 5.5vw, 5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: var(--dusk);
+      margin-bottom: 1.6rem;
+    }
+
+    h1.hero-name span {
+      display: block;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ash);
+    }
+
+    .hero-tagline {
+      font-size: 1.1rem;
+      color: var(--ash);
+      max-width: 40ch;
+      line-height: 1.85;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-tagline strong { color: var(--dusk); font-weight: 600; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: var(--dusk);
+      color: var(--cream);
+      text-decoration: none;
+      padding: 1rem 2.2rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.2s;
+      align-self: flex-start;
+    }
+    .btn-primary:hover { background: var(--clay); transform: translateY(-2px); }
+
+    /* ── PHOTO PANEL ── */
+    .hero-photo-panel {
+      position: relative;
+      background: var(--dusk);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: hidden;
+      min-height: 600px;
+    }
+
+    /* Subtle gradient overlay at bottom for text legibility */
+    .hero-photo-panel::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(to top, rgba(28,35,51,0.92) 0%, transparent 100%);
+      z-index: 1;
+    }
+
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: sepia(15%) contrast(1.05);
+    }
+
+    /* Clay-tinted decorative border */
+    .hero-photo-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--clay);
+      z-index: 2;
+    }
+
+    .photo-caption {
+      position: relative;
+      z-index: 2;
+      padding: 2rem 2rem 2.5rem;
+      text-align: left;
+      width: 100%;
+    }
+
+    .photo-caption .name {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.2;
+      margin-bottom: 0.3rem;
+    }
+
+    .photo-caption .role {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--clay-l);
+      font-weight: 600;
+    }
+
+    /* ── QUOTE BAND ── */
+    .quote-band {
+      background: var(--clay);
+      padding: 3rem 5%;
+    }
+
+    .quote-band blockquote {
+      max-width: 900px;
+      margin: 0 auto;
+      font-family: var(--serif);
+      font-size: clamp(1.2rem, 2.2vw, 1.65rem);
+      font-style: italic;
+      line-height: 1.6;
+      color: var(--cream);
+      text-align: center;
+    }
+
+    /* ── SHARED SECTION STYLES ── */
+    .section-label {
+      font-size: 0.66rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--clay);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::after {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--clay);
+      flex-shrink: 0;
+    }
+
+    /* ── STORY ── */
+    .story {
+      background: var(--dusk);
+      color: var(--cream);
+      padding: 7rem 5%;
+    }
+
+    .story-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.55fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .story .section-label { color: var(--clay-l); }
+    .story .section-label::after { background: var(--clay-l); }
+
+    .story-hed {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      font-weight: 700;
+      line-height: 1.22;
+      color: var(--cream);
+      position: sticky;
+      top: 7rem;
+    }
+
+    .story-hed em { font-style: italic; color: var(--clay-l); }
+
+    .stats {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid #2e3a50;
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .stat-n {
+      font-family: var(--serif);
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: var(--clay-l);
+      line-height: 1;
+    }
+
+    .stat-l {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #5a6478;
+      margin-top: 0.3rem;
+    }
+
+    .story-body p {
+      font-size: 1rem;
+      color: #a8b0c0;
+      margin-bottom: 1.4rem;
+      line-height: 1.9;
+    }
+
+    .story-body p strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SERVICES ── */
+    .services {
+      padding: 7rem 5%;
+      background: var(--cream);
+    }
+
+    .services-inner { max-width: 1100px; margin: 0 auto; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--rule);
+      margin-top: 0.5rem;
+    }
+
+    .card {
+      padding: 2.5rem;
+      border-right: 1px solid var(--rule);
+      transition: background 0.2s;
+      background: var(--cream);
+    }
+    .card:last-child { border-right: none; }
+    .card:hover { background: var(--sand); }
+
+    .card-num {
+      font-family: var(--serif);
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--rule);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h3 {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      line-height: 1.3;
+      color: var(--dusk);
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--ash);
+      line-height: 1.8;
+    }
+
+    .price {
+      margin-top: 1.5rem;
+      padding-top: 1.4rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.7rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--clay);
+      font-weight: 700;
+    }
+
+    /* ── WHO ── */
+    .who {
+      padding: 7rem 5%;
+      background: var(--sand);
+    }
+
+    .who-inner { max-width: 1100px; margin: 0 auto; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      margin-top: 0.5rem;
+    }
+
+    .who-col h3 {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--dusk);
+    }
+
+    .who-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+
+    .who-list li {
+      font-size: 0.92rem;
+      color: var(--ash);
+      padding-left: 1.6rem;
+      position: relative;
+      line-height: 1.65;
+    }
+
+    .who-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--clay);
+      font-weight: 700;
+    }
+
+    .who-list li strong { color: var(--dusk); font-weight: 600; }
+
+    /* ── CONTACT ── */
+    .contact {
+      background: var(--dusk);
+      color: var(--cream);
+      text-align: center;
+      padding: 9rem 5%;
+    }
+
+    .contact-eye {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--clay-l);
+      margin-bottom: 1.5rem;
+    }
+
+    .contact h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+      max-width: 20ch;
+      margin-left: auto;
+      margin-right: auto;
+      color: var(--cream);
+    }
+
+    .contact h2 em { font-style: italic; color: var(--clay-l); }
+
+    .contact-sub {
+      font-size: 1rem;
+      color: #5a6478;
+      margin-bottom: 3rem;
+      max-width: 42ch;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.75;
+    }
+
+    .email-link {
+      display: inline-block;
+      color: var(--cream);
+      text-decoration: none;
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+      font-style: italic;
+      border-bottom: 1px solid #2e3a50;
+      padding-bottom: 0.3rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .email-link:hover { color: var(--clay-l); border-color: var(--clay-l); }
+
+    .langs {
+      margin-top: 4rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #2e3a50;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #131929;
+      padding: 1.8rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.74rem;
+      color: #3a4560;
+    }
+
+    footer a { color: #4a5578; text-decoration: none; }
+    footer a:hover { color: var(--clay-l); }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .hero-left { padding: 6rem 5% 3rem; }
+      .hero-photo-panel {
+        min-height: 420px;
+        order: -1;
+      }
+      .story-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .story-hed { position: static; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-3 .card { border-right: none; border-bottom: 1px solid var(--rule); }
+      .grid-3 .card:last-child { border-bottom: none; }
+      .grid-2 { grid-template-columns: 1fr; gap: 3rem; }
+      footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+    }
+  </style>
 </head>
-
 <body>
-  <main class="layout">
-    <!-- LEFT SIDEBAR -->
-    <aside class="sidebar">
-      <img src="avatar.jpg" alt="Jose Jose Rojas" class="avatar" />
 
-      <h1>Jose Jose Rojas</h1>
-      <h2>Solutions Engineer</h2>
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">JozEV Labs</a>
+    <a href="mailto:josejoserojas@proton.me" class="nav-cta">Get in touch</a>
+  </nav>
 
-      <div class="contact">
-        <a href="mailto:josejoserojas@proton.me">josejoserojas@proton.me</a>
-        <span>Amsterdam, NL</span>
-      </div>
-
-      <a class="resume" href="./Rojas_Jose_CV.pdf" download>
-        Download Resume
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="eyebrow">Solutions Engineering &nbsp;·&nbsp; Amsterdam</div>
+      <h1 class="hero-name">
+        Jose Jose
+        <span>Rojas</span>
+      </h1>
+      <p class="hero-tagline">
+        I help B2B tech companies <strong>close enterprise deals</strong> — by making complex technology click for the people who buy it.
+      </p>
+      <a href="mailto:josejoserojas@proton.me" class="btn-primary">
+        Let's talk
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </a>
-    </aside>
+    </div>
 
-    <!-- RIGHT CONTENT -->
-    <section class="content">
-      <section class="summary">
-        <h3>Summary</h3>
-        <p>
-          I am a Solutions Engineer and technical consultant focused on turning ambiguous ideas
-          into working systems. My strength lies in rapid prototyping, system architecture,
-          and translating business needs into practical technical decisions.
-        </p>
-
-        <p>
-          I work at the intersection of engineering, product, and stakeholders.
-          This allows me to reduce uncertainty early, validate assumptions through prototypes,
-          and design solutions teams can confidently take to production.
-        </p>
-      </section>
-
-      <section>
-        <h3>Core Expertise</h3>
-        <ul class="tech">
-          <li>Rapid prototyping and proof-of-concepts</li>
-          <li>Solutions engineering for APIs and platforms</li>
-          <li>System architecture and scalability</li>
-          <li>Developer enablement and technical demos</li>
-          <li>Cross-functional technical consulting</li>
-        </ul>
-      </section>
-
-<section>
-  <h3>Professional Experience</h3>
-
-  <div class="role">
-    <h4>TomTom</h4>
-    <h5>Technical Program Manager – Customer Enablement Technologies</h5>
-    <span>December 2022 – Present</span>
-
-    <ul class="tech">
-      <li>
-        Provided technical leadership and architectural oversight to cross-functional teams,
-        ensuring product initiatives were scalable and aligned with long-term business goals.
-      </li>
-      <li>
-        Developed and managed a content roadmap for a portfolio of APIs and SDKs,
-        achieving a 90% completion rate across four quarters and driving continuous client support.
-      </li>
-      <li>
-        Partnered with sales teams to showcase SDK products to car manufacturers in China and Germany,
-        increasing client interest and contributing to two major business deals.
-      </li>
-      <li>
-        Directed the technical guides program, achieving an 80%+ client satisfaction rate per quarter
-        and supporting successful adoption of digital solutions.
-      </li>
-      <li>
-        Analyzed customer feedback to inform roadmap decisions,
-        improving product usability by 15%.
-      </li>
-    </ul>
+    <div class="hero-photo-panel">
+      <img
+        class="hero-photo"
+        src="https://raw.githubusercontent.com/jozev-labs/jozev-labs/b2b/avatar.jpg"
+        alt="Jose Jose Rojas"
+        onerror="this.style.display='none'"
+      />
+      <div class="photo-caption">
+        <div class="name">Jose Jose Rojas</div>
+        <div class="role">Founder, JozEV Labs &nbsp;·&nbsp; Amsterdam</div>
+      </div>
+    </div>
   </div>
 
-  <div class="role">
-    <h5>Developer Advocate – TomTom Maps APIs</h5>
-    <span>April 2019 – November 2022</span>
-
-    <ul class="tech">
-      <li>
-        Provided hands-on technical guidance and architectural solutions to developers,
-        ensuring seamless API integration and reducing support queries by 25%
-        through live seminars and digital content.
-      </li>
-      <li>
-        Created and launched the TomTom Maps APIs YouTube channel and Twitch live coding streams,
-        increasing developer engagement by 30%.
-      </li>
-      <li>
-        Authored blog articles, demos, and training materials,
-        improving client onboarding efficiency.
-      </li>
-      <li>
-        Represented TomTom at 10+ global events
-        including TechCrunch Disrupt Berlin and WeAreDevelopers,
-        presenting API solutions to drive customer interest.
-      </li>
-      <li>
-        Collaborated with product teams to incorporate developer feedback,
-        enhancing API functionality by 20%.
-      </li>
-    </ul>
+  <!-- QUOTE BAND -->
+  <div class="quote-band">
+    <blockquote>
+      "People don't connect with technology. They connect with the person who makes it make sense."
+    </blockquote>
   </div>
-</section>
 
+  <!-- STORY -->
+  <section class="story">
+    <div class="story-inner">
+      <div>
+        <div class="section-label">The story</div>
+        <h2 class="story-hed">
+          Twenty years.<br>One <em>constant</em><br>thread.
+        </h2>
+        <div class="stats reveal">
+          <div><div class="stat-n">20+</div><div class="stat-l">Years in tech</div></div>
+          <div><div class="stat-n">500</div><div class="stat-l">Room in Zurich</div></div>
+          <div><div class="stat-n">3</div><div class="stat-l">Continents</div></div>
+        </div>
+      </div>
+      <div class="story-body reveal">
+        <p>I started writing code. Then I started building products. Then I realized what I loved most was the moment when a room full of skeptical engineers or C-level executives <strong>suddenly got it</strong> — and trusted us enough to build on top of what we'd made.</p>
+        <p>I still remember standing in front of 500 people in Zurich, introducing TomTom's APIs at a hackathon. What I remember most isn't the presentation itself — it's what happened after. Developers and product leaders came to our booth. Not just to ask about the product, but because <strong>something had clicked for them</strong>.</p>
+        <p>I've done that for automotive OEMs across Europe and Asia — in boardrooms, workshops, and executive demo sessions for companies like Mercedes-Benz and BYD.</p>
+        <p>In 2026, I founded JozEV Labs to do it on my own terms.</p>
+      </div>
+    </div>
+  </section>
 
-      <section>
-        <h3>How I Work</h3>
-        <p>
-          I prioritize clarity, speed, and maintainability.
-          Prototypes exist to answer questions, not to impress.
-          Systems should be understandable by the people who inherit them.
-        </p>
-      </section>
-    </section>
-  </main>
+  <!-- SERVICES -->
+  <section class="services">
+    <div class="services-inner">
+      <div class="section-label reveal">What I do</div>
+      <div class="grid-3">
+        <div class="card reveal">
+          <div class="card-num">01</div>
+          <h3>Solutions Engineering as a Service</h3>
+          <p>I embed with your sales team to run technical pre-sales for enterprise or OEM clients. Discovery calls, architecture discussions, live demos — I handle the technical conversation so your deal moves forward.</p>
+          <div class="price">Monthly retainer &nbsp;·&nbsp; from €4,000</div>
+        </div>
+        <div class="card reveal">
+          <div class="card-num">02</div>
+          <h3>Integration Playbooks</h3>
+          <p>I document and package your API or SDK onboarding process into a repeatable, licensable system. Less time re-explaining. Faster client adoption. Fewer support headaches.</p>
+          <div class="price">Fixed project &nbsp;·&nbsp; €8,000–€12,000</div>
+        </div>
+        <div class="card reveal">
+          <div class="card-num">03</div>
+          <h3>Discovery Sprint</h3>
+          <p>Not sure where to start? In two weeks I audit your pre-sales or technical onboarding process, identify the gaps, and give you a clear roadmap. Fast, focused, no fluff.</p>
+          <div class="price">Flat fee &nbsp;·&nbsp; €2,500</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section class="who">
+    <div class="who-inner">
+      <div class="section-label reveal">Who I work with</div>
+      <div class="grid-2">
+        <div class="who-col reveal">
+          <h3>You're a good fit if...</h3>
+          <ul class="who-list">
+            <li>Your <strong>product is strong</strong> but not landing with enterprise buyers the way it should</li>
+            <li>You're entering <strong>European or Latin American markets</strong> and need a trusted technical face</li>
+            <li>You need <strong>executive-level demos</strong> that build confidence, not just show features</li>
+            <li>Your team is great at building but <strong>struggles to translate</strong> that into a signed deal</li>
+            <li>You're in <strong>B2B SaaS, APIs, SDKs, or mobility</strong> with real enterprise ambition</li>
+          </ul>
+        </div>
+        <div class="who-col reveal">
+          <h3>Languages &amp; markets</h3>
+          <ul class="who-list">
+            <li><strong>Spanish (native)</strong> — full client engagement across Latin America</li>
+            <li><strong>English (fluent)</strong> — Europe, US, Asia-Pacific</li>
+            <li><strong>Dutch (basic)</strong> — local Netherlands context</li>
+            <li>Based in <strong>Amsterdam</strong>, available to travel for key engagements</li>
+            <li>Remote-first, with the energy of someone who shows up in the room</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact">
+    <div class="contact-eye">Let's work together</div>
+    <h2>Your product deserves to <em>land</em> the way it was built.</h2>
+    <p class="contact-sub">No contact forms. No discovery calls to book a discovery call. Just send me an email and let's talk.</p>
+    <a href="mailto:josejoserojas@proton.me" class="email-link">josejoserojas@proton.me</a>
+    <div class="langs">Available in English &nbsp;·&nbsp; Español &nbsp;·&nbsp; Nederlands</div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 JozEV Labs · Jose Jose Rojas</span>
+    <span>Amsterdam, The Netherlands</span>
+    <a href="https://www.linkedin.com/in/jjrojas/" target="_blank" rel="noopener">LinkedIn ↗</a>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 100);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+
 </body>
 </html>
