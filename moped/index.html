@@ -1,149 +1,1315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ride JozEV | Sustainable Refinement</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JozEV — The Silent Shift</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8CC7A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --silver: #C8CDD6;
+    --graphite: #0C0D0F;
+    --graphite-2: #141518;
+    --graphite-3: #1C1E23;
+    --graphite-4: #252830;
+    --text: #E8E9EC;
+    --text-dim: #7A7D87;
+    --text-muted: #4A4D58;
+    --border: rgba(201,168,76,0.2);
+    --border-subtle: rgba(255,255,255,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--graphite);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.15s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed; width: 32px; height: 32px;
+    border: 1px solid rgba(201,168,76,0.4); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transition: transform 0.4s ease, width 0.3s, height 0.3s, opacity 0.3s;
+    transform: translate(-50%, -50%);
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 48px; height: 48px;
+    border-color: var(--gold);
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 48px;
+    border-bottom: 1px solid transparent;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(12,13,15,0.92);
+    border-color: var(--border-subtle);
+    backdrop-filter: blur(16px);
+    padding: 16px 48px;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.15em;
+    color: var(--text-dim); text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.15em;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.25s ease;
+    text-decoration: none;
+  }
+  .nav-cta:hover {
+    background: var(--gold);
+    color: var(--graphite);
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 60% 50%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      var(--graphite);
+  }
+
+  /* Grid overlay */
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  }
+
+  .hero-image-wrap {
+    position: absolute;
+    top: 50%; right: -2%;
+    transform: translateY(-50%);
+    width: 68%;
+    animation: heroReveal 1.4s cubic-bezier(0.16,1,0.3,1) forwards;
+    opacity: 0;
+  }
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(calc(-50% + 40px)); }
+    to { opacity: 1; transform: translateY(-50%); }
+  }
+  .hero-image-wrap img {
+    width: 100%;
+    filter: drop-shadow(0 40px 120px rgba(201,168,76,0.2)) drop-shadow(0 0 40px rgba(0,0,0,0.8));
+  }
+
+  /* Scan line on image */
+  .hero-image-wrap::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%, transparent 48%,
+      rgba(201,168,76,0.03) 50%,
+      transparent 52%, transparent 100%
+    );
+    animation: scan 6s linear infinite;
+  }
+  @keyframes scan {
+    0% { background-position: 0 -100%; }
+    100% { background-position: 0 200%; }
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 0 48px 80px;
+    max-width: 560px;
+    animation: contentReveal 1.2s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+    opacity: 0;
+  }
+  @keyframes contentReveal {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 40px; height: 1px; background: var(--gold);
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(52px, 6vw, 88px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(30px, 3.5vw, 52px);
+    line-height: 1.1;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+
+  .hero-desc {
+    font-size: 15px; line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 420px;
+    margin-bottom: 48px;
+  }
+
+  .hero-ctas {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 16px 36px;
+    background: var(--gold);
+    color: var(--graphite);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 13px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; border: none; cursor: none;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.35s ease;
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 32px;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none; cursor: none;
+    transition: all 0.25s ease;
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .hero-stats {
+    display: flex; gap: 40px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .stat-item {}
+  .stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px; font-weight: 400;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .stat-value span { color: var(--gold); font-size: 14px; }
+  .stat-label {
+    font-size: 11px; letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase; margin-top: 4px;
+  }
+
+  /* Ticker */
+  .ticker {
+    background: var(--graphite-3);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow: hidden;
+  }
+  .ticker-inner {
+    display: flex; gap: 64px;
+    white-space: nowrap;
+    animation: ticker 30s linear infinite;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em;
+    color: var(--text-muted); text-transform: uppercase;
+    display: flex; align-items: center; gap: 24px;
+    flex-shrink: 0;
+  }
+  .ticker-item .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+
+  /* Sections */
+  section { padding: 120px 48px; }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-eyebrow::before {
+    content: ''; width: 24px; height: 1px; background: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 56px);
+    line-height: 1.1; letter-spacing: -0.01em;
+    color: var(--text); margin-bottom: 24px;
+  }
+
+  /* Personas */
+  #personas { background: var(--graphite-2); }
+  .personas-header {
+    max-width: 600px; margin-bottom: 80px;
+  }
+  .personas-header p {
+    font-size: 17px; color: var(--text-dim); line-height: 1.7;
+  }
+
+  .personas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .persona-card {
+    background: var(--graphite-3);
+    padding: 48px 40px;
+    position: relative; overflow: hidden;
+    transition: background 0.3s ease;
+  }
+  .persona-card:hover { background: var(--graphite-4); }
+  .persona-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .persona-card:hover::before { opacity: 1; }
+
+  .persona-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em;
+    color: var(--text-muted); margin-bottom: 32px;
+  }
+  .persona-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: var(--text);
+    margin-bottom: 8px; line-height: 1.2;
+  }
+  .persona-age {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 0.1em; margin-bottom: 24px;
+  }
+  .persona-desc {
+    font-size: 14px; color: var(--text-dim);
+    line-height: 1.7; margin-bottom: 32px;
+  }
+  .persona-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .persona-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    color: var(--text-muted); text-transform: uppercase;
+    border: 1px solid var(--border-subtle);
+    padding: 5px 10px;
+  }
+  .persona-budget {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+  .persona-budget strong {
+    display: block; color: var(--gold);
+    font-size: 20px; margin-top: 4px;
+    font-weight: 400;
+  }
+
+  /* LEZ Section */
+  #lez {
+    background: var(--graphite);
+    position: relative; overflow: hidden;
+  }
+  .lez-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 100px;
+    align-items: center;
+  }
+  .lez-content {}
+  .lez-content p {
+    font-size: 16px; color: var(--text-dim);
+    line-height: 1.8; margin-bottom: 24px;
+  }
+
+  .lez-cities {
+    margin-top: 48px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  }
+  .lez-city {
+    background: var(--graphite-3);
+    padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lez-city-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; letter-spacing: 0.1em;
+    color: var(--text); text-transform: uppercase;
+  }
+  .lez-city-zone {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    color: var(--gold); text-transform: uppercase;
+  }
+  .lez-status {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #4CAF50; flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(76,175,80,0.6);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .lez-visual {
+    position: relative;
+  }
+  .lez-stat-block {
+    background: var(--graphite-3);
+    border: 1px solid var(--border);
+    padding: 48px;
+    position: relative;
+  }
+  .lez-stat-block::before {
+    content: '';
+    position: absolute; top: -1px; left: -1px;
+    width: 40px; height: 40px;
+    border-top: 2px solid var(--gold);
+    border-left: 2px solid var(--gold);
+  }
+  .lez-stat-block::after {
+    content: '';
+    position: absolute; bottom: -1px; right: -1px;
+    width: 40px; height: 40px;
+    border-bottom: 2px solid var(--gold);
+    border-right: 2px solid var(--gold);
+  }
+  .big-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 72px; font-weight: 300;
+    color: var(--text); letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .big-stat span { color: var(--gold); }
+  .big-stat-label {
+    font-size: 14px; color: var(--text-dim);
+    margin-top: 16px; line-height: 1.5;
+  }
+
+  .subsidy-block {
+    margin-top: 24px;
+    background: var(--graphite-4);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--gold);
+    padding: 28px 32px;
+  }
+  .subsidy-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .subsidy-desc {
+    font-size: 14px; color: var(--text-dim); line-height: 1.6;
+  }
+  .subsidy-desc strong { color: var(--text); }
+
+  /* Specs */
+  #specs { background: var(--graphite-2); }
+  .specs-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: start;
+  }
+  .specs-header { margin-bottom: 48px; }
+  .specs-header p { font-size: 16px; color: var(--text-dim); line-height: 1.7; }
+
+  .tier-toggle {
+    display: flex; gap: 2px; margin-bottom: 48px;
+  }
+  .tier-btn {
+    flex: 1; padding: 14px 20px;
+    background: var(--graphite-3);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: none; transition: all 0.25s;
+    text-align: center;
+  }
+  .tier-btn.active {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .spec-table { width: 100%; }
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: all 0.2s;
+  }
+  .spec-row:hover { padding-left: 8px; }
+  .spec-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .spec-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; color: var(--text);
+    text-align: right;
+  }
+  .spec-value.gold { color: var(--gold); }
+
+  .specs-right {
+    position: sticky; top: 100px;
+  }
+  .spec-model-card {
+    background: var(--graphite-3);
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+  }
+  .spec-model-header {
+    padding: 32px 36px;
+    border-bottom: 1px solid var(--border-subtle);
+    background: linear-gradient(135deg, var(--graphite-4), var(--graphite-3));
+  }
+  .spec-model-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .spec-model-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; color: var(--text);
+  }
+  .spec-model-body { padding: 36px; }
+  .spec-model-desc {
+    font-size: 14px; color: var(--text-dim);
+    line-height: 1.7; margin-bottom: 32px;
+  }
+  .spec-highlight {
+    display: flex; gap: 24px; margin-bottom: 32px;
+  }
+  .spec-highlight-item {
+    flex: 1;
+    background: var(--graphite-4);
+    padding: 20px;
+  }
+  .spec-highlight-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 24px; color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .spec-highlight-val span { color: var(--gold); font-size: 14px; }
+  .spec-highlight-label {
+    font-size: 11px; color: var(--text-muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* Waitlist */
+  #waitlist {
+    background: var(--graphite);
+    position: relative;
+  }
+  .waitlist-inner {
+    max-width: 760px; margin: 0 auto; text-align: center;
+  }
+  .waitlist-inner .section-eyebrow {
+    justify-content: center;
+  }
+  .waitlist-inner .section-eyebrow::before { display: none; }
+  .waitlist-inner .section-title {
+    font-size: clamp(36px, 5vw, 64px);
+    margin-bottom: 20px;
+  }
+  .waitlist-inner > p {
+    font-size: 17px; color: var(--text-dim);
+    line-height: 1.7; max-width: 520px; margin: 0 auto 48px;
+  }
+
+  .waitlist-form {
+    background: var(--graphite-3);
+    border: 1px solid var(--border);
+    padding: 48px;
+    position: relative;
+    text-align: left;
+  }
+  .waitlist-form::before {
+    content: '';
+    position: absolute; top: -1px; left: -1px;
+    width: 60px; height: 60px;
+    border-top: 2px solid var(--gold);
+    border-left: 2px solid var(--gold);
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .form-input, .form-select {
+    width: 100%; padding: 14px 18px;
+    background: var(--graphite-4);
+    border: 1px solid var(--border-subtle);
+    color: var(--text);
+    font-family: 'Syne', sans-serif; font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none; -webkit-appearance: none;
+    cursor: none;
+  }
+  .form-input:focus, .form-select:focus {
+    border-color: var(--gold);
+  }
+  .form-input::placeholder { color: var(--text-muted); }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute; right: 18px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold); pointer-events: none; font-size: 12px;
+  }
+
+  .form-submit {
+    width: 100%; padding: 18px;
+    background: var(--gold);
+    border: none; color: var(--graphite);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 13px; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: none; transition: all 0.25s ease;
+    margin-top: 8px; position: relative; overflow: hidden;
+  }
+  .form-submit:hover { background: var(--gold-light); }
+  .form-submit::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.1);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .form-submit:hover::before { transform: translateX(0); }
+
+  .form-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--text-muted);
+    letter-spacing: 0.1em; margin-top: 16px;
+    text-align: center;
+  }
+
+  .slots-indicator {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    margin-bottom: 40px;
+    padding: 16px 32px;
+    background: var(--graphite-3);
+    border: 1px solid var(--border);
+    display: inline-flex;
+  }
+  .slots-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 1.5s ease infinite;
+  }
+  .slots-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.15em;
+    color: var(--text-dim); text-transform: uppercase;
+  }
+  .slots-text strong { color: var(--gold); }
+
+  /* Footer */
+  footer {
+    background: var(--graphite-2);
+    border-top: 1px solid var(--border-subtle);
+    padding: 48px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 16px;
+    letter-spacing: 0.12em; color: var(--text);
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-center {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: var(--text-muted); text-transform: uppercase;
+    text-align: center;
+  }
+  .footer-right {
+    display: flex; gap: 24px;
+  }
+  .footer-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: var(--text-muted); text-transform: uppercase;
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--gold); }
+
+  /* Success state */
+  .form-success {
+    display: none;
+    text-align: center; padding: 48px 32px;
+  }
+  .form-success.visible { display: block; }
+  .form-success-icon {
+    font-size: 48px; margin-bottom: 20px;
+  }
+  .form-success h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; color: var(--text);
+    margin-bottom: 12px;
+  }
+  .form-success p {
+    font-size: 14px; color: var(--text-dim);
+  }
+
+  /* Reveal animations */
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* Add-on configurator */
+  .addon-row {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 16px;
+    background: var(--graphite-4);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 2px;
+    cursor: none;
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+  }
+  .addon-row:hover { border-color: var(--gold); background: var(--graphite-3); }
+  .addon-row.selected {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+  .addon-row.selected .addon-check { color: var(--gold); }
+  .addon-check {
+    font-size: 16px; color: var(--text-muted);
+    flex-shrink: 0; margin-top: 1px;
+    transition: color 0.2s;
+  }
+  .addon-info { flex: 1; }
+  .addon-name {
+    font-size: 13px; font-weight: 600;
+    color: var(--text); margin-bottom: 3px;
+  }
+  .addon-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .addon-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--gold);
+    flex-shrink: 0; white-space: nowrap;
+  }
+
+  .price-display {
+    background: var(--graphite-3);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+  .price-line {
+    display: flex; justify-content: space-between;
+    padding: 6px 0;
+    font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+  .price-total-row {
+    display: flex; justify-content: space-between;
+    padding-top: 14px; margin-top: 8px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 20px; font-weight: 600;
+    color: var(--text);
+  }
+  .price-total-row span:last-child { color: var(--gold); }
+
+  @media (max-width: 1024px) {
+    nav { padding: 20px 24px; }
+    section { padding: 80px 24px; }
+    .hero-content { padding: 0 24px 60px; }
+    .personas-grid { grid-template-columns: 1fr; gap: 2px; }
+    .lez-inner { grid-template-columns: 1fr; gap: 60px; }
+    .specs-inner { grid-template-columns: 1fr; }
+    .hero-image-wrap { width: 100%; opacity: 0.3; right: 0; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo">RIDE JOZEV</div>
-        <ul class="nav-links">
-            <li><a href="#philosophy">Philosophy</a></li>
-            <li><a href="#engineering">Engineering</a></li>
-            <li><a href="#fleet">Fleet</a></li>
-            <li><a href="#contact" class="btn-outline">Inquiry</a></li>
-        </ul>
-    </nav>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-    <header class="hero">
-        <div class="hero-content">
-            <h1 class="fade-in">The Silent Shift.</h1>
-            <p class="fade-in delay-1">European boutique design meets impossible engineering. The definitive L1e moped for the refined urbanist.</p>
-            <div class="hero-btns fade-in delay-2">
-                <a href="#preorder" class="btn-gold">Secure Founders Edition</a>
-                <a href="#partnership" class="btn-text">Verge Next Partnership →</a>
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">JOZ<span>EV</span></a>
+  <ul class="nav-links">
+    <li><a href="#personas">Who It's For</a></li>
+    <li><a href="#specs">Specifications</a></li>
+    <li><a href="#lez">LEZ Access</a></li>
+  </ul>
+  <a href="#waitlist" class="nav-cta">Reserve</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-image-wrap">
+    <img src="https://jozev-labs.com/moped/jozev-hero-2.png"
+         onerror="this.src='https://placehold.co/900x600/1C1E23/C9A84C?text=JozEV+Flagship'"
+         alt="JozEV Flagship — Hubless Electric Motorcycle">
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Amsterdam, NL · L1e Certified</div>
+    <h1 class="hero-title">The<br><em>Silent</em></h1>
+    <p class="hero-subtitle">Shift.</p>
+    <p class="hero-desc">Hub-motor architecture. Bespoke aluminum chassis. Designed for those who already have everything — except an electric two-wheeler worth owning.</p>
+
+    <div class="hero-ctas">
+      <a href="#waitlist" class="btn-primary">
+        Secure Founders Position
+        <span>→</span>
+      </a>
+      <a href="#specs" class="btn-secondary">View Specifications</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-value">€10K</div>
+        <div class="stat-label">Starting From</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">€20K</div>
+        <div class="stat-label">Fully Configured</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">50</div>
+        <div class="stat-label">Founders Editions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <!-- Repeated for seamless loop -->
+    <div class="ticker-item"><div class="dot"></div>Proprietary Hubless Drivetrain — JozEV IP</div>
+    <div class="ticker-item"><div class="dot"></div>LEZ Access — London · Paris · Amsterdam · Milan</div>
+    <div class="ticker-item"><div class="dot"></div>Dutch MIA/Vamil Subsidy Handled</div>
+    <div class="ticker-item"><div class="dot"></div>100W Executive Charging Bay</div>
+    <div class="ticker-item"><div class="dot"></div>L1e European Road Legal</div>
+    <div class="ticker-item"><div class="dot"></div>Founders Edition — 50 Units · From €10,000</div>
+    <div class="ticker-item"><div class="dot"></div>Gold Anodized Aluminum</div>
+    <div class="ticker-item"><div class="dot"></div>Proprietary Hubless Drivetrain — JozEV IP</div>
+    <div class="ticker-item"><div class="dot"></div>LEZ Access — London · Paris · Amsterdam · Milan</div>
+    <div class="ticker-item"><div class="dot"></div>Dutch MIA/Vamil Subsidy Handled</div>
+    <div class="ticker-item"><div class="dot"></div>100W Executive Charging Bay</div>
+    <div class="ticker-item"><div class="dot"></div>L1e European Road Legal</div>
+    <div class="ticker-item"><div class="dot"></div>Founders Edition — 50 Units · From €10,000</div>
+    <div class="ticker-item"><div class="dot"></div>Gold Anodized Aluminum</div>
+  </div>
+</div>
+
+<!-- PERSONAS -->
+<section id="personas">
+  <div class="personas-header reveal">
+    <div class="section-eyebrow">Built For</div>
+    <h2 class="section-title">Three kinds of<br>discerning rider.</h2>
+    <p>JozEV is not a commuter product. It is a statement object — designed for the 1.9 million affluent Europeans who own a Ducati and a Porsche Taycan, and are waiting for someone to do the EV motorcycle properly.</p>
+  </div>
+
+  <div class="personas-grid">
+    <div class="persona-card reveal">
+      <div class="persona-num">01 / 03</div>
+      <h3 class="persona-title">The Urban<br>Professional Collector</h3>
+      <div class="persona-age">35 – 50 · €250K+ income</div>
+      <p class="persona-desc">Based in Amsterdam, London, or Zurich. Drives a Taycan. Owns two Ducatis. Already went electric on four wheels — and has been waiting for someone to do it right on two. Highly influenced by design awards and peer ownership.</p>
+      <div class="persona-tags">
+        <span class="persona-tag">Amsterdam</span>
+        <span class="persona-tag">London</span>
+        <span class="persona-tag">Munich</span>
+        <span class="persona-tag">Design-led</span>
+      </div>
+      <div class="persona-budget">
+        Target Price Point
+        <strong>€20,000 – €40,000</strong>
+      </div>
+    </div>
+
+    <div class="persona-card reveal reveal-delay-1">
+      <div class="persona-num">02 / 03</div>
+      <h3 class="persona-title">The Design-Conscious<br>Tech Founder</h3>
+      <div class="persona-age">30 – 45 · HNWI</div>
+      <p class="persona-desc">Self-made. Tech, finance, or creative industries. Would have bought an Arc Vector if it still existed. Reads Wallpaper* and Dezeen. Sees a bespoke EV motorcycle as equivalent to a statement watch or gallery piece.</p>
+      <div class="persona-tags">
+        <span class="persona-tag">Netherlands</span>
+        <span class="persona-tag">UK</span>
+        <span class="persona-tag">Nordics</span>
+        <span class="persona-tag">Collector</span>
+      </div>
+      <div class="persona-budget">
+        Target Price Point
+        <strong>€35,000 – €80,000</strong>
+      </div>
+    </div>
+
+    <div class="persona-card reveal reveal-delay-2">
+      <div class="persona-num">03 / 03</div>
+      <h3 class="persona-title">The Motorcycle<br>Purist Going Electric</h3>
+      <div class="persona-age">45 – 60 · Established wealth</div>
+      <p class="persona-desc">Ridden all his life. Ducati, Moto Guzzi, BMW heritage. Reluctantly interested in electric due to LEZ access. Will only switch if the product carries genuine European design DNA — and doesn't feel like a compromise.</p>
+      <div class="persona-tags">
+        <span class="persona-tag">Italy</span>
+        <span class="persona-tag">Germany</span>
+        <span class="persona-tag">France</span>
+        <span class="persona-tag">Heritage</span>
+      </div>
+      <div class="persona-budget">
+        Target Price Point
+        <strong>€20,000 – €35,000</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEZ SECTION -->
+<section id="lez">
+  <div class="lez-inner">
+    <div class="lez-content reveal">
+      <div class="section-eyebrow">Low Emission Zones</div>
+      <h2 class="section-title">Your city just closed<br>to everything else.</h2>
+      <p>Over 300 European cities have implemented Low Emission Zones. London's ULEZ, Paris's ZFE, Amsterdam's zero-emission mandate, Milan's Area C. Wealthy motorcyclists don't stop riding — they upgrade.</p>
+      <p>JozEV is your permanent access pass. Not a workaround. The product you actually want to be seen on.</p>
+
+      <div class="lez-cities">
+        <div class="lez-city">
+          <div>
+            <div class="lez-city-name">London</div>
+            <div class="lez-city-zone">ULEZ Zone</div>
+          </div>
+          <div class="lez-status"></div>
+        </div>
+        <div class="lez-city">
+          <div>
+            <div class="lez-city-name">Paris</div>
+            <div class="lez-city-zone">ZFE Zone</div>
+          </div>
+          <div class="lez-status"></div>
+        </div>
+        <div class="lez-city">
+          <div>
+            <div class="lez-city-name">Amsterdam</div>
+            <div class="lez-city-zone">Zero Emission</div>
+          </div>
+          <div class="lez-status"></div>
+        </div>
+        <div class="lez-city">
+          <div>
+            <div class="lez-city-name">Milan</div>
+            <div class="lez-city-zone">Area C</div>
+          </div>
+          <div class="lez-status"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lez-visual reveal reveal-delay-1">
+      <div class="lez-stat-block">
+        <div class="big-stat">300<span>+</span></div>
+        <p class="big-stat-label">European cities with active Low Emission Zones — a permanent structural tailwind for premium EV two-wheelers.</p>
+      </div>
+
+      <div class="subsidy-block" style="margin-top:24px;">
+        <div class="subsidy-title">Subsidy Navigation — Included</div>
+        <p class="subsidy-desc">We handle your <strong>Dutch MIA/Vamil</strong> filings and local green-incentive applications on your behalf. Ownership without the bureaucracy. For buyers at €25K+, the subsidy isn't the reason to buy — but we'll get it for you anyway.</p>
+      </div>
+
+      <div class="subsidy-block" style="margin-top:2px; border-left-color: var(--silver);">
+        <div class="subsidy-title" style="color: var(--silver);">Market Context</div>
+        <p class="subsidy-desc">58% of new electric motorcycle buyers in Germany, Italy and the Netherlands cited LEZ access as primary motivation. The premium segment grows at <strong>20%+ CAGR</strong> — the fastest-growing segment in the European automotive industry.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section id="specs">
+  <div class="specs-inner">
+    <div>
+      <div class="specs-header reveal">
+        <div class="section-eyebrow">Technical</div>
+        <h2 class="section-title">Engineering<br>without apology.</h2>
+        <p>One model. No compromise, no derivatives. The hubless wheel system is JozEV original IP — engineered in-house, owned outright. Configure it to your life with the modules below.</p>
+      </div>
+
+      <div class="spec-table reveal" id="spec-table">
+        <div class="spec-row">
+          <span class="spec-name">Drivetrain</span>
+          <span class="spec-value gold">JozEV Hubless — Proprietary IP</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Wheelbase</span>
+          <span class="spec-value">1,360 mm</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Seat Height</span>
+          <span class="spec-value">700 mm</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Frame</span>
+          <span class="spec-value">6061-T6 Aluminium</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Accents</span>
+          <span class="spec-value">Gold Anodised · Carbon Fibre</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Charging Bay</span>
+          <span class="spec-value">100W USB-C PD</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Classification</span>
+          <span class="spec-value">L1e European</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Ground Clearance</span>
+          <span class="spec-value">150 mm</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-name">Rake Angle</span>
+          <span class="spec-value">24.5°</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="specs-right reveal reveal-delay-1">
+      <div class="spec-model-card">
+        <div class="spec-model-header">
+          <div class="spec-model-label">One Model. Your Configuration.</div>
+          <div class="spec-model-name">JozEV<br>Founders Edition</div>
+        </div>
+        <div class="spec-model-body">
+          <p class="spec-model-desc">A single, uncompromised machine — configured to your operation. Select the modules that match your life or business.</p>
+
+          <div style="margin-bottom: 28px;">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; color:var(--text-muted); text-transform:uppercase; margin-bottom:14px;">Select Add-ons</div>
+
+            <div class="addon-row" onclick="toggleAddon(this, 1500)">
+              <div class="addon-check" id="chk-gps">◻</div>
+              <div class="addon-info">
+                <div class="addon-name">GPS Navigation Module</div>
+                <div class="addon-sub">Integrated display · route planning · live traffic</div>
+              </div>
+              <div class="addon-price">+ €1,500</div>
             </div>
-        </div>
-        <div class="hero-overlay"></div>
-        </header>
 
-    <section id="philosophy" class="section reveal">
-        <div class="container">
-            <span class="subtitle">Aesthetic POV</span>
-            <h2>Designed for the boardroom, <br>not the delivery route.</h2>
-            <p>Ride JozEV eliminates the utility clutter. No exposed wires. No plastic shells. Just matte graphite, champagne gold, and the pursuit of calm.</p>
-        </div>
-    </section>
-
-<section id="engineering" class="features reveal">
-    
-    <div class="feature-card">
-        <div class="img-placeholder">
-            <img src="jozev-hub.png" alt="Ride JozEV Flagship with Verge Hubless Motor">
-        </div>
-        <h3>Verge Next Drivetrain</h3>
-        <p>Integration of the patented Verge 'Donut' motor. A visually weightless rear wheel that delivers silent, instantaneous torque for the flagship JozEV experience.</p>
-    </div>
-
-    <div class="feature-card">
-        <div class="img-placeholder">
-            <img src="laptop-bay.jpg" alt="Executive Charging Bay for MacBook Pro">
-        </div>
-        <h3>Executive Charging Bay</h3>
-        <p>Business doesn't stop. Our weather-sealed, vibration-dampened compartment features 100W USB-C PD to keep your 16" laptop at 100% while you glide through the city.</p>
-    </div>
-
-    <div class="feature-card">
-        <div class="img-placeholder">
-            <img src="jozev-hero-2.png" alt="Ride JozEV Modular Frame">
-        </div>
-        <h3>Modular Refinement</h3>
-        <p>Available in two tiers. Choose between the boundary-pushing Verge Hubless drive or our Signature high-efficiency core motor. Same luxury, two speeds of life.</p>
-    </div>
-
-</section>
-
-    <section class="subsidy reveal">
-        <div class="container">
-            <h2>Subsidy Navigation as a Service</h2>
-            <p>Ownership without the bureaucracy. We handle your Dutch MIA/Vamil filings and local green-incentive applications for you.</p>
-        </div>
-    </section>
-
-<section id="fleet" class="specs reveal">
-    <div class="container">
-        <span class="subtitle">The Lineup</span>
-        <h2>Precision Meets Modularity</h2>
-        
-        <table class="spec-table">
-            <thead>
-                <tr>
-                    <th>Feature</th>
-                    <th>JozEV Core (Signature)</th>
-                    <th>JozEV Flagship (Powered by Verge)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Drivetrain</td>
-                    <td>High-Efficiency Hub Motor</td>
-                    <td><strong>Verge Next 12" Hubless Donut</strong></td>
-                </tr>
-                <tr>
-                    <td>Torque</td>
-                    <td>85 Nm</td>
-                    <td><strong>160 Nm (Class-Leading)</strong></td>
-                </tr>
-                <tr>
-                    <td>Range (City)</td>
-                    <td>85 km</td>
-                    <td>110 km (Solid-State Ready)</td>
-                </tr>
-                <tr>
-                    <td>Charging Bay</td>
-                    <td>100W USB-C PD</td>
-                    <td>100W USB-C PD</td>
-                </tr>
-                <tr>
-                    <td>Aesthetic</td>
-                    <td>Matte Graphite / Solid Rim</td>
-                    <td>Matte Graphite / Hubless Rim</td>
-                </tr>
-                <tr>
-                    <td>License Class</td>
-                    <td>L1e (45 km/h)</td>
-                    <td>L1e (45 km/h)</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<section id="contact" class="inquiry reveal">
-    <div class="container">
-        <h2>Partnership & Inquiries</h2>
-        <p>Ride JozEV is currently engaging with Tier-1 engineering partners and selected private investors for our 2026 Dutch launch.</p>
-        <div class="contact-box">
-            <a href="mailto:info@jozev.nl" class="btn-gold">Email info@jozev.nl</a>
-        </div>
-    </div>
-</section>
-    
-    
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 Ride JozEV B.V. Amsterdam.</p>
-            <div class="socials">
-                <span>LinkedIn</span>
-                <span>Instagram</span>
+            <div class="addon-row" onclick="toggleAddon(this, 1200)">
+              <div class="addon-check">◻</div>
+              <div class="addon-info">
+                <div class="addon-name">Mobile Platform Integration</div>
+                <div class="addon-sub">iOS & Android · remote diagnostics · OTA updates</div>
+              </div>
+              <div class="addon-price">+ €1,200</div>
             </div>
-        </div>
-    </footer>
 
-    <script src="script.js"></script>
-</body>
-</html>
+            <div class="addon-row" onclick="toggleAddon(this, 3500)">
+              <div class="addon-check">◻</div>
+              <div class="addon-info">
+                <div class="addon-name">B2B Fleet Management</div>
+                <div class="addon-sub">Hotels · corporate · usage analytics · multi-unit dashboard</div>
+              </div>
+              <div class="addon-price">+ €3,500</div>
+            </div>
+          </div>
+
+          <div class="price-display">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Your Configuration</div>
+            <div class="price-line">
+              <span style="color:var(--text-dim); font-size:14px;">Base price</span>
+              <span style="font-family:'DM Mono',monospace; color:var(--text);">€10,000</span>
+            </div>
+            <div class="price-line addon-line" id="price-additions" style="display:none;">
+              <span style="color:var(--text-dim); font-size:14px;">Add-ons</span>
+              <span style="font-family:'DM Mono',monospace; color:var(--gold);" id="addon-total">+ €0</span>
+            </div>
+            <div class="price-total-row">
+              <span>Total</span>
+              <span id="price-total">€10,000</span>
+            </div>
+          </div>
+
+          <a href="#waitlist" class="btn-primary" style="display:flex; justify-content:space-between; margin-top: 20px;">
+            Reserve at This Price <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top:2px; background: var(--graphite-4); border: 1px solid var(--border-subtle); padding: 24px 28px;">
+        <div class="spec-model-label">Proprietary Hubless Technology</div>
+        <p style="font-size:13px; color: var(--text-dim); line-height:1.6; margin-top: 8px;">JozEV's hubless wheel system is fully developed in-house — original IP, not licensed. The large-diameter bearing race integrates directly with our motor architecture. No dependency. No royalty. Ours alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section id="waitlist">
+  <div class="waitlist-inner">
+    <div class="section-eyebrow reveal">Founders Edition</div>
+    <h2 class="section-title reveal">50 positions.<br>One opportunity.</h2>
+    <p class="reveal">Founders Edition owners receive priority delivery, direct access to the engineering team, and the permanent distinction of being the first.</p>
+
+    <div style="text-align:center; margin-bottom:40px;" class="reveal">
+      <div class="slots-indicator">
+        <div class="slots-dot"></div>
+        <div class="slots-text">Founders positions open · <strong>50 units · 2026 Amsterdam launch</strong></div>
+      </div>
+    </div>
+
+    <div class="waitlist-form reveal" id="form-wrap">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" placeholder="Jacques" id="f-first">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" placeholder="van der Berg" id="f-last">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="j@company.nl" id="f-email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <div class="select-wrap">
+            <select class="form-select form-input" id="f-country">
+              <option value="">Select country</option>
+              <option>Netherlands</option>
+              <option>Germany</option>
+              <option>United Kingdom</option>
+              <option>France</option>
+              <option>Italy</option>
+              <option>Switzerland</option>
+              <option>Belgium</option>
+              <option>Sweden</option>
+              <option>Denmark</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Configuration of Interest</label>
+        <div class="select-wrap">
+          <select class="form-select form-input" id="f-config">
+            <option value="">Select configuration</option>
+            <option>JozEV Flagship — Verge Next Hubless</option>
+            <option>JozEV Core — Signature Hub Motor</option>
+            <option>Undecided — Tell me more</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message (Optional)</label>
+        <input type="text" class="form-input" placeholder="Questions, timeline, or how you heard about us..." id="f-msg">
+      </div>
+      <button class="form-submit" onclick="submitForm()">Secure My Founders Position →</button>
+      <p class="form-note">No payment required. No spam. We will contact you personally within 48 hours.</p>
+    </div>
+
+    <div class="form-success" id="form-success">
+      <div class="form-success-icon">◆</div>
+      <h3>Position Secured.</h3>
+      <p>Welcome to the Founders Edition. We will be in touch within 48 hours.<br>Amsterdam, 2026.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">JOZ<span>EV</span></div>
+  <div class="footer-center">
+    © 2026 Ride JozEV B.V. · Amsterdam<br>
+    <span style="color: var(--gold);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="31585f575e715b5e4b54471f5f5d">[email&#160;protected]</a></span>
+  </div>
+  <div class="footer-right">
+    <a href="#" class="footer-link">LinkedIn</a>
+    <a href="#" class="footer-link">Instagram</a>
+    <a href="/cdn-cgi/l/email-protection#345d5a525b745e5b4e51421a5a58" class="footer-link">Contact</a>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => obs.observe(el));
+
+  // Add-on configurator
+  let addonTotal = 0;
+  function toggleAddon(row, price) {
+    const isSelected = row.classList.toggle('selected');
+    const check = row.querySelector('.addon-check');
+    check.textContent = isSelected ? '◼' : '◻';
+    addonTotal += isSelected ? price : -price;
+
+    const addLine = document.getElementById('price-additions');
+    const addonEl = document.getElementById('addon-total');
+    const totalEl = document.getElementById('price-total');
+
+    addonEl.textContent = '+ €' + addonTotal.toLocaleString('nl-NL');
+    totalEl.textContent = '€' + (10000 + addonTotal).toLocaleString('nl-NL');
+    addLine.style.display = addonTotal > 0 ? 'flex' : 'none';
+  }
+
+  // Form submit
+  function submitForm() {
+    const email = document.getElementById('f-email').value;
+    if (!email || !email.includes('@')) {
+      document.getElementById('f-email').s
