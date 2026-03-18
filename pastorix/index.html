@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pastorix — Virtual Fencing for the Modern Ranch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --soil: #2C1A0E;
+  --earth: #5C3D1E;
+  --clay: #8a827f;
+  --straw: #D4A96A;
+  --cream: #F5EDD8;
+  --sage: #4A7C59;
+  --grass: #6BAF6B;
+  --sky: #87CEEB;
+  --accent: #58463a;
+  --white: #FDFAF4;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--soil); overflow-x: hidden; }
+
+/* PILOT BANNER */
+.pilot-banner { background: var(--accent); padding: 0.75rem 5vw; display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.pilot-banner-text { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.05em; color: white; }
+.pilot-now { background: rgba(255,255,255,0.2); padding: 0.2rem 0.7rem; border-radius: 2px; font-size: 0.7rem; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: white; }
+.pilot-cta-sm { background: rgba(255,255,255,0.15); color: white; font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.35rem 0.9rem; border-radius: 2px; text-decoration: none; }
+
+/* HERO */
+.hero { min-height: 100vh; background: var(--soil); display: grid; grid-template-rows: auto 1fr auto; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 60% 80%, rgba(74,124,89,0.25) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 10% 20%, rgba(164,82,45,0.2) 0%, transparent 60%); pointer-events: none; }
+.hero-hills { position: absolute; bottom: 0; left: 0; right: 0; height: 220px; pointer-events: none; }
+
+nav { display: flex; align-items: center; justify-content: space-between; padding: 2rem 5vw; position: relative; z-index: 10; flex-wrap: wrap; gap: 1rem; }
+.logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.8rem; color: var(--cream); letter-spacing: -0.02em; }
+.logo span { color: var(--grass); }
+.logo svg { display: block; }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a { color: var(--straw); text-decoration: none; font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+.nav-links a:hover { color: var(--grass); }
+.nav-cta { background: var(--accent) !important; color: white !important; padding: 0.6rem 1.4rem; border-radius: 2px; }
+.lang-toggle { display: flex; gap: 0.3rem; background: rgba(255,255,255,0.08); padding: 0.3rem; border-radius: 2px; }
+.lang-btn { font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; padding: 0.3rem 0.7rem; border: none; border-radius: 1px; cursor: pointer; background: transparent; color: rgba(245,237,216,0.5); transition: all 0.2s; }
+.lang-btn.active { background: var(--grass); color: white; }
+
+.hero-content { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 5vw; position: relative; z-index: 5; max-width: 900px; }
+.hero-eyebrow { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grass); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; }
+.hero-eyebrow::before { content: ''; width: 40px; height: 2px; background: var(--grass); }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 8vw, 7rem); font-weight: 900; line-height: 0.95; color: var(--cream); margin-bottom: 1.5rem; letter-spacing: -0.03em; }
+.hero h1 em { font-style: italic; color: var(--straw); }
+.hero-sub { font-size: 1.15rem; line-height: 1.7; color: rgba(245,237,216,0.75); max-width: 520px; margin-bottom: 2.5rem; }
+.hero-sub-es { font-size: 0.95rem; color: rgba(245,237,216,0.5); font-style: italic; margin-top: -1.5rem; margin-bottom: 2.5rem; max-width: 520px; }
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-primary { background: var(--accent); color: white; padding: 1rem 2.2rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em; text-decoration: none; border-radius: 2px; border: none; cursor: pointer; transition: transform 0.2s, background 0.2s; }
+.btn-primary:hover { background: #d4611a; transform: translateY(-2px); }
+.btn-outline { background: transparent; color: var(--cream); padding: 1rem 2.2rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em; text-decoration: none; border-radius: 2px; border: 1.5px solid rgba(245,237,216,0.35); transition: border-color 0.2s, color 0.2s; }
+.btn-outline:hover { border-color: var(--straw); color: var(--straw); }
+.hero-stats { display: flex; gap: 3rem; padding: 2rem 5vw; position: relative; z-index: 5; border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
+.stat { display: flex; flex-direction: column; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 900; color: var(--straw); line-height: 1; }
+.stat-label { font-size: 0.75rem; color: rgba(245,237,216,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; }
+.collar-visual { position: absolute; right: 5vw; top: 50%; transform: translateY(-50%); width: clamp(280px, 35vw, 480px); z-index: 4; animation: float 6s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(-50%) translateY(0); } 50% { transform: translateY(-50%) translateY(-16px); } }
+
+/* SECTIONS */
+.section { padding: 7rem 5vw; }
+.section-label { font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sage); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.8rem; }
+.section-label::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--sage); }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.5rem; max-width: 700px; }
+
+/* HOW IT WORKS */
+.hiw { background: var(--cream); }
+.hiw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; margin-top: 4rem; border: 1px solid rgba(44,26,14,0.12); }
+.hiw-step { padding: 2.5rem; border-right: 1px solid rgba(44,26,14,0.12); position: relative; transition: background 0.3s; }
+.hiw-step:last-child { border-right: none; }
+.hiw-step:hover { background: rgba(44,26,14,0.04); }
+.step-num { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 900; color: rgba(44,26,14,0.08); line-height: 1; margin-bottom: 1rem; }
+.step-icon { width: 48px; height: 48px; margin-bottom: 1.2rem; }
+.step-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; color: var(--soil); }
+.step-desc { font-size: 0.9rem; line-height: 1.65; color: var(--earth); }
+.step-desc-es { font-size: 0.8rem; color: var(--clay); font-style: italic; margin-top: 0.5rem; }
+
+/* WELFARE NOTE */
+.welfare-note { background: var(--sage); padding: 2rem 5vw; display: flex; align-items: center; gap: 1.5rem; }
+.welfare-note-text { font-size: 0.9rem; line-height: 1.65; color: rgba(255,255,255,0.9); }
+.welfare-note-text strong { color: white; font-family: 'Syne', sans-serif; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.4rem; }
+
+/* BENEFITS */
+.benefits { background: var(--soil); }
+.benefits .section-title { color: var(--cream); }
+.benefits .section-label { color: var(--grass); }
+.benefits .section-label::after { background: var(--grass); }
+.benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5px; margin-top: 4rem; background: rgba(255,255,255,0.06); }
+.benefit-card { background: rgba(44,26,14,0.6); padding: 2.5rem; position: relative; overflow: hidden; transition: background 0.3s; }
+.benefit-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--grass); transition: height 0.4s; }
+.benefit-card:hover { background: rgba(44,26,14,0.85); }
+.benefit-card:hover::before { height: 100%; }
+.benefit-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+.benefit-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--cream); margin-bottom: 0.4rem; }
+.benefit-title-es { font-size: 0.85rem; color: var(--straw); font-style: italic; margin-bottom: 0.8rem; }
+.benefit-desc { font-size: 0.88rem; line-height: 1.7; color: rgba(245,237,216,0.65); }
+
+/* TECHNOLOGY */
+.technology { background: var(--white); }
+.tech-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; margin-top: 4rem; }
+.tech-diagram { width: 100%; aspect-ratio: 1; }
+.tech-list { display: flex; flex-direction: column; gap: 1.8rem; }
+.tech-item { display: flex; gap: 1.2rem; align-items: flex-start; padding-bottom: 1.8rem; border-bottom: 1px solid rgba(44,26,14,0.1); }
+.tech-item:last-child { border-bottom: none; padding-bottom: 0; }
+.tech-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); margin-top: 6px; flex-shrink: 0; }
+.tech-item-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--soil); margin-bottom: 0.3rem; }
+.tech-item-desc { font-size: 0.88rem; line-height: 1.65; color: var(--earth); }
+
+/* DASHBOARD */
+.dashboard-section { background: #0a130c; padding: 7rem 5vw; }
+.dashboard-section .section-label { color: var(--grass); }
+.dashboard-section .section-label::after { background: var(--grass); }
+.dashboard-section .section-title { color: var(--cream); }
+.dashboard-section .section-title em { font-style: italic; color: var(--straw); }
+
+.demo-frame { margin-top: 3rem; background: #0d1810; border-radius: 8px; overflow: hidden; border: 1px solid rgba(107,175,107,0.18); box-shadow: 0 40px 120px rgba(0,0,0,0.7); }
+.demo-topbar { background: #070f09; padding: 0.65rem 1.2rem; display: flex; align-items: center; gap: 0.6rem; border-bottom: 1px solid rgba(107,175,107,0.1); }
+.demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+.demo-content { display: grid; grid-template-columns: 190px 1fr; min-height: 540px; }
+
+.demo-sidebar { background: #090e0a; border-right: 1px solid rgba(107,175,107,0.1); padding: 1.2rem 0; display: flex; flex-direction: column; }
+.demo-sidebar-brand { padding: 0.5rem 1.2rem 1.2rem; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: var(--cream); border-bottom: 1px solid rgba(107,175,107,0.1); margin-bottom: 0.8rem; }
+.demo-sidebar-brand span { color: var(--grass); }
+.snav { display: flex; align-items: center; gap: 0.8rem; padding: 0.65rem 1.2rem; font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 600; color: rgba(245,237,216,0.4); cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em; }
+.snav.active { background: rgba(107,175,107,0.1); color: var(--grass); border-left: 2px solid var(--grass); }
+.snav:hover { color: var(--cream); background: rgba(255,255,255,0.03); }
+.snav-icon { font-size: 0.85rem; width: 16px; text-align: center; }
+.snav-badge { background: var(--accent); color: white; font-size: 0.58rem; padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: auto; }
+
+.demo-main { padding: 1.5rem 1.8rem; overflow: hidden; }
+.demo-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.4rem; }
+.demo-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--cream); }
+.demo-subtitle { font-size: 0.7rem; color: rgba(245,237,216,0.35); margin-top: 0.25rem; }
+.demo-live { background: rgba(107,175,107,0.12); border: 1px solid rgba(107,175,107,0.25); color: var(--grass); font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 2px; letter-spacing: 0.1em; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.1rem; }
+.kpi { background: #0d1810; border: 1px solid rgba(107,175,107,0.1); border-radius: 4px; padding: 0.85rem 1rem; }
+.kpi-lbl { font-family: 'Syne', sans-serif; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,237,216,0.35); margin-bottom: 0.4rem; }
+.kpi-val { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 900; line-height: 1; color: var(--cream); }
+.kpi-delta { font-size: 0.68rem; margin-top: 0.3rem; }
+.delta-up { color: var(--grass); }
+.delta-warn { color: var(--accent); }
+
+.demo-body { display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem; }
+.demo-panel { background: #0d1810; border: 1px solid rgba(107,175,107,0.1); border-radius: 4px; overflow: hidden; }
+.demo-panel-hdr { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(107,175,107,0.08); display: flex; justify-content: space-between; align-items: center; }
+.demo-panel-title { font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 700; color: rgba(245,237,216,0.55); letter-spacing: 0.1em; text-transform: uppercase; }
+.demo-panel-action { font-family: 'Syne', sans-serif; font-size: 0.62rem; font-weight: 700; color: var(--grass); letter-spacing: 0.08em; cursor: pointer; }
+
+.right-col { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.alert-item { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(107,175,107,0.06); display: flex; gap: 0.75rem; align-items: flex-start; }
+.alert-item:last-child { border-bottom: none; }
+.adot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.adot-orange { background: var(--accent); box-shadow: 0 0 5px var(--accent); }
+.adot-green { background: var(--grass); }
+.adot-blue { background: var(--sky); }
+.alert-text { font-size: 0.72rem; color: rgba(245,237,216,0.72); line-height: 1.5; }
+.alert-time { font-family: 'Syne', sans-serif; font-size: 0.6rem; color: rgba(245,237,216,0.28); margin-top: 0.15rem; }
+
+.chart-container { padding: 0.8rem 1rem 0.6rem; }
+.chart-bars-row { display: flex; align-items: flex-end; gap: 5px; height: 72px; }
+.bar-grp { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.bar-fill { width: 100%; border-radius: 2px 2px 0 0; }
+.bar-lbl { font-size: 0.55rem; color: rgba(245,237,216,0.28); font-family: 'Syne', sans-serif; }
+
+/* PRICING */
+.pricing { background: var(--cream); }
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
+.plan { background: white; border: 1.5px solid rgba(44,26,14,0.1); padding: 2.5rem; border-radius: 2px; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+.plan:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(44,26,14,0.12); }
+.plan.featured { background: var(--soil); border-color: var(--soil); }
+.plan-badge { position: absolute; top: -1px; right: 1.5rem; background: var(--accent); color: white; font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.8rem; }
+.plan-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--clay); }
+.plan.featured .plan-name { color: var(--straw); }
+.plan-name-es { font-size: 0.75rem; font-style: italic; margin-bottom: 1rem; color: var(--clay); opacity: 0.7; }
+.plan.featured .plan-name-es { color: var(--straw); opacity: 1; }
+.plan-price { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; line-height: 1; color: var(--soil); margin-bottom: 0.3rem; }
+.plan.featured .plan-price { color: var(--cream); }
+.plan-price span { font-size: 1rem; font-family: 'DM Sans', sans-serif; font-weight: 400; color: var(--clay); }
+.plan.featured .plan-price span { color: var(--straw); }
+.plan-desc { font-size: 0.82rem; color: var(--clay); margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(44,26,14,0.1); }
+.plan.featured .plan-desc { color: rgba(245,237,216,0.6); border-color: rgba(255,255,255,0.1); }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem; }
+.plan-features li { font-size: 0.88rem; color: var(--earth); display: flex; align-items: flex-start; gap: 0.7rem; line-height: 1.5; }
+.plan.featured .plan-features li { color: rgba(245,237,216,0.8); }
+.plan-features li::before { content: '✓'; color: var(--grass); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.plan-cta { display: block; text-align: center; padding: 0.9rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; text-decoration: none; border-radius: 2px; border: 1.5px solid var(--soil); color: var(--soil); background: transparent; cursor: pointer; width: 100%; transition: background 0.2s, color 0.2s; }
+.plan-cta:hover { background: var(--soil); color: var(--cream); }
+.plan.featured .plan-cta { background: var(--accent); border-color: var(--accent); color: white; }
+.plan.featured .plan-cta:hover { background: #d4611a; }
+.pricing-note { text-align: center; margin-top: 2rem; font-size: 0.85rem; color: var(--clay); font-style: italic; }
+
+/* FOUNDERS */
+.founders { background: var(--white); }
+.founders-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 4rem; }
+.founder-card { display: flex; flex-direction: column; gap: 1.2rem; }
+.founder-header { display: flex; align-items: center; gap: 1.2rem; }
+.founder-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--earth); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; color: var(--cream); flex-shrink: 0; }
+.founder-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--soil); letter-spacing: -0.02em; }
+.founder-role { font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage); margin-top: 0.2rem; }
+.founder-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.founder-tag { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--clay); background: rgba(160,82,45,0.1); padding: 0.25rem 0.65rem; border-radius: 2px; }
+.founder-bio { font-size: 0.92rem; line-height: 1.75; color: var(--earth); }
+
+/* CONTACT */
+.contact { background: var(--soil); padding: 7rem 5vw; }
+.contact .section-title { color: var(--cream); }
+.contact .section-label { color: var(--grass); }
+.contact .section-label::after { background: var(--grass); }
+.contact-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 6rem; margin-top: 4rem; }
+.contact-intro { font-size: 1rem; line-height: 1.8; color: rgba(245,237,216,0.7); margin-bottom: 2rem; }
+.contact-intro-es { font-size: 0.9rem; color: rgba(245,237,216,0.45); font-style: italic; margin-top: -1rem; margin-bottom: 2rem; }
+.contact-detail { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; color: var(--straw); font-size: 0.9rem; }
+form { display: flex; flex-direction: column; gap: 1.2rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-group label { font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--straw); }
+.form-group label em { font-style: italic; color: rgba(212,169,106,0.55); font-weight: 400; font-size: 0.65rem; letter-spacing: 0; text-transform: none; }
+input, select, textarea { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 2px; padding: 0.85rem 1rem; color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 0.92rem; outline: none; transition: border-color 0.2s, background 0.2s; width: 100%; }
+input::placeholder, textarea::placeholder { color: rgba(245,237,216,0.3); }
+input:focus, select:focus, textarea:focus { border-color: var(--grass); background: rgba(255,255,255,0.09); }
+select option { background: var(--soil); color: var(--cream); }
+textarea { resize: vertical; min-height: 100px; }
+.radio-group { display: flex; flex-direction: column; gap: 0.6rem; }
+.radio-option { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; }
+.radio-option input[type="radio"] { width: 18px; height: 18px; accent-color: var(--grass); flex-shrink: 0; }
+.radio-option span { font-size: 0.88rem; color: rgba(245,237,216,0.8); line-height: 1.4; }
+.radio-option .es { font-size: 0.78rem; color: rgba(245,237,216,0.45); font-style: italic; }
+.form-submit { background: var(--accent); color: white; border: none; padding: 1.1rem 2rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 0.05em; cursor: pointer; border-radius: 2px; transition: background 0.2s, transform 0.2s; margin-top: 0.5rem; }
+.form-submit:hover { background: #d4611a; transform: translateY(-2px); }
+.form-success { display: none; background: rgba(74,124,89,0.2); border: 1px solid var(--grass); padding: 1.5rem; border-radius: 2px; color: var(--grass); font-family: 'Syne', sans-serif; font-weight: 600; text-align: center; line-height: 1.6; }
+
+/* FOOTER */
+footer { background: #1a0e06; padding: 3rem 5vw; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.footer-logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.4rem; color: var(--cream); }
+.footer-logo span { color: var(--grass); }
+.footer-copy { font-size: 0.8rem; color: rgba(245,237,216,0.35); }
+.footer-pilot { font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: rgba(232,115,42,0.1); padding: 0.4rem 1rem; border-radius: 2px; }
+
+/* ANIMATIONS */
+.fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .collar-visual { display: none; }
+  .tech-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .founders-grid { grid-template-columns: 1fr; }
+  .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .hiw-grid { grid-template-columns: 1fr; }
+  .hiw-step { border-right: none; border-bottom: 1px solid rgba(44,26,14,0.12); }
+  .demo-content { grid-template-columns: 1fr; }
+  .demo-sidebar { display: none; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .demo-body { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- PILOT BANNER -->
+<div class="pilot-banner">
+  <span style="font-size:1.1rem;">🇵🇾 🇧🇷 🇦🇷 🇨🇴</span>
+  <div class="pilot-now">Now Enrolling</div>
+  <div class="pilot-banner-text">Pilot running in Paraguay · Seeking partners in <strong>Brazil, Argentina &amp; Colombia</strong></div>
+  <a href="#contact" class="pilot-cta-sm">Apply for the pilot →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <nav>
+    
+    <div class="logo">
+      <svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <path d="M62 18 L52 52 L62 52 L50 82 L74 42 L62 42 Z" fill="#F5EDD8"/>
+        <path d="M138 18 L128 52 L138 52 L126 82 L150 42 L138 42 Z" fill="#F5EDD8"/>
+        <rect x="38" y="68" width="124" height="108" rx="22" fill="#F5EDD8"/>
+        <rect x="22" y="92" width="22" height="28" rx="8" fill="#F5EDD8"/>
+        <rect x="156" y="92" width="22" height="28" rx="8" fill="#F5EDD8"/>
+        <rect x="56" y="90" width="34" height="32" rx="10" fill="#2C1A0E"/>
+        <rect x="110" y="90" width="34" height="32" rx="10" fill="#2C1A0E"/>
+        <circle cx="73" cy="108" r="8" fill="#F5EDD8"/>
+        <circle cx="127" cy="108" r="8" fill="#F5EDD8"/>
+        <rect x="62" y="132" width="76" height="30" rx="14" fill="#2C1A0E"/>
+        <circle cx="88" cy="138" r="4" fill="#F5EDD8"/>
+        <circle cx="112" cy="138" r="4" fill="#F5EDD8"/>
+        <path d="M78 144 Q100 158 122 144" stroke="#F5EDD8" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+      Pasto<span>rix</span>
+    </div>
+
+
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#founders">Team</a>
+      <a href="#contact" class="nav-cta">Join Pilot →</a>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+  </nav>
+
+  <!-- Collar SVG -->
+  <svg class="collar-visual" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="cg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#4A7C59" stop-opacity="0.3"/><stop offset="100%" stop-color="#4A7C59" stop-opacity="0"/></radialGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <circle cx="210" cy="210" r="200" fill="url(#cg)"/>
+    <ellipse cx="210" cy="210" rx="140" ry="50" fill="none" stroke="#5C3D1E" stroke-width="28" stroke-linecap="round"/>
+    <ellipse cx="210" cy="210" rx="140" ry="50" fill="none" stroke="#A0522D" stroke-width="20" stroke-linecap="round"/>
+    <rect x="168" y="186" width="84" height="48" rx="8" fill="#2C1A0E"/>
+    <rect x="172" y="190" width="76" height="40" rx="6" fill="#1a0e06"/>
+    <rect x="176" y="194" width="68" height="32" rx="4" fill="#4A7C59" opacity="0.9" filter="url(#glow)"/>
+    <polyline points="180,210 186,204 192,216 198,208 204,212 210,200 216,214 222,207 228,210 234,206 240,210" fill="none" stroke="#6BAF6B" stroke-width="1.5"/>
+    <rect x="184" y="216" width="4" height="6" rx="1" fill="#87CEEB" opacity="0.8"/>
+    <rect x="190" y="213" width="4" height="9" rx="1" fill="#87CEEB" opacity="0.8"/>
+    <rect x="196" y="210" width="4" height="12" rx="1" fill="#87CEEB" opacity="0.9"/>
+    <rect x="244" y="194" width="5" height="20" rx="2" fill="#D4A96A"/>
+    <line x1="246.5" y1="194" x2="246.5" y2="180" stroke="#D4A96A" stroke-width="2"/>
+    <rect x="60" y="198" width="24" height="24" rx="4" fill="#D4A96A" stroke="#A0522D" stroke-width="2"/>
+    <circle cx="72" cy="210" r="4" fill="#2C1A0E"/>
+    <path d="M300 150 Q330 130 310 180" fill="none" stroke="#6BAF6B" stroke-width="1.5" opacity="0.6" stroke-dasharray="4,4"/>
+    <path d="M310 130 Q360 105 335 185" fill="none" stroke="#6BAF6B" stroke-width="1.5" opacity="0.4" stroke-dasharray="4,4"/>
+    <path d="M80 280 Q210 320 340 285" fill="none" stroke="#E8732A" stroke-width="2" stroke-dasharray="6,4" opacity="0.7"/>
+    <circle cx="80" cy="280" r="5" fill="#E8732A" opacity="0.8"/>
+    <circle cx="340" cy="285" r="5" fill="#E8732A" opacity="0.8"/>
+    <text x="210" y="310" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" fill="#D4A96A" opacity="0.7" letter-spacing="2">SMART COLLAR v1</text>
+  </svg>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Virtual Fencing Technology · South America Pilot</div>
+    <h1>Smarter <em>ranching.</em><br>Healthier land.</h1>
+    <p class="hero-sub">Pastorix puts a virtual fence around every animal — managed through a smart collar, controlled from any device. No wire. No posts. No limits.</p>
+    <p class="hero-sub-es"><em>Cercas virtuales para ganado. Sin alambres, sin postes — solo tecnología inteligente.</em></p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Join the Pilot →</a>
+      <a href="#dashboard" class="btn-outline">See the Dashboard</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">~30%</span><span class="stat-label">Productivity Gain</span></div>
+    <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Wire-free fencing</span></div>
+    <div class="stat"><span class="stat-num">LoRa</span><span class="stat-label">Long-range network</span></div>
+    <div class="stat"><span class="stat-num">Live</span><span class="stat-label">Herd dashboard</span></div>
+  </div>
+
+  <svg class="hero-hills" viewBox="0 0 1440 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,220 L0,160 Q180,80 360,130 Q540,180 720,100 Q900,20 1080,110 Q1260,200 1440,120 L1440,220 Z" fill="#2C1A0E" opacity="0.5"/>
+    <path d="M0,220 L0,180 Q240,110 480,150 Q720,190 960,130 Q1200,70 1440,150 L1440,220 Z" fill="#4A7C59" opacity="0.3"/>
+    <path d="M0,220 L0,200 Q360,140 720,170 Q1080,200 1440,160 L1440,220 Z" fill="#F5EDD8" opacity="0.06"/>
+  </svg>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section hiw" id="how-it-works">
+  <div class="section-label">How It Works · Cómo funciona</div>
+  <h2 class="section-title fade-up">Four layers working together for your herd.</h2>
+  <div class="hiw-grid">
+    <div class="hiw-step fade-up">
+      <div class="step-num">01</div>
+      <svg class="step-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="18" stroke="#A0522D" stroke-width="2.5"/><rect x="17" y="18" width="14" height="12" rx="2" fill="#A0522D" opacity="0.3" stroke="#A0522D" stroke-width="1.5"/><line x1="32" y1="16" x2="36" y2="12" stroke="#A0522D" stroke-width="2"/><circle cx="36" cy="12" r="2" fill="#E8732A"/></svg>
+      <div class="step-title">Smart Collar</div>
+      <div class="step-desc">Each animal wears a lightweight GPS-connected collar with LoRa radio, sound emitters, and a mild audio-first cue system. Animals learn boundaries within days with minimal stress — the electrical element is a last-resort fallback calibrated well below any harm threshold.</div>
+      <div class="step-desc-es">Collar GPS con LoRa y señales de sonido. Los animales aprenden los límites en pocos días sin estrés.</div>
+    </div>
+    <div class="hiw-step fade-up">
+      <div class="step-num">02</div>
+      <svg class="step-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="14" width="32" height="22" rx="3" stroke="#4A7C59" stroke-width="2.5"/><polyline points="14,30 20,22 26,26 32,18" stroke="#4A7C59" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="22" r="2" fill="#E8732A"/><circle cx="26" cy="26" r="2" fill="#E8732A"/><line x1="16" y1="36" x2="32" y2="36" stroke="#4A7C59" stroke-width="2"/></svg>
+      <div class="step-title">Virtual Boundaries</div>
+      <div class="step-desc">Draw grazing zones on a digital map. Adjust or rotate boundaries in seconds from any device. No posts, no wire, no labour — just a tap to move an entire herd to a fresh paddock.</div>
+      <div class="step-desc-es">Dibuje y rote zonas de pastoreo en el mapa con un toque. Sin postes ni mano de obra.</div>
+    </div>
+    <div class="hiw-step fade-up">
+      <div class="step-num">03</div>
+      <svg class="step-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 8 L38 40 L24 34 L10 40 Z" stroke="#D4A96A" stroke-width="2.5" stroke-linejoin="round"/><path d="M20 28 Q16 14 24 8" fill="#D4A96A" opacity="0.2"/></svg>
+      <div class="step-title">LoRa Network</div>
+      <div class="step-desc">Solar-powered LoRa gateways relay collar data across thousands of hectares — no cellular infrastructure needed. Purpose-built for South America's remote ranching terrain and intermittent connectivity.</div>
+      <div class="step-desc-es">Gateways LoRa solares cubren miles de hectáreas sin red celular.</div>
+    </div>
+    <div class="hiw-step fade-up">
+      <div class="step-num">04</div>
+      <svg class="step-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="8" width="36" height="28" rx="3" stroke="#6BAF6B" stroke-width="2.5"/><line x1="14" y1="36" x2="14" y2="40" stroke="#6BAF6B" stroke-width="2"/><line x1="34" y1="36" x2="34" y2="40" stroke="#6BAF6B" stroke-width="2"/><line x1="10" y1="40" x2="38" y2="40" stroke="#6BAF6B" stroke-width="2"/><rect x="12" y="18" width="6" height="12" rx="1" fill="#6BAF6B" opacity="0.5"/><rect x="21" y="13" width="6" height="17" rx="1" fill="#6BAF6B" opacity="0.7"/><rect x="30" y="22" width="6" height="8" rx="1" fill="#6BAF6B" opacity="0.4"/></svg>
+      <div class="step-title">Farm Dashboard</div>
+      <div class="step-desc">Live herd location, grazing pressure heatmaps, soil health scores, boundary alerts, and productivity reports — all in one platform, accessible from any device, anywhere.</div>
+      <div class="step-desc-es">Dashboard en tiempo real: ubicación, alertas, métricas de productividad y salud del suelo.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ANIMAL WELFARE -->
+<div class="welfare-note">
+  <div style="font-size:2rem;flex-shrink:0;">🐄</div>
+  <div class="welfare-note-text">
+    <strong>Animal Welfare First · Bienestar animal primero</strong>
+    Pastorix uses sound as its primary boundary signal — cattle learn to associate the audio cue with the fence line within a few days, similar to standard training. Electrical stimulation is a minimal, calibrated last-resort and is aligned with published virtual fence research on animal welfare. We do not compromise on this.
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<section class="section benefits" id="benefits">
+  <div class="section-label">Why Pastorix</div>
+  <h2 class="section-title fade-up">Built for the land.<br>Built for the business.</h2>
+  <div class="benefits-grid">
+    <div class="benefit-card fade-up"><div class="benefit-icon">🌾</div><div class="benefit-title">Boost Productivity</div><div class="benefit-title-es">Mayor productividad</div><div class="benefit-desc">Precision rotational grazing increases grass yield, reduces over-grazing, and lets you carry more animals per hectare without degrading the land.</div></div>
+    <div class="benefit-card fade-up"><div class="benefit-icon">🌱</div><div class="benefit-title">Healthier Soil</div><div class="benefit-title-es">Suelo más saludable</div><div class="benefit-desc">Controlled grazing restores soil organic matter, improves water retention, and increases carbon sequestration — good for the planet and your land value.</div></div>
+    <div class="benefit-card fade-up"><div class="benefit-icon">💰</div><div class="benefit-title">Stronger Margins</div><div class="benefit-title-es">Mejores márgenes</div><div class="benefit-desc">Eliminate fencing installation and maintenance costs. Cut labour hours spent moving animals. The ROI vs physical fence is measurable within one season.</div></div>
+    <div class="benefit-card fade-up"><div class="benefit-icon">🌍</div><div class="benefit-title">Lower Climate Impact</div><div class="benefit-title-es">Menor impacto climático</div><div class="benefit-desc">Regenerative grazing sequesters carbon and reduces methane per kilo of beef — helping ranchers access carbon credits and green finance.</div></div>
+    <div class="benefit-card fade-up"><div class="benefit-icon">📡</div><div class="benefit-title">Real-time Visibility</div><div class="benefit-title-es">Visibilidad en tiempo real</div><div class="benefit-desc">Know where every animal is, 24/7. Instant alerts for animals approaching boundaries, signs of distress, or unusual movement — from your phone, anywhere.</div></div>
+    <div class="benefit-card fade-up"><div class="benefit-icon">🤝</div><div class="benefit-title">End-to-End Support</div><div class="benefit-title-es">Soporte de principio a fin</div><div class="benefit-desc">Our team handles onboarding, remote monitoring, hardware maintenance, and continuous optimisation — so you can stay focused on running your ranch.</div></div>
+  </div>
+</section>
+
+<!-- DASHBOARD DEMO -->
+<section class="dashboard-section" id="dashboard">
+  <div class="section-label">Platform Preview · Vista previa</div>
+  <h2 class="section-title fade-up">Your ranch, at a <em>glance.</em></h2>
+  <p style="color:rgba(245,237,216,0.55);max-width:560px;font-size:0.95rem;line-height:1.7;margin-top:0.5rem;">Live herd tracking, zone management, soil analytics, and alerts — all in one place, on any device.</p>
+
+  <div class="demo-frame fade-up">
+    <!-- Browser chrome -->
+    <div class="demo-topbar">
+      <div class="demo-dot" style="background:#ff5f57;"></div>
+      <div class="demo-dot" style="background:#febc2e;"></div>
+      <div class="demo-dot" style="background:#28c840;"></div>
+      <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:20px;margin-left:1rem;display:flex;align-items:center;padding:0 0.8rem;">
+        <span style="font-size:0.62rem;color:rgba(245,237,216,0.25);font-family:Syne,sans-serif;">app.pastorix.com/dashboard</span>
+      </div>
+    </div>
+
+    <div class="demo-content">
+      <!-- Sidebar -->
+      <div class="demo-sidebar">
+        <div class="demo-sidebar-brand">Pasto<span>rix</span></div>
+        <div class="snav active" onclick="activateNav(this)"><span class="snav-icon">🗺</span> Live Map</div>
+        <div class="snav" onclick="activateNav(this)"><span class="snav-icon">🐄</span> Animals</div>
+        <div class="snav" onclick="activateNav(this)"><span class="snav-icon">⬜</span> Zones</div>
+        <div class="snav" onclick="activateNav(this)"><span class="snav-icon">📊</span> Analytics</div>
+        <div class="snav" onclick="activateNav(this)"><span class="snav-icon">🌱</span> Soil Health</div>
+        <div class="snav" onclick="activateNav(this)"><span class="snav-icon">🔔</span> Alerts <span class="snav-badge">2</span></div>
+        <div class="snav" onclick="activateNav(this)"><span class="snav-icon">⚙️</span> Settings</div>
+        <div style="margin-top:auto;padding:1rem 1.2rem;border-top:1px solid rgba(107,175,107,0.1);">
+          <div style="font-family:Syne,sans-serif;font-size:0.6rem;color:rgba(245,237,216,0.28);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;">Active Pilot</div>
+          <div style="font-size:0.72rem;color:var(--straw);">🇵🇾 Estancia San Pedro</div>
+        </div>
+      </div>
+
+      <!-- Main -->
+      <div class="demo-main">
+        <div class="demo-header">
+          <div>
+            <div class="demo-title">Live Herd Overview</div>
+            <div class="demo-subtitle">Estancia San Pedro, Paraguay · Updated 2 min ago</div>
+          </div>
+          <div class="demo-live">● LIVE</div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-lbl">Animals Tracked</div>
+            <div class="kpi-val">248</div>
+            <div class="kpi-delta delta-up">↑ 4 collared today</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">In Zone</div>
+            <div class="kpi-val" style="color:var(--grass);">246</div>
+            <div class="kpi-delta delta-up">99.2% compliance</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Active Alerts</div>
+            <div class="kpi-val" style="color:var(--accent);">2</div>
+            <div class="kpi-delta delta-warn">⚠ Boundary</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Zones</div>
+            <div class="kpi-val">6</div>
+            <div class="kpi-delta delta-up">3 recovering</div>
+          </div>
+        </div>
+
+        <!-- Map + right column -->
+        <div class="demo-body">
+          <!-- Map -->
+          <div class="demo-panel">
+            <div class="demo-panel-hdr">
+              <div class="demo-panel-title">Live Map — Zone C (Grazing)</div>
+              <div class="demo-panel-action">+ Draw Zone</div>
+            </div>
+            <svg viewBox="0 0 310 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+              <rect width="310" height="200" fill="#0a1209"/>
+              <!-- Zone C active -->
+              <path d="M30 45 L205 38 L225 162 L22 168 Z" fill="rgba(107,175,107,0.1)" stroke="#6BAF6B" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="110" y="100" text-anchor="middle" font-family="sans-serif" font-size="7" fill="rgba(107,175,107,0.3)">ZONE C — ACTIVE</text>
+              <!-- Zone D recovering -->
+              <path d="M218 42 L292 38 L292 168 L222 162 Z" fill="rgba(74,124,89,0.06)" stroke="#4A7C59" stroke-width="1" stroke-dasharray="3,4"/>
+              <text x="255" y="105" text-anchor="middle" font-family="sans-serif" font-size="6" fill="rgba(74,124,89,0.5)">ZONE D</text>
+              <text x="255" y="115" text-anchor="middle" font-family="sans-serif" font-size="6" fill="rgba(74,124,89,0.4)">RECOVERING</text>
+              <!-- Cattle (in zone) -->
+              <circle cx="75" cy="100" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="92" cy="115" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="65" cy="118" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="115" cy="93" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="128" cy="110" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="88" cy="83" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="140" cy="88" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="148" cy="116" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="58" cy="88" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="100" cy="132" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="72" cy="132" r="5" fill="#D4A96A" opacity="0.85"/>
+              <circle cx="160" cy="100" r="5" fill="#D4A96A" opacity="0.85"/>
+              <!-- Alert cattle near boundary -->
+              <circle cx="202" cy="72" r="6" fill="#E8732A"/>
+              <circle cx="199" cy="88" r="6" fill="#E8732A"/>
+              <circle cx="202" cy="72" r="11" fill="none" stroke="#E8732A" stroke-width="1" opacity="0.5">
+                <animate attributeName="r" values="7;16;7" dur="1.5s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.7;0;0.7" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <!-- Gateway -->
+              <rect x="143" y="14" width="20" height="16" rx="3" fill="#1a0e06"/>
+              <text x="153" y="26" text-anchor="middle" font-size="9" fill="#D4A96A">📡</text>
+              <circle cx="153" cy="22" r="26" fill="none" stroke="#4A7C59" stroke-width="0.5" stroke-dasharray="2,3" opacity="0.4"/>
+              <circle cx="153" cy="22" r="50" fill="none" stroke="#4A7C59" stroke-width="0.5" stroke-dasharray="2,5" opacity="0.2"/>
+              <!-- Legend -->
+              <circle cx="18" cy="184" r="3" fill="#D4A96A"/>
+              <text x="24" y="187" font-size="6" fill="rgba(245,237,216,0.45)" font-family="sans-serif">In zone (246)</text>
+              <circle cx="100" cy="184" r="3" fill="#E8732A"/>
+              <text x="106" y="187" font-size="6" fill="rgba(245,237,216,0.45)" font-family="sans-serif">Alert (2)</text>
+            </svg>
+          </div>
+
+          <!-- Right column -->
+          <div class="right-col">
+            <!-- Alerts -->
+            <div class="demo-panel">
+              <div class="demo-panel-hdr">
+                <div class="demo-panel-title">Alerts</div>
+                <div class="demo-panel-action">View all</div>
+              </div>
+              <div class="alert-item">
+                <div class="adot adot-orange"></div>
+                <div><div class="alert-text">Animal #C-047 approaching NE boundary — Zone C</div><div class="alert-time">2 min ago · Audio cue triggered</div></div>
+              </div>
+              <div class="alert-item">
+                <div class="adot adot-orange"></div>
+                <div><div class="alert-text">Animal #C-119 at zone edge for 5 min</div><div class="alert-time">5 min ago · Monitoring</div></div>
+              </div>
+              <div class="alert-item">
+                <div class="adot adot-green"></div>
+                <div><div class="alert-text">Zone B rotation complete — rest period started</div><div class="alert-time">1 hr ago</div></div>
+              </div>
+              <div class="alert-item">
+                <div class="adot adot-blue"></div>
+                <div><div class="alert-text">Collar #C-012 battery 18% — service recommended</div><div class="alert-time">3 hr ago</div></div>
+              </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="demo-panel">
+              <div class="demo-panel-hdr">
+                <div class="demo-panel-title">Weekly Grazing Pressure</div>
+              </div>
+              <div class="chart-container">
+                <div class="chart-bars-row">
+                  <div class="bar-grp"><div class="bar-fill" style="height:40px;background:rgba(107,175,107,0.45);"></div><div class="bar-lbl">Mon</div></div>
+                  <div class="bar-grp"><div class="bar-fill" style="height:56px;background:rgba(107,175,107,0.55);"></div><div class="bar-lbl">Tue</div></div>
+                  <div class="bar-grp"><div class="bar-fill" style="height:35px;background:rgba(107,175,107,0.4);"></div><div class="bar-lbl">Wed</div></div>
+                  <div class="bar-grp"><div class="bar-fill" style="height:66px;background:rgba(107,175,107,0.6);"></div><div class="bar-lbl">Thu</div></div>
+                  <div class="bar-grp"><div class="bar-fill" style="height:50px;background:rgba(107,175,107,0.5);"></div><div class="bar-lbl">Fri</div></div>
+                  <div class="bar-grp"><div class="bar-fill" style="height:28px;background:rgba(232,115,42,0.5);"></div><div class="bar-lbl">Sat</div></div>
+                  <div class="bar-grp"><div class="bar-fill" style="height:18px;background:rgba(232,115,42,0.35);"></div><div class="bar-lbl">Sun</div></div>
+                </div>
+                <div style="display:flex;gap:1rem;margin-top:0.4rem;">
+                  <span style="font-size:0.58rem;color:rgba(245,237,216,0.25);display:flex;align-items:center;gap:4px;"><span style="display:inline-block;width:8px;height:8px;background:rgba(107,175,107,0.55);border-radius:1px;"></span>Optimal</span>
+                  <span style="font-size:0.58rem;color:rgba(245,237,216,0.25);display:flex;align-items:center;gap:4px;"><span style="display:inline-block;width:8px;height:8px;background:rgba(232,115,42,0.5);border-radius:1px;"></span>Reduced</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECHNOLOGY -->
+<section class="section technology" id="technology">
+  <div class="section-label">The Technology</div>
+  <h2 class="section-title fade-up">Engineered for remote ranching conditions.</h2>
+  <div class="tech-layout">
+    <div class="tech-visual fade-up">
+      <svg class="tech-diagram" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <defs><radialGradient id="fg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#6BAF6B" stop-opacity="0.15"/><stop offset="100%" stop-color="#6BAF6B" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="200" cy="200" r="190" fill="url(#fg2)"/>
+        <path d="M60 200 Q200 40 340 200 Q200 360 60 200 Z" fill="none" stroke="#E8732A" stroke-width="2.5" stroke-dasharray="8,5" opacity="0.8"/>
+        <rect x="178" y="20" width="44" height="44" rx="6" fill="#2C1A0E"/><rect x="182" y="24" width="36" height="36" rx="4" fill="#1a0e06"/>
+        <text x="200" y="47" text-anchor="middle" fill="#D4A96A" font-size="16">📡</text>
+        <text x="200" y="78" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#4A7C59">LoRa Gateway</text>
+        <circle cx="200" cy="42" r="60" fill="none" stroke="#4A7C59" stroke-width="1" stroke-dasharray="3,4" opacity="0.5"/>
+        <circle cx="200" cy="42" r="100" fill="none" stroke="#4A7C59" stroke-width="1" stroke-dasharray="3,6" opacity="0.3"/>
+        <circle cx="160" cy="180" r="14" fill="#A0522D" opacity="0.9"/><text x="160" y="185" text-anchor="middle" font-size="12">🐄</text>
+        <circle cx="220" cy="240" r="14" fill="#A0522D" opacity="0.9"/><text x="220" y="245" text-anchor="middle" font-size="12">🐄</text>
+        <circle cx="145" cy="230" r="14" fill="#A0522D" opacity="0.9"/><text x="145" y="235" text-anchor="middle" font-size="12">🐄</text>
+        <circle cx="255" cy="175" r="14" fill="#A0522D" opacity="0.9"/><text x="255" y="180" text-anchor="middle" font-size="12">🐄</text>
+        <line x1="160" y1="166" x2="200" y2="62" stroke="#D4A96A" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+        <line x1="220" y1="226" x2="200" y2="62" stroke="#D4A96A" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+        <line x1="255" y1="165" x2="200" y2="62" stroke="#D4A96A" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+        <rect x="320" y="170" width="60" height="44" rx="6" fill="#2C1A0E"/><rect x="324" y="174" width="52" height="36" rx="4" fill="#1a0e06"/>
+        <rect x="328" y="178" width="44" height="28" rx="3" fill="#4A7C59" opacity="0.3"/>
+        <polyline points="330,198 336,192 342,196 348,188 354,194 360,186 366,192" fill="none" stroke="#6BAF6B" stroke-width="1.5"/>
+        <text x="350" y="225" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#4A7C59">Dashboard</text>
+        <line x1="320" y1="192" x2="290" y2="180" stroke="#6BAF6B" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6"/>
+        <rect x="20" y="280" width="80" height="50" rx="4" fill="#2C1A0E" opacity="0.8"/>
+        <text x="60" y="298" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#D4A96A">Soil Health</text>
+        <rect x="28" y="305" width="48" height="6" rx="2" fill="#1a0e06"/>
+        <rect x="28" y="305" width="36" height="6" rx="2" fill="#6BAF6B"/>
+        <text x="60" y="320" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#6BAF6B">75% ↑</text>
+        <circle cx="295" cy="290" r="14" fill="#E8732A" opacity="0.9"/><text x="295" y="295" text-anchor="middle" font-size="12">🐄</text>
+        <text x="295" y="315" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#E8732A">⚠ Boundary</text>
+      </svg>
+    </div>
+    <div class="tech-list">
+      <div class="tech-item fade-up"><div class="tech-dot"></div><div><div class="tech-item-title">GPS + LoRa Collar</div><div class="tech-item-desc">Ruggedised collar with multi-year battery, GPS accuracy to 3m, and LoRa range up to 15km in open terrain. Audio-first cueing system — cattle learn boundary behaviour quickly with minimal stress.</div></div></div>
+      <div class="tech-item fade-up"><div class="tech-dot"></div><div><div class="tech-item-title">Solar LoRa Gateways</div><div class="tech-item-desc">Self-powered gateways relay collar data without cellular infrastructure. One gateway covers thousands of hectares — no ongoing connectivity costs, purpose-built for remote South American terrain.</div></div></div>
+      <div class="tech-item fade-up"><div class="tech-dot"></div><div><div class="tech-item-title">Farm Management Software</div><div class="tech-item-desc">Draw zones, monitor herds live, review grazing history, export carbon reports, and receive instant alerts — from any device with internet, including low-bandwidth connections.</div></div></div>
+      <div class="tech-item fade-up"><div class="tech-dot"></div><div><div class="tech-item-title">Soil &amp; Productivity Analytics</div><div class="tech-item-desc">Grazing intensity overlays correlate animal movement with pasture recovery, soil compaction, and vegetation health — making regenerative decisions measurable and bankable.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section pricing" id="pricing">
+  <div class="section-label">Pricing · Precios</div>
+  <h2 class="section-title fade-up">Transparent plans.<br>Scales with your herd.</h2>
+  <div class="pricing-grid">
+    <div class="plan fade-up">
+      <div class="plan-name">Starter</div>
+      <div class="plan-name-es">Inicial — hasta 100 cabezas</div>
+      <div class="plan-price">$8<span>/collar/month</span></div>
+      <div class="plan-desc">Up to 100 animals · Perfect for family ranches starting with virtual fencing.</div>
+      <ul class="plan-features">
+        <li>Smart collar + GPS tracking</li>
+        <li>1 LoRa gateway included</li>
+        <li>Basic farm dashboard</li>
+        <li>Email &amp; boundary alerts</li>
+        <li>Onboarding &amp; training</li>
+        <li>Annual hardware maintenance</li>
+      </ul>
+      <a href="#contact" class="plan-cta">Get Early Access</a>
+    </div>
+    <div class="plan featured fade-up">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Growth</div>
+      <div class="plan-name-es">Crecimiento — hasta 500 cabezas</div>
+      <div class="plan-price">$6<span>/collar/month</span></div>
+      <div class="plan-desc">100–500 animals · For expanding ranches needing advanced insights and multi-zone management.</div>
+      <ul class="plan-features">
+        <li>Everything in Starter</li>
+        <li>Up to 3 LoRa gateways</li>
+        <li>Multi-zone virtual fencing</li>
+        <li>Grazing history &amp; rotation planner</li>
+        <li>Soil health analytics</li>
+        <li>Priority support + quarterly review</li>
+        <li>Carbon reporting module</li>
+      </ul>
+      <a href="#contact" class="plan-cta">Get Early Access</a>
+    </div>
+    <div class="plan fade-up">
+      <div class="plan-name">Enterprise</div>
+      <div class="plan-name-es">Empresarial — 500+ cabezas</div>
+      <div class="plan-price" style="font-size:2rem;">Custom</div>
+      <div class="plan-desc">Large ranches, cooperatives, research institutions, or multi-site operations.</div>
+      <ul class="plan-features">
+        <li>Everything in Growth</li>
+        <li>Unlimited LoRa gateways</li>
+        <li>Custom integrations &amp; API</li>
+        <li>Dedicated account manager</li>
+        <li>On-site installation team</li>
+        <li>Research &amp; trial data packages</li>
+        <li>White-label options</li>
+      </ul>
+      <a href="#contact" class="plan-cta">Contact Us</a>
+    </div>
+  </div>
+  <p class="pricing-note">🚀 Pilot participants receive 50% off for the first 6 months and directly shape the product.<br><em>Los participantes del piloto reciben 50% de descuento los primeros 6 meses.</em></p>
+</section>
+
+<!-- FOUNDERS -->
+<section class="section founders" id="founders">
+  <div class="section-label">The Team · El Equipo</div>
+  <h2 class="section-title fade-up">Experience from PE to the paddock.</h2>
+  <div class="founders-grid">
+    <div class="founder-card fade-up">
+      <div class="founder-header">
+        <div class="founder-avatar">J</div>
+        <div>
+          <div class="founder-name">Jeroen</div>
+          <div class="founder-role">Co-Founder &amp; CEO</div>
+        </div>
+      </div>
+      <div class="founder-tags">
+        <span class="founder-tag">INSEAD MBA</span>
+        <span class="founder-tag">12 yrs PE</span>
+        <span class="founder-tag">Erasmus Distinction</span>
+        <span class="founder-tag">Victory Farms</span>
+        <span class="founder-tag">Antler Bio</span>
+        <span class="founder-tag">EN · NL · DE · ES</span>
+      </div>
+      <div class="founder-bio">
+        A seasoned operator with 12 years across private equity and senior management, Jeroen has served as Head of Finance at Antler Bio, CFO at Umob, CEO of Sapje, and Sr. Director of Operations at Victory Farms. An INSEAD MBA and Erasmus University graduate (with distinction), he brings deep expertise in strategy, finance, scaling and operational excellence — and speaks English, Dutch, German and Spanish. At Pastorix he leads the business, ensuring the platform creates real, measurable value for ranchers and investors alike.
+      </div>
+    </div>
+    <div class="founder-card fade-up">
+      <div class="founder-header">
+        <div class="founder-avatar" style="background:var(--sage);">L</div>
+        <div>
+          <div class="founder-name">Laurenz</div>
+          <div class="founder-role">Co-Founder &amp; CTO</div>
+        </div>
+      </div>
+      <div class="founder-tags">
+        <span class="founder-tag">MBA</span>
+        <span class="founder-tag">IoT Systems</span>
+        <span class="founder-tag">LoRa Networks</span>
+        <span class="founder-tag">Hardware Engineering</span>
+      </div>
+      <div class="founder-bio">
+        A curious, creative and entrepreneurial technologist with a strong MBA foundation, Laurenz turns complex ideas into working products. He adapts quickly to new technical and business challenges, keeps a cool head under pressure, and builds empowered teams around him. Driven by a desire to solve real problems through technology, Laurenz leads Pastorix's hardware, software and network architecture — from collar firmware to the farm dashboard.
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:4rem;padding:2.5rem;background:var(--cream);border-left:4px solid var(--sage);">
+    <p style="font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--soil);line-height:1.6;max-width:700px;">"We're not just selling hardware. We're partnering with ranchers to build a future where productive agriculture and healthy land go hand in hand."</p>
+    <p style="margin-top:1rem;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;color:var(--sage);text-transform:uppercase;">— Jeroen &amp; Laurenz, Founders of Pastorix</p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-label">Join the Pilot · Únete al Piloto</div>
+  <h2 class="section-title fade-up">We're looking for ranchers<br>ready to lead the change.</h2>
+  <div class="contact-layout">
+    <div>
+      <p class="contact-intro">Our pilot is running live in Paraguay — and we're now actively selecting cattle ranchers in <strong style="color:var(--straw);">Brazil, Argentina and Colombia</strong> to expand with us. You'll work directly with the founders, get 50% off for the first 6 months, and shape the product from the ground up.</p>
+      <p class="contact-intro-es">El piloto ya opera en Paraguay. Buscamos ganaderos en <strong style="color:rgba(212,169,106,0.7);">Brasil, Argentina y Colombia</strong> para expandirnos en 2025 con precio especial de piloto.</p>
+      <div class="contact-detail">📍 <span>Running: 🇵🇾 Paraguay · Expanding: 🇧🇷 Brazil · 🇦🇷 Argentina · 🇨🇴 Colombia</span></div>
+      <div class="contact-detail">📧 <span>hello@pastorix.com</span></div>
+      <div class="contact-detail">🌱 <span>Limited pilot spots — first come, first served</span></div>
+      <div style="margin-top:3rem;padding:2rem;border:1px solid rgba(255,255,255,0.08);border-radius:2px;">
+        <p style="font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--grass);margin-bottom:1rem;">Pilot benefits · Beneficios del piloto</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.7rem;">
+          <li style="font-size:0.88rem;color:rgba(245,237,216,0.7);display:flex;gap:0.7rem;"><span style="color:var(--grass);">✓</span>50% off for the first 6 months</li>
+          <li style="font-size:0.88rem;color:rgba(245,237,216,0.7);display:flex;gap:0.7rem;"><span style="color:var(--grass);">✓</span>Direct input on product features</li>
+          <li style="font-size:0.88rem;color:rgba(245,237,216,0.7);display:flex;gap:0.7rem;"><span style="color:var(--grass);">✓</span>On-site installation &amp; training</li>
+          <li style="font-size:0.88rem;color:rgba(245,237,216,0.7);display:flex;gap:0.7rem;"><span style="color:var(--grass);">✓</span>Priority support from the founding team</li>
+          <li style="font-size:0.88rem;color:rgba(245,237,216,0.7);display:flex;gap:0.7rem;"><span style="color:var(--grass);">✓</span>Free data analytics report after 3 months</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <form id="interestForm">
+        <div class="form-row">
+          <div class="form-group"><label>Full Name <em>/ Nombre</em></label><input type="text" placeholder="Your name" required></div>
+          <div class="form-group"><label>Email <em>/ Correo</em></label><input type="email" placeholder="you@ranch.com" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Phone / WhatsApp <em>opcional</em></label><input type="tel" placeholder="+55 11 99999-9999"></div>
+          <div class="form-group">
+            <label>Country <em>/ País</em></label>
+            <select>
+              <option value="">Select country...</option>
+              <option>Brazil / Brasil 🇧🇷</option>
+              <option>Argentina 🇦🇷</option>
+              <option>Colombia 🇨🇴</option>
+              <option>Paraguay 🇵🇾 (current pilot)</option>
+              <option>Uruguay</option>
+              <option>Bolivia</option>
+              <option>Other / Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>Farm / Ranch name <em>/ Nombre del establecimiento</em></label><input type="text" placeholder="Fazenda / Estancia / Ranch name"></div>
+        <div class="form-group">
+          <label>Herd size <em>/ Tamaño del hato</em></label>
+          <select required>
+            <option value="">Select range...</option>
+            <option>Under 50 / Menos de 50</option>
+            <option>50 – 100</option>
+            <option>100 – 250</option>
+            <option>250 – 500</option>
+            <option>500 – 1,000</option>
+            <option>1,000 – 5,000</option>
+            <option>5,000+ (Enterprise)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>I'm primarily interested in <em>/ Me interesa principalmente</em></label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="interest" value="pilot"><span>Joining the pilot program <span class="es">/ Unirme al piloto</span></span></label>
+            <label class="radio-option"><input type="radio" name="interest" value="info"><span>Getting more information first <span class="es">/ Recibir más información</span></span></label>
+            <label class="radio-option"><input type="radio" name="interest" value="research"><span>Research / academic partnership <span class="es">/ Asociación académica</span></span></label>
+            <label class="radio-option"><input type="radio" name="interest" value="investor"><span>Investment / distribution partnership <span class="es">/ Inversión / distribución</span></span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Current fencing situation <em>/ Situación actual</em></label>
+          <select>
+            <option value="">Select...</option>
+            <option>Mostly traditional wire / Principalmente alambre tradicional</option>
+            <option>Mix of wire and electric / Combinación</option>
+            <option>Mostly electric / Principalmente eléctrica</option>
+            <option>Open range / Campo abierto</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Main challenge <em>/ Principal desafío</em></label><textarea placeholder="Tell us briefly about your main challenge — labour costs, land degradation, productivity, cattle loss, other...&#10;&#10;Cuéntenos brevemente su principal desafío..."></textarea></div>
+        <button type="submit" class="form-submit">Register My Interest →</button>
+        <div class="form-success" id="formSuccess">🌱 Thank you! We'll be in touch within 48 hours to discuss the pilot.<br><em>Gracias — nos pondremos en contacto en 48 horas.</em></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Pasto<span>rix</span></div>
+  <div class="footer-pilot">🌎 Pilot: 🇵🇾 Paraguay → 🇧🇷 🇦🇷 🇨🇴 2025</div>
+  <div class="footer-copy">© 2025 Pastorix. Virtual fencing for the modern ranch.</div>
+</footer>
+
+<script>
+// Scroll animations
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const siblings = e.target.parentElement.querySelectorAll('.fade-up');
+      siblings.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 110));
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// Form
+document.getElementById('interestForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  this.style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+});
+
+// Language toggle
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  document.querySelectorAll('.hero-sub-es,.step-desc-es,.benefit-title-es,.plan-name-es,.contact-intro-es').forEach(el => el.style.display = lang === 'en' ? 'none' : 'block');
+}
+setLang('en');
+
+// Dashboard nav
+function activateNav(el) {
+  document.querySelectorAll('.snav').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
