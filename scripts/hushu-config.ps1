@@ -149,7 +149,6 @@ $taskXml = @"
     <Principal id="System">
       <UserId>S-1-5-18</UserId>
       <RunLevel>HighestAvailable</RunLevel>
-      <LogonType>ServiceAccount</LogonType>
     </Principal>
   </Principals>
   <Settings>
