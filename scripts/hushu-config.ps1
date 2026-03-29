@@ -39,20 +39,28 @@ function Ensure-RegPath {
 foreach ($user in $users) {
     $sid = (Get-LocalUser $user.Name).SID
 
+    $tempHive = "TempHive_$($user.Name)"
+
+    # Load user registry hive
+    reg load "HKU\$tempHive" $ntuser | Out-Null
+
+    $base = "Registry::HKEY_USERS\$tempHive"
+
+
     # Ensure Explorer policy path exists
-    $explorerPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+    $explorerPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
     Ensure-RegPath $explorerPath
     New-ItemProperty -Path $explorerPath -Name "NoControlPanel" -PropertyType DWord -Value 1 -Force
     
     
     # Ensure System policy path exists
-    $systemPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\System"
+    $systemPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\System"
     Ensure-RegPath $systemPath
     New-ItemProperty -Path $systemPath -Name "DisableRegistryTools" -PropertyType DWord -Value 1 -Force
     
     
     # Ensure CMD block path exists
-    $cmdPath = "Registry::HKEY_USERS\$sid\Software\Policies\Microsoft\Windows\System"
+    $cmdPath = "$base\Software\Policies\Microsoft\Windows\System"
     Ensure-RegPath $cmdPath    
     New-ItemProperty -Path $cmdPath -Name "DisableCMD" -PropertyType DWord -Value 1 -Force
     
@@ -60,7 +68,7 @@ foreach ($user in $users) {
 
     # Block specific apps
     $blockedApps = @("control.exe","powershell.exe","cmd.exe")
-    $regPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun"
+    $regPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun"
     Ensure-RegPath $regPath
     
     $count = 0
@@ -69,7 +77,7 @@ foreach ($user in $users) {
         New-ItemProperty -Path $regPath -Name $count -PropertyType String -Value $app -Force
     }
     # Enable DisallowRun
-    New-ItemProperty -Path "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
+    New-ItemProperty -Path "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
         -Name "DisallowRun" -PropertyType DWord -Value 1 -Force
 }
 
