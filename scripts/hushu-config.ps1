@@ -194,10 +194,11 @@ foreach ($adapter in $adapters) {
     try {
         # IPv4
         Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses $dnsIPv4 -AddressFamily IPv4
-
-        # IPv6
-        Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses $dnsIPv6 -AddressFamily IPv6
     } catch {
         Write-Warning "DNS config failed on $($adapter.Name)"
     }
+}
+
+Get-NetAdapter -Physical | ForEach-Object {
+    Disable-NetAdapterBinding -Name $_.Name -ComponentID ms_tcpip6 -Confirm:$false
 }
