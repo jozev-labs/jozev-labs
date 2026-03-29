@@ -116,20 +116,17 @@ foreach (\$user in \$users) {
 }
 "@ | Set-Content $cleanupPath
 
+
+
 # --- 7. Register cleanup script at user logoff ---
 $taskName = "RegisterLogoffScript"
-$cleanupPathEscaped = "`"$cleanupPath`""  # wrap the script path in double quotes
+$cleanupPathEscaped = "`"$cleanupPath`""  # wrap path in quotes for spaces
 
 # Delete existing task if it exists
 schtasks /Delete /TN "$taskName" /F 2>$null
 
-# Create logoff task
-schtasks /Create /TN "$taskName" `
-  /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -File $cleanupPathEscaped" `
-  /SC ONLOGOFF `
-  /RL HIGHEST `
-  /F
-  
+# Create logoff task (works on all Windows)
+schtasks /Create /TN "$taskName" /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -File $cleanupPathEscaped" /SC ONLOGOFF /RL HIGHEST /F  
 
 # --- 8. Schedule daily reboot ---
 $rebootTask = "DailyReboot"
