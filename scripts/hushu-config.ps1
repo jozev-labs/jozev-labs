@@ -92,7 +92,7 @@ foreach ($user in $users) {
 $printFolder = "C:\PublicPrint"
 if (-not (Test-Path $printFolder)) { New-Item -Path $printFolder -ItemType Directory }
 # Give Users full access
-icacls $printFolder /grant Users:(OI)(CI)F /inheritance:e
+icacls $printFolder /grant "Users:(OI)(CI)F" /inheritance:e
 
 # --- 5. Set DNS to Cloudflare Family (IPv4 only) ---
 $adapters = Get-NetAdapter | Where-Object { $_.Status -eq "Up" }
@@ -118,14 +118,27 @@ foreach (\$user in \$users) {
 
 # --- 7. Register cleanup script at user logoff ---
 $taskName = "RegisterLogoffScript"
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -File `"$cleanupPath`""
-$trigger = New-ScheduledTaskTrigger -AtLogoff
-Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -RunLevel Highest -Force
+$cleanupPathEscaped = $cleanupPath -replace '"','\"'
+$logoffCmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$cleanupPathEscaped`""
+
+# Delete existing task if it exists
+schtasks /Delete /TN $taskName /F 2>$null
+
+# Create logoff task
+schtasks /Create /TN $taskName `
+  /TR "$logoffCmd" `
+  /SC ONLOGOFF `
+  /RL HIGHEST `
+  /F
 
 # --- 8. Schedule daily reboot ---
 $rebootTask = "DailyReboot"
 $rebootAction = New-ScheduledTaskAction -Execute "shutdown.exe" -Argument "/r /f /t 0"
 $rebootTrigger = New-ScheduledTaskTrigger -Daily -At "23:59"
+
+# Remove existing task if present
+try { Unregister-ScheduledTask -TaskName $rebootTask -Confirm:$false -ErrorAction SilentlyContinue } catch {}
+
 Register-ScheduledTask -TaskName $rebootTask -Action $rebootAction -Trigger $rebootTrigger -RunLevel Highest -Force
 
 # --- 9. Optional: block USB storage ---
