@@ -23,21 +23,38 @@ Write-Host ""
 foreach ($user in $users) {
     $sid = (Get-LocalUser $user.Name).SID
 
-    # Block Control Panel & Settings
-    New-ItemProperty -Path "HKU\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
-        -Name "NoControlPanel" -PropertyType DWord -Value 1 -Force
+    # Ensure Explorer policy path exists
+    $explorerPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+    if (-not (Test-Path $explorerPath)) {
+        New-Item -Path $explorerPath -Force | Out-Null
+    }
+    
+    New-ItemProperty -Path $explorerPath -Name "NoControlPanel" -PropertyType DWord -Value 1 -Force
+    
+    
+    # Ensure System policy path exists
+    $systemPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\System"
+    if (-not (Test-Path $systemPath)) {
+        New-Item -Path $systemPath -Force | Out-Null
+    }
+    
+    New-ItemProperty -Path $systemPath -Name "DisableRegistryTools" -PropertyType DWord -Value 1 -Force
+    
+    
+    # Ensure CMD block path exists
+    $cmdPath = "Registry::HKEY_USERS\$sid\Software\Policies\Microsoft\Windows\System"
+    if (-not (Test-Path $cmdPath)) {
+        New-Item -Path $cmdPath -Force | Out-Null
+    }
+    
+    New-ItemProperty -Path $cmdPath -Name "DisableCMD" -PropertyType DWord -Value 1 -Force
+    
 
-    # Disable Registry editing tools
-    New-ItemProperty -Path "HKU\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\System" `
-        -Name "DisableRegistryTools" -PropertyType DWord -Value 1 -Force
-
-    # Block CMD & PowerShell
-    New-ItemProperty -Path "HKU\$sid\Software\Policies\Microsoft\Windows\System" `
-        -Name "DisableCMD" -PropertyType DWord -Value 1 -Force
+    
 
     # Block specific apps
     $blockedApps = @("control.exe","powershell.exe","cmd.exe")
-    $regPath = "HKU\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun"
+    $regPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun"
     if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force }
     $count = 0
     foreach ($app in $blockedApps) {
@@ -45,7 +62,7 @@ foreach ($user in $users) {
         New-ItemProperty -Path $regPath -Name $count -PropertyType String -Value $app -Force
     }
     # Enable DisallowRun
-    New-ItemProperty -Path "HKU\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
+    New-ItemProperty -Path "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
         -Name "DisallowRun" -PropertyType DWord -Value 1 -Force
 }
 
