@@ -184,3 +184,16 @@ try { Unregister-ScheduledTask -TaskName $rebootTaskName -Confirm:$false -ErrorA
 
 Register-ScheduledTask -TaskName $rebootTaskName -Action $rebootAction -Trigger $rebootTrigger -RunLevel Highest -Force
 
+# --- 9. Configure DNS safely ---
+$dnsServers = @("1.1.1.3","1.0.0.3")
+
+$adapters = Get-NetAdapter -Physical | Where-Object {$_.Status -eq "Up"}
+
+foreach ($adapter in $adapters) {
+    try {
+        Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses $dnsServers
+    } catch {
+        Write-Warning "DNS config failed on $($adapter.Name)"
+    }
+}
+
