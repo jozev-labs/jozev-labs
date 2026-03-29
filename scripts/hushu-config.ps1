@@ -116,29 +116,61 @@ foreach (\$user in \$users) {
 }
 "@ | Set-Content $cleanupPath
 
-
-
-# --- 7. Register cleanup script at user logoff ---
+# -------------------------------
+# 7. Register cleanup script at logoff (universal)
+# -------------------------------
 $taskName = "RegisterLogoffScript"
-$cleanupPathEscaped = "`"$cleanupPath`""  # wrap path in quotes for spaces
+$cleanupPathEscaped = $cleanupPath -replace '"','\"'
 
 # Delete existing task if it exists
-schtasks /Delete /TN "$taskName" /F 2>$null
+try { Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue } catch {}
 
-# Create logoff task (works on all Windows)
-schtasks /Create /TN "$taskName" /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -File $cleanupPathEscaped" /SC ONLOGOFF /RL HIGHEST /F  
+# Task Scheduler XML for universal compatibility
+$taskXml = @"
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <Triggers>
+    <LogonTrigger>
+      <Enabled>true</Enabled>
+    </LogonTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>true</StartWhenAvailable>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>powershell.exe</Command>
+      <Arguments>-NoProfile -ExecutionPolicy Bypass -File "$cleanupPathEscaped"</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+"@
 
-# --- 8. Schedule daily reboot ---
-$rebootTask = "DailyReboot"
+# Save XML to temp file
+$tempXmlPath = [System.IO.Path]::Combine($env:TEMP, "$taskName.xml")
+$taskXml | Out-File -FilePath $tempXmlPath -Encoding Unicode
+
+# Register the task
+schtasks /Create /TN "$taskName" /XML "$tempXmlPath" /F
+
+# -------------------------------
+# 8. Schedule daily reboot safely
+# -------------------------------
+$rebootTaskName = "DailyReboot"
 $rebootAction = New-ScheduledTaskAction -Execute "shutdown.exe" -Argument "/r /f /t 0"
 $rebootTrigger = New-ScheduledTaskTrigger -Daily -At "23:59"
 
 # Remove existing task if present
-try { Unregister-ScheduledTask -TaskName $rebootTask -Confirm:$false -ErrorAction SilentlyContinue } catch {}
+try { Unregister-ScheduledTask -TaskName $rebootTaskName -Confirm:$false -ErrorAction SilentlyContinue } catch {}
 
-Register-ScheduledTask -TaskName $rebootTask -Action $rebootAction -Trigger $rebootTrigger -RunLevel Highest -Force
-
-# --- 9. Optional: block USB storage ---
-# Uncomment if desired
-# Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Policies\Microsoft\Windows\RemovableStorageDevices" -Name "Deny_All" -Value 1 -Type DWord
+Register-ScheduledTask -TaskName $rebootTaskName -Action $rebootAction -Trigger $rebootTrigger -RunLevel Highest -Force
 
