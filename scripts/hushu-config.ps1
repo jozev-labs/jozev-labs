@@ -103,18 +103,29 @@ foreach ($adapter in $adapters) {
 # --- 6. Create cleanup script for user logoff ---
 $cleanupPath = "C:\Scripts\CleanupUsers.ps1"
 if (-not (Test-Path "C:\Scripts")) { New-Item -Path "C:\Scripts" -ItemType Directory }
-@"
-\$admins = @("Administrator","Admin", "rk")
-\$users = Get-LocalUser | Where-Object { \$_.Enabled -eq \$true -and \$_.Name -notin \$admins }
-foreach (\$user in \$users) {
-    \$profile = "C:\Users\$($user.Name)"
-    \$paths = @("Desktop","Downloads","Documents","AppData\Local\Temp")
-    foreach (\$p in \$paths) {
-        \$fullPath = Join-Path \$profile \$p
-        if (Test-Path \$fullPath) { Remove-Item \$fullPath\* -Recurse -Force -ErrorAction SilentlyContinue }
+
+@'
+$loggedOnUser = (Get-CimInstance Win32_ComputerSystem).UserName
+
+if ($loggedOnUser) {
+    $username = $loggedOnUser.Split('\')[-1]
+
+    $admins = @("Administrator","Admin","rk")
+
+    if ($username -notin $admins) {
+        $profile = "C:\Users\$username"
+
+        $paths = @("Desktop","Downloads","Documents","AppData\Local\Temp")
+
+        foreach ($p in $paths) {
+            $fullPath = Join-Path $profile $p
+            if (Test-Path $fullPath) {
+                Remove-Item "$fullPath\*" -Recurse -Force -ErrorAction SilentlyContinue
+            }
+        }
     }
 }
-"@ | Set-Content $cleanupPath
+'@ | Set-Content $cleanupPath
 
 # -------------------------------
 # 7. Register cleanup script at logoff (universal)
@@ -135,21 +146,21 @@ $taskXml = @"
     </LogonTrigger>
   </Triggers>
   <Principals>
-    <Principal id="Author">
+    <Principal id="System">
+      <UserId>S-1-5-18</UserId>
       <RunLevel>HighestAvailable</RunLevel>
+      <LogonType>ServiceAccount</LogonType>
     </Principal>
   </Principals>
   <Settings>
     <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
-    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
-    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
     <AllowHardTerminate>true</AllowHardTerminate>
     <StartWhenAvailable>true</StartWhenAvailable>
   </Settings>
-  <Actions Context="Author">
+  <Actions Context="System">
     <Exec>
       <Command>powershell.exe</Command>
-      <Arguments>-NoProfile -ExecutionPolicy Bypass -File "$cleanupPathEscaped"</Arguments>
+      <Arguments>-NoProfile -ExecutionPolicy Bypass -File "$cleanupPath"</Arguments>
     </Exec>
   </Actions>
 </Task>
