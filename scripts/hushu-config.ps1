@@ -37,48 +37,55 @@ function Ensure-RegPath {
 
 # --- 3. Lock down users ---
 foreach ($user in $users) {
-    $sid = (Get-LocalUser $user.Name).SID
-
-    $tempHive = "TempHive_$($user.Name)"
-
-    # Load user registry hive
-    reg load "HKU\$tempHive" $ntuser | Out-Null
-
-    $base = "Registry::HKEY_USERS\$tempHive"
 
 
-    # Ensure Explorer policy path exists
-    $explorerPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-    Ensure-RegPath $explorerPath
-    New-ItemProperty -Path $explorerPath -Name "NoControlPanel" -PropertyType DWord -Value 1 -Force
+    $profilePath = "C:\Users\$($user.Name)"
+    $ntuser = "$profilePath\NTUSER.DAT"
     
+    if (Test-Path $ntuser) {
     
-    # Ensure System policy path exists
-    $systemPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\System"
-    Ensure-RegPath $systemPath
-    New-ItemProperty -Path $systemPath -Name "DisableRegistryTools" -PropertyType DWord -Value 1 -Force
+        $tempHive = "TempHive_$($user.Name)"
     
+        # Load user registry hive
+        reg load "HKU\$tempHive" $ntuser | Out-Null
     
-    # Ensure CMD block path exists
-    $cmdPath = "$base\Software\Policies\Microsoft\Windows\System"
-    Ensure-RegPath $cmdPath    
-    New-ItemProperty -Path $cmdPath -Name "DisableCMD" -PropertyType DWord -Value 1 -Force
+        $base = "Registry::HKEY_USERS\$tempHive"
     
-   
+        # Now your paths will actually exist
+        $explorerPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+        Ensure-RegPath $explorerPath
+    
+        New-ItemProperty -Path $explorerPath -Name "NoControlPanel" -Value 1 -PropertyType DWord -Force
+    
+        $systemPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\System"
+        Ensure-RegPath $systemPath
+    
+        New-ItemProperty -Path $systemPath -Name "DisableRegistryTools" -Value 1 -PropertyType DWord -Force
 
-    # Block specific apps
-    $blockedApps = @("control.exe","powershell.exe","cmd.exe")
-    $regPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun"
-    Ensure-RegPath $regPath
-    
-    $count = 0
-    foreach ($app in $blockedApps) {
-        $count++
-        New-ItemProperty -Path $regPath -Name $count -PropertyType String -Value $app -Force
+         # Ensure CMD block path exists
+        $cmdPath = "$base\Software\Policies\Microsoft\Windows\System"
+        Ensure-RegPath $cmdPath    
+        New-ItemProperty -Path $cmdPath -Name "DisableCMD" -PropertyType DWord -Value 1 -Force
+
+        # Block specific apps
+        $blockedApps = @("control.exe","powershell.exe","cmd.exe")
+        $regPath = "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun"
+        Ensure-RegPath $regPath
+        
+        $count = 0
+        foreach ($app in $blockedApps) {
+            $count++
+            New-ItemProperty -Path $regPath -Name $count -PropertyType String -Value $app -Force
+        }
+        # Enable DisallowRun
+        New-ItemProperty -Path "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
+            -Name "DisallowRun" -PropertyType DWord -Value 1 -Force
+            
+        
+        # Unload cleanly
+        reg unload "HKU\$tempHive" | Out-Null
     }
-    # Enable DisallowRun
-    New-ItemProperty -Path "$base\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
-        -Name "DisallowRun" -PropertyType DWord -Value 1 -Force
+
 }
 
 # --- 4. Create temporary print folder ---
