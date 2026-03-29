@@ -19,43 +19,50 @@ foreach ($user in $users) {
 
 Write-Host ""
 
+
+function Ensure-RegPath {
+    param ([string]$path)
+
+    $parts = $path -split '\\'
+    $current = $parts[0]
+
+    for ($i = 1; $i -lt $parts.Length; $i++) {
+        $current = "$current\$($parts[$i])"
+        if (-not (Test-Path $current)) {
+            New-Item -Path $current -Force | Out-Null
+        }
+    }
+}
+
+
 # --- 3. Lock down users ---
 foreach ($user in $users) {
     $sid = (Get-LocalUser $user.Name).SID
 
     # Ensure Explorer policy path exists
     $explorerPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-    if (-not (Test-Path $explorerPath)) {
-        New-Item -Path $explorerPath -Force | Out-Null
-    }
-    
+    Ensure-RegPath $explorerPath
     New-ItemProperty -Path $explorerPath -Name "NoControlPanel" -PropertyType DWord -Value 1 -Force
     
     
     # Ensure System policy path exists
     $systemPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\System"
-    if (-not (Test-Path $systemPath)) {
-        New-Item -Path $systemPath -Force | Out-Null
-    }
-    
+    Ensure-RegPath $systemPath
     New-ItemProperty -Path $systemPath -Name "DisableRegistryTools" -PropertyType DWord -Value 1 -Force
     
     
     # Ensure CMD block path exists
     $cmdPath = "Registry::HKEY_USERS\$sid\Software\Policies\Microsoft\Windows\System"
-    if (-not (Test-Path $cmdPath)) {
-        New-Item -Path $cmdPath -Force | Out-Null
-    }
-    
+    Ensure-RegPath $cmdPath    
     New-ItemProperty -Path $cmdPath -Name "DisableCMD" -PropertyType DWord -Value 1 -Force
     
-
-    
+   
 
     # Block specific apps
     $blockedApps = @("control.exe","powershell.exe","cmd.exe")
     $regPath = "Registry::HKEY_USERS\$sid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun"
-    if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force }
+    Ensure-RegPath $regPath
+    
     $count = 0
     foreach ($app in $blockedApps) {
         $count++
@@ -82,7 +89,7 @@ foreach ($adapter in $adapters) {
 $cleanupPath = "C:\Scripts\CleanupUsers.ps1"
 if (-not (Test-Path "C:\Scripts")) { New-Item -Path "C:\Scripts" -ItemType Directory }
 @"
-\$admins = @("Administrator","Admin")
+\$admins = @("Administrator","Admin", "rk")
 \$users = Get-LocalUser | Where-Object { \$_.Enabled -eq \$true -and \$_.Name -notin \$admins }
 foreach (\$user in \$users) {
     \$profile = "C:\Users\$($user.Name)"
