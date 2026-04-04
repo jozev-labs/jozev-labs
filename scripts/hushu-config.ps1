@@ -202,3 +202,12 @@ foreach ($adapter in $adapters) {
 Get-NetAdapter -Physical | ForEach-Object {
     Disable-NetAdapterBinding -Name $_.Name -ComponentID ms_tcpip6 -Confirm:$false
 }
+
+# -- 10 Forcing EDGE to use the laptops DNS
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Force | Out-Null
+
+Set-ItemProperty `
+  -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" `
+  -Name "DnsOverHttpsMode" `
+  -Value "off"
+  
