@@ -101,11 +101,15 @@ foreach ($adapter in $adapters) {
 }
 
 # --- 6. Create cleanup script for user logoff ---
+# --- 6. Create cleanup script for user logon ---
 $cleanupPath = "C:\Scripts\CleanupUsers.ps1"
-if (-not (Test-Path "C:\Scripts")) { New-Item -Path "C:\Scripts" -ItemType Directory }
+
+if (-not (Test-Path "C:\Scripts")) {
+    New-Item -Path "C:\Scripts" -ItemType Directory -Force
+}
 
 @'
-$loggedOnUser = (Get-CimInstance Win32_ComputerSystem).UserName
+$loggedOnUser = (Get-WmiObject Win32_ComputerSystem).UserName
 
 if ($loggedOnUser) {
     $username = $loggedOnUser.Split('\')[-1]
@@ -113,19 +117,37 @@ if ($loggedOnUser) {
     $admins = @("Administrator","Admin","rk")
 
     if ($username -notin $admins) {
-        $profile = "C:\Users\$username"
 
-        $paths = @("Desktop","Downloads","Documents","AppData\Local\Temp")
+        # Get real profile path (works on any language OS)
+        $profile = (Get-CimInstance Win32_UserProfile | Where-Object {
+            $_.LocalPath -like "*\$username"
+        }).LocalPath
 
-        foreach ($p in $paths) {
-            $fullPath = Join-Path $profile $p
-            if (Test-Path $fullPath) {
-                Remove-Item "$fullPath\*" -Recurse -Force -ErrorAction SilentlyContinue
+        if ($profile) {
+
+            $paths = @(
+                "Desktop",
+                "Downloads",
+                "Documents",
+                "AppData\Local\Temp"
+            )
+
+            foreach ($p in $paths) {
+                $fullPath = Join-Path $profile $p
+
+                if (Test-Path $fullPath) {
+                    try {
+                        Remove-Item "$fullPath\*" -Recurse -Force -ErrorAction Stop
+                    } catch {
+                        # Optional: log instead of silent fail
+                    }
+                }
             }
         }
     }
 }
-'@ | Set-Content $cleanupPath
+'@ | Set-Content $cleanupPath -Encoding UTF8
+
 
 # -------------------------------
 # 7. Register cleanup script at logoff (universal)
@@ -140,11 +162,12 @@ try { Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction 
 $taskXml = @"
 <?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
-  <Triggers>
-    <LogonTrigger>
-      <Enabled>true</Enabled>
-    </LogonTrigger>
-  </Triggers>
+    <Triggers>
+      <LogonTrigger>
+        <Enabled>true</Enabled>
+        <Delay>PT15S</Delay>
+      </LogonTrigger>
+    </Triggers>
   <Principals>
     <Principal id="System">
       <UserId>S-1-5-18</UserId>
