@@ -118,12 +118,11 @@ if ($loggedOnUser) {
 
     if ($username -notin $admins) {
 
-        # Get real profile path (works on any language OS)
-        $profile = (Get-CimInstance Win32_UserProfile | Where-Object {
-            $_.LocalPath -like "*\$username"
-        }).LocalPath
+        # Get real profile path from registry (reliable)
+        $profile = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\*" |
+            Where-Object { $_.ProfileImagePath -like "*\$username" }).ProfileImagePath
 
-        if ($profile) {
+        if ($profile -and (Test-Path $profile)) {
 
             $paths = @(
                 "Desktop",
@@ -139,7 +138,7 @@ if ($loggedOnUser) {
                     try {
                         Remove-Item "$fullPath\*" -Recurse -Force -ErrorAction Stop
                     } catch {
-                        # Optional: log instead of silent fail
+                        # swallow errors silently (or log if you want)
                     }
                 }
             }
