@@ -1,136 +1,630 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JozEV Labs · Jose Jose Rojas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <title>Jose Jose Rojas | Solutions Engineer & Prototyping Consultant</title>
+  :root {
+    --bg: #0d0d0b;
+    --bg2: #141412;
+    --bg3: #1c1c19;
+    --text: #e8e6df;
+    --muted: #8a8880;
+    --accent: #c8f060;
+    --accent2: #f0e860;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --sans: 'Instrument Sans', sans-serif;
+    --serif: 'DM Serif Display', serif;
+    --mono: 'DM Mono', monospace;
+  }
 
-  <meta name="description" content="Solutions Engineer and technical consultant specializing in rapid prototyping, system architecture, and API integration." />
+  html { scroll-behavior: smooth; }
 
-  <link rel="stylesheet" href="styles.css" />
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(13,13,11,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-cta {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--border2);
+    border-radius: 100px;
+    color: var(--text);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .nav-cta:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 6rem 2rem 5rem;
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    line-height: 1.1;
+    font-weight: 400;
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-sub strong { color: var(--text); font-weight: 500; }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: #0d0d0b;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0.75rem 1.75rem;
+    border-radius: 100px;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: #d8ff6a; transform: translateY(-1px); }
+
+  .btn-ghost {
+    font-size: 14px;
+    color: var(--muted);
+    padding: 0.75rem 0;
+    transition: color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--text); }
+
+  /* PROOF STRIP */
+  .proof-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: var(--bg2);
+  }
+
+  .proof-item {
+    text-align: center;
+  }
+
+  .proof-item .num {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+  }
+
+  .proof-item .label {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+
+  /* SECTION SHARED */
+  section {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 em { font-style: italic; color: var(--accent); }
+
+  /* STORY */
+  .story-body {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.85;
+  }
+
+  .story-body p { margin-bottom: 1.25rem; }
+  .story-body strong { color: var(--text); font-weight: 500; }
+
+  blockquote {
+    border-left: 2px solid var(--accent);
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* SERVICES */
+  .services-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 2.5rem;
+  }
+
+  .service-card {
+    background: var(--bg2);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+
+  .service-card:hover { background: var(--bg3); }
+
+  .service-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .service-card h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+
+  .service-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-price {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(200, 240, 96, 0.08);
+    border: 1px solid rgba(200, 240, 96, 0.2);
+    padding: 0.3rem 0.75rem;
+    border-radius: 100px;
+  }
+
+  /* FIT */
+  .fit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (max-width: 580px) {
+    .fit-grid { grid-template-columns: 1fr; }
+  }
+
+  .fit-col h3 {
+    font-size: 0.85rem;
+    font-family: var(--mono);
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fit-col ul { list-style: none; }
+
+  .fit-col ul li {
+    font-size: 0.95rem;
+    color: var(--muted);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .fit-col ul li::before {
+    content: "→";
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .fit-col.no ul li { color: #555450; }
+  .fit-col.no ul li::before { content: "×"; color: #555450; }
+
+  /* PROOF */
+  .proof-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .proof-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .proof-card p:last-child { margin-bottom: 0; }
+  .proof-card strong { color: var(--text); font-weight: 500; }
+
+  .proof-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin: 0.25rem 0.25rem 0 0;
+  }
+
+  .proof-tags { margin-top: 1.25rem; }
+
+  /* CTA */
+  .cta-section {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 6rem 2rem;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .cta-section h2 { margin-bottom: 1rem; }
+
+  .cta-section p {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-email {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    border: 1px solid rgba(200, 240, 96, 0.3);
+    padding: 0.9rem 2rem;
+    border-radius: 100px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .cta-email:hover {
+    border-color: var(--accent);
+    background: rgba(200, 240, 96, 0.06);
+  }
+
+  .cta-note {
+    margin-top: 1.25rem;
+    font-size: 13px;
+    color: #555450;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  footer a { color: var(--muted); transition: color 0.2s; }
+  footer a:hover { color: var(--text); }
+
+  .lang-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+  .lang-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+</style>
 </head>
-
 <body>
-  <main class="layout">
-    <!-- LEFT SIDEBAR -->
-    <aside class="sidebar">
-      <img src="avatar.jpg" alt="Jose Jose Rojas" class="avatar" />
 
-      <h1>Jose Jose Rojas</h1>
-      <h2>Solutions Engineer</h2>
+<nav>
+  <span class="nav-brand">JozEV Labs</span>
+  <a href="mailto:josejoserojas@proton.me" class="nav-cta">Get in touch</a>
+</nav>
 
-      <div class="contact">
-        <a href="mailto:josejoserojas@proton.me">josejoserojas@proton.me</a>
-        <span>Amsterdam, NL</span>
-      </div>
-
-      <a class="resume" href="./Rojas_Jose_CV.pdf" download>
-        Download Resume
-      </a>
-    </aside>
-
-    <!-- RIGHT CONTENT -->
-    <section class="content">
-      <section class="summary">
-        <h3>Summary</h3>
-        <p>
-          I am a Solutions Engineer and technical consultant focused on turning ambiguous ideas
-          into working systems. My strength lies in rapid prototyping, system architecture,
-          and translating business needs into practical technical decisions.
-        </p>
-
-        <p>
-          I work at the intersection of engineering, product, and stakeholders.
-          This allows me to reduce uncertainty early, validate assumptions through prototypes,
-          and design solutions teams can confidently take to production.
-        </p>
-      </section>
-
-      <section>
-        <h3>Core Expertise</h3>
-        <ul class="tech">
-          <li>Rapid prototyping and proof-of-concepts</li>
-          <li>Solutions engineering for APIs and platforms</li>
-          <li>System architecture and scalability</li>
-          <li>Developer enablement and technical demos</li>
-          <li>Cross-functional technical consulting</li>
-        </ul>
-      </section>
-
-<section>
-  <h3>Professional Experience</h3>
-
-  <div class="role">
-    <h4>TomTom</h4>
-    <h5>Technical Program Manager – Customer Enablement Technologies</h5>
-    <span>December 2022 – Present</span>
-
-    <ul class="tech">
-      <li>
-        Provided technical leadership and architectural oversight to cross-functional teams,
-        ensuring product initiatives were scalable and aligned with long-term business goals.
-      </li>
-      <li>
-        Developed and managed a content roadmap for a portfolio of APIs and SDKs,
-        achieving a 90% completion rate across four quarters and driving continuous client support.
-      </li>
-      <li>
-        Partnered with sales teams to showcase SDK products to car manufacturers in China and Germany,
-        increasing client interest and contributing to two major business deals.
-      </li>
-      <li>
-        Directed the technical guides program, achieving an 80%+ client satisfaction rate per quarter
-        and supporting successful adoption of digital solutions.
-      </li>
-      <li>
-        Analyzed customer feedback to inform roadmap decisions,
-        improving product usability by 15%.
-      </li>
-    </ul>
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-label">Solutions Engineering · Amsterdam</p>
+  <h1>You built something real.<br><em>Now sell it</em> to enterprise.</h1>
+  <p class="hero-sub">
+    IoT and mobility startups hire me when their product works but enterprise deals keep stalling.
+    I've been on the other side of that table for 15 years —
+    <strong>at TomTom, with OEM customers like Mercedes-Benz and BYD.</strong>
+    I know exactly where it breaks.
+  </p>
+  <div class="hero-actions">
+    <a href="mailto:josejoserojas@proton.me" class="btn-primary">Let's talk</a>
+    <a href="#story" class="btn-ghost">How I work →</a>
   </div>
+</div>
 
-  <div class="role">
-    <h5>Developer Advocate – TomTom Maps APIs</h5>
-    <span>April 2019 – November 2022</span>
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <div class="proof-item">
+    <span class="num">15+</span>
+    <span class="label">Years in enterprise tech</span>
+  </div>
+  <div class="proof-item">
+    <span class="num">OEM</span>
+    <span class="label">Mercedes · BYD · Automotive</span>
+  </div>
+  <div class="proof-item">
+    <span class="num">3</span>
+    <span class="label">Continents · EMEA, APAC, LatAm</span>
+  </div>
+  <div class="proof-item">
+    <span class="num">ES · EN</span>
+    <span class="label">Native Spanish · Fluent English</span>
+  </div>
+</div>
 
-    <ul class="tech">
-      <li>
-        Provided hands-on technical guidance and architectural solutions to developers,
-        ensuring seamless API integration and reducing support queries by 25%
-        through live seminars and digital content.
-      </li>
-      <li>
-        Created and launched the TomTom Maps APIs YouTube channel and Twitch live coding streams,
-        increasing developer engagement by 30%.
-      </li>
-      <li>
-        Authored blog articles, demos, and training materials,
-        improving client onboarding efficiency.
-      </li>
-      <li>
-        Represented TomTom at 10+ global events
-        including TechCrunch Disrupt Berlin and WeAreDevelopers,
-        presenting API solutions to drive customer interest.
-      </li>
-      <li>
-        Collaborated with product teams to incorporate developer feedback,
-        enhancing API functionality by 20%.
-      </li>
-    </ul>
+<!-- STORY -->
+<section id="story">
+  <p class="section-label">The story</p>
+  <h2>I spent 15 years inside<br>a platform <em>like yours.</em></h2>
+  <div class="story-body">
+    <p>
+      I joined TomTom as a software engineer writing SDK code for Android and iOS.
+      Over 15 years I moved through every layer of the stack — engineering, product ownership, developer advocacy,
+      and finally principal-level technical advisory for strategic OEM accounts across Europe and Asia.
+    </p>
+    <p>
+      I've been in the rooms where enterprise deals get made or lost. I know what a CTO at an automotive OEM
+      actually needs to hear in a technical review. I know why pilots stall at procurement.
+      I know what "we need to see a PoC" really means.
+    </p>
+
+    <blockquote>
+      "People don't connect with technology. They connect with the person who makes it make sense."
+    </blockquote>
+
+    <p>
+      In 2026, I founded JozEV Labs to bring that same discipline to startups —
+      and to build my own: <strong>JozEV is an electric motorcycle brand I'm developing in Amsterdam</strong>,
+      with a proprietary hubless drivetrain and a 2026 prototype target.
+      I'm not just advising on hardware-meets-enterprise. I'm living it.
+    </p>
   </div>
 </section>
 
+<hr>
 
-      <section>
-        <h3>How I Work</h3>
-        <p>
-          I prioritize clarity, speed, and maintainability.
-          Prototypes exist to answer questions, not to impress.
-          Systems should be understandable by the people who inherit them.
-        </p>
-      </section>
-    </section>
-  </main>
+<!-- SERVICES -->
+<section id="services">
+  <p class="section-label">What I do</p>
+  <h2>Three ways to<br><em>work together.</em></h2>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <p class="service-num">01</p>
+      <h3>Fractional Principal SE</h3>
+      <p>
+        I embed with your team 2–3 days a week and own or support your enterprise technical sales motion.
+        Discovery calls, architecture discussions, live demos, PoC delivery — I handle the technical conversation
+        so your AEs can close. Includes a repeatable playbook you keep when we're done.
+      </p>
+      <span class="service-price">€8,000 / month · 90-day minimum</span>
+    </div>
+
+    <div class="service-card">
+      <p class="service-num">02</p>
+      <h3>Integration Playbook</h3>
+      <p>
+        Your API or SDK onboarding is costing you deals and support hours.
+        I audit the end-to-end developer and enterprise integration experience,
+        then package it into a documented, repeatable system — demo flow, PoC templates,
+        technical objection guide, and onboarding materials.
+      </p>
+      <span class="service-price">Fixed project · €8,000–€12,000</span>
+    </div>
+
+    <div class="service-card">
+      <p class="service-num">03</p>
+      <h3>Enterprise GTM Sprint</h3>
+      <p>
+        Not sure where your enterprise motion is breaking? In two weeks I audit your pre-sales process,
+        talk to your team, map where deals stall, and hand you a clear prioritised action plan.
+        Fast, focused, no fluff. Good starting point before a longer engagement.
+      </p>
+      <span class="service-price">Flat fee · €2,500</span>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- FIT -->
+<section id="fit">
+  <p class="section-label">Who I work with</p>
+  <h2>Good fit.<br><em>Not a fit.</em></h2>
+
+  <div class="fit-grid">
+    <div class="fit-col">
+      <h3>Right fit</h3>
+      <ul>
+        <li>IoT, mobility, or EV startup with a real product and enterprise ambitions</li>
+        <li>API or SDK platform that developers aren't adopting fast enough</li>
+        <li>Entering Southern Europe or LatAm — need a technical face who speaks the language</li>
+        <li>Selling to automotive OEMs, logistics, or fleet operators</li>
+        <li>Strong builders who struggle to translate that into a signed deal</li>
+        <li>Series A or B — past prototype, under pressure to show enterprise traction</li>
+      </ul>
+    </div>
+    <div class="fit-col no">
+      <h3>Not a fit</h3>
+      <ul>
+        <li>B2C or consumer product</li>
+        <li>Looking for a full-time hire</li>
+        <li>Early pre-product stage</li>
+        <li>Needs a generalist marketing consultant</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- PROOF OF DEPTH -->
+<section id="proof">
+  <p class="section-label">Proof of depth</p>
+  <h2>I build things too.<br><em>Not just advise on them.</em></h2>
+
+  <div class="proof-card">
+    <p>
+      <strong>WingDash</strong> — a GPS cockpit dashboard I built from scratch for my eMoped.
+      No cloud. No phone mount. A custom vector map engine running on a $10 ESP32 microcontroller
+      with 293KB of heap, reading OpenStreetMap data I converted with a Python pipeline I wrote myself.
+      Every layer — firmware, data engineering, hardware, UX — designed and built solo.
+    </p>
+    <p>
+      This isn't a side project footnote. It's what happens when you apply the same constraint-first
+      thinking to hardware that I apply to enterprise architecture.
+      <strong>I understand what's happening inside the device, not just in the pitch deck.</strong>
+    </p>
+    <div class="proof-tags">
+      <span class="proof-tag">ESP32 / C++</span>
+      <span class="proof-tag">Embedded firmware</span>
+      <span class="proof-tag">OpenStreetMap pipeline</span>
+      <span class="proof-tag">Edge computing</span>
+      <span class="proof-tag">Hardware prototyping</span>
+      <span class="proof-tag">No-RTOS bare metal</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <p class="section-label">Let's work together</p>
+  <h2>Your product deserves<br>to <em>land</em> the way it was built.</h2>
+  <p>No contact forms. No scheduling links. Send me an email and let's talk.</p>
+  <a href="mailto:josejoserojas@proton.me" class="cta-email">josejoserojas@proton.me</a>
+  <p class="cta-note">Available in English · Español · +31 6 198 51260</p>
+</div>
+
+<footer>
+  <span>© 2026 JozEV Labs · Amsterdam</span>
+  <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+    <div class="lang-tags">
+      <span class="lang-tag">ES native</span>
+      <span class="lang-tag">EN fluent</span>
+      <span class="lang-tag">NL basic</span>
+    </div>
+    <a href="https://www.linkedin.com/in/jjrojas/" target="_blank">LinkedIn ↗</a>
+    <a href="https://jozev-labs.com/moped" target="_blank">JozEV Moped ↗</a>
+  </div>
+</footer>
+
 </body>
 </html>
