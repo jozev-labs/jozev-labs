@@ -1,688 +1,630 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JozEV Labs · Jose Jose Rojas</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JozEV Labs · Jose Jose Rojas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── CLAUDE-INSPIRED PALETTE ── */
-    :root {
-      --clay:    #cc785c;   /* Claude's signature coral/terracotta */
-      --clay-d:  #a85a3e;   /* darker clay for hover */
-      --clay-l:  #e8a088;   /* lighter clay for accents on dark */
-      --sand:    #f0ebe3;   /* warm off-white background */
-      --cream:   #faf8f5;   /* lightest surface */
-      --dusk:    #1c2333;   /* Claude's dark navy */
-      --dusk-m:  #2a3347;   /* mid-dark for cards */
-      --ash:     #6b6660;   /* muted body text */
-      --rule:    #ddd8d0;   /* dividers */
-      --serif:   Georgia, 'Times New Roman', serif;
-      --sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    }
+  :root {
+    --bg: #0d0d0b;
+    --bg2: #141412;
+    --bg3: #1c1c19;
+    --text: #e8e6df;
+    --muted: #8a8880;
+    --accent: #c8f060;
+    --accent2: #f0e860;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --sans: 'Instrument Sans', sans-serif;
+    --serif: 'DM Serif Display', serif;
+    --mono: 'DM Mono', monospace;
+  }
 
-    html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; }
 
-    body {
-      background: var(--sand);
-      color: var(--dusk);
-      font-family: var(--sans);
-      font-size: 16px;
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      padding: 1.2rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(240, 235, 227, 0.96);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--rule);
-    }
+  a { color: inherit; text-decoration: none; }
 
-    .nav-logo {
-      font-family: var(--serif);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--dusk);
-      text-decoration: none;
-      letter-spacing: 0.01em;
-    }
+  /* NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(13,13,11,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
 
-    .nav-cta {
-      font-size: 0.76rem;
-      font-weight: 700;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: var(--cream);
-      background: var(--clay);
-      text-decoration: none;
-      padding: 0.6rem 1.4rem;
-      border-radius: 2px;
-      transition: background 0.2s, transform 0.15s;
-    }
-    .nav-cta:hover { background: var(--clay-d); transform: translateY(-1px); }
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
 
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 420px;
-      gap: 0;
-      align-items: stretch;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding-top: 72px;
-    }
+  .nav-cta {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--border2);
+    border-radius: 100px;
+    color: var(--text);
+    transition: border-color 0.2s, color 0.2s;
+  }
 
-    .hero-left {
-      padding: 7rem 5rem 5rem 5%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+  .nav-cta:hover { border-color: var(--accent); color: var(--accent); }
 
-    .eyebrow {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--clay);
-      margin-bottom: 1.6rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .eyebrow::before {
-      content: '';
-      display: block;
-      width: 2rem;
-      height: 2px;
-      background: var(--clay);
-      flex-shrink: 0;
-    }
+  /* HERO */
+  .hero {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 6rem 2rem 5rem;
+  }
 
-    h1.hero-name {
-      font-family: var(--serif);
-      font-size: clamp(2.8rem, 5.5vw, 5rem);
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: -0.025em;
-      color: var(--dusk);
-      margin-bottom: 1.6rem;
-    }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
 
-    h1.hero-name span {
-      display: block;
-      font-style: italic;
-      font-weight: 400;
-      color: var(--ash);
-    }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    line-height: 1.1;
+    font-weight: 400;
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.01em;
+  }
 
-    .hero-tagline {
-      font-size: 1.1rem;
-      color: var(--ash);
-      max-width: 40ch;
-      line-height: 1.85;
-      margin-bottom: 2.5rem;
-    }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
 
-    .hero-tagline strong { color: var(--dusk); font-weight: 600; }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+  }
 
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.65rem;
-      background: var(--dusk);
-      color: var(--cream);
-      text-decoration: none;
-      padding: 1rem 2.2rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border-radius: 2px;
-      transition: background 0.2s, transform 0.2s;
-      align-self: flex-start;
-    }
-    .btn-primary:hover { background: var(--clay); transform: translateY(-2px); }
+  .hero-sub strong { color: var(--text); font-weight: 500; }
 
-    /* ── PHOTO PANEL ── */
-    .hero-photo-panel {
-      position: relative;
-      background: var(--dusk);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      overflow: hidden;
-      min-height: 600px;
-    }
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
 
-    /* Subtle gradient overlay at bottom for text legibility */
-    .hero-photo-panel::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 55%;
-      background: linear-gradient(to top, rgba(28,35,51,0.92) 0%, transparent 100%);
-      z-index: 1;
-    }
+  .btn-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: #0d0d0b;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0.75rem 1.75rem;
+    border-radius: 100px;
+    transition: background 0.2s, transform 0.15s;
+  }
 
-    .hero-photo {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      filter: sepia(15%) contrast(1.05);
-    }
+  .btn-primary:hover { background: #d8ff6a; transform: translateY(-1px); }
 
-    /* Clay-tinted decorative border */
-    .hero-photo-panel::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--clay);
-      z-index: 2;
-    }
+  .btn-ghost {
+    font-size: 14px;
+    color: var(--muted);
+    padding: 0.75rem 0;
+    transition: color 0.2s;
+  }
 
-    .photo-caption {
-      position: relative;
-      z-index: 2;
-      padding: 2rem 2rem 2.5rem;
-      text-align: left;
-      width: 100%;
-    }
+  .btn-ghost:hover { color: var(--text); }
 
-    .photo-caption .name {
-      font-family: var(--serif);
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--cream);
-      line-height: 1.2;
-      margin-bottom: 0.3rem;
-    }
+  /* PROOF STRIP */
+  .proof-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: var(--bg2);
+  }
 
-    .photo-caption .role {
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--clay-l);
-      font-weight: 600;
-    }
+  .proof-item {
+    text-align: center;
+  }
 
-    /* ── QUOTE BAND ── */
-    .quote-band {
-      background: var(--clay);
-      padding: 3rem 5%;
-    }
+  .proof-item .num {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+  }
 
-    .quote-band blockquote {
-      max-width: 900px;
-      margin: 0 auto;
-      font-family: var(--serif);
-      font-size: clamp(1.2rem, 2.2vw, 1.65rem);
-      font-style: italic;
-      line-height: 1.6;
-      color: var(--cream);
-      text-align: center;
-    }
+  .proof-item .label {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
 
-    /* ── SHARED SECTION STYLES ── */
-    .section-label {
-      font-size: 0.66rem;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: var(--clay);
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .section-label::after {
-      content: '';
-      display: block;
-      width: 2rem;
-      height: 1px;
-      background: var(--clay);
-      flex-shrink: 0;
-    }
+  /* SECTION SHARED */
+  section {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
 
-    /* ── STORY ── */
-    .story {
-      background: var(--dusk);
-      color: var(--cream);
-      padding: 7rem 5%;
-    }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
 
-    .story-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1.55fr;
-      gap: 6rem;
-      align-items: start;
-    }
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
 
-    .story .section-label { color: var(--clay-l); }
-    .story .section-label::after { background: var(--clay-l); }
+  h2 em { font-style: italic; color: var(--accent); }
 
-    .story-hed {
-      font-family: var(--serif);
-      font-size: clamp(1.8rem, 3vw, 2.7rem);
-      font-weight: 700;
-      line-height: 1.22;
-      color: var(--cream);
-      position: sticky;
-      top: 7rem;
-    }
+  /* STORY */
+  .story-body {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.85;
+  }
 
-    .story-hed em { font-style: italic; color: var(--clay-l); }
+  .story-body p { margin-bottom: 1.25rem; }
+  .story-body strong { color: var(--text); font-weight: 500; }
 
-    .stats {
-      margin-top: 2.5rem;
-      padding-top: 2rem;
-      border-top: 1px solid #2e3a50;
-      display: flex;
-      gap: 2.5rem;
-    }
+  blockquote {
+    border-left: 2px solid var(--accent);
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.5;
+  }
 
-    .stat-n {
-      font-family: var(--serif);
-      font-size: 2.3rem;
-      font-weight: 700;
-      color: var(--clay-l);
-      line-height: 1;
-    }
+  /* SERVICES */
+  .services-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 2.5rem;
+  }
 
-    .stat-l {
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #5a6478;
-      margin-top: 0.3rem;
-    }
+  .service-card {
+    background: var(--bg2);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
 
-    .story-body p {
-      font-size: 1rem;
-      color: #a8b0c0;
-      margin-bottom: 1.4rem;
-      line-height: 1.9;
-    }
+  .service-card:hover { background: var(--bg3); }
 
-    .story-body p strong { color: var(--cream); font-weight: 600; }
+  .service-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
 
-    /* ── SERVICES ── */
-    .services {
-      padding: 7rem 5%;
-      background: var(--cream);
-    }
+  .service-card h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
 
-    .services-inner { max-width: 1100px; margin: 0 auto; }
+  .service-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
 
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      border: 1px solid var(--rule);
-      margin-top: 0.5rem;
-    }
+  .service-price {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(200, 240, 96, 0.08);
+    border: 1px solid rgba(200, 240, 96, 0.2);
+    padding: 0.3rem 0.75rem;
+    border-radius: 100px;
+  }
 
-    .card {
-      padding: 2.5rem;
-      border-right: 1px solid var(--rule);
-      transition: background 0.2s;
-      background: var(--cream);
-    }
-    .card:last-child { border-right: none; }
-    .card:hover { background: var(--sand); }
+  /* FIT */
+  .fit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
 
-    .card-num {
-      font-family: var(--serif);
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--rule);
-      line-height: 1;
-      margin-bottom: 1.5rem;
-    }
+  @media (max-width: 580px) {
+    .fit-grid { grid-template-columns: 1fr; }
+  }
 
-    .card h3 {
-      font-family: var(--serif);
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 0.8rem;
-      line-height: 1.3;
-      color: var(--dusk);
-    }
+  .fit-col h3 {
+    font-size: 0.85rem;
+    font-family: var(--mono);
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
 
-    .card p {
-      font-size: 0.9rem;
-      color: var(--ash);
-      line-height: 1.8;
-    }
+  .fit-col ul { list-style: none; }
 
-    .price {
-      margin-top: 1.5rem;
-      padding-top: 1.4rem;
-      border-top: 1px solid var(--rule);
-      font-size: 0.7rem;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      color: var(--clay);
-      font-weight: 700;
-    }
+  .fit-col ul li {
+    font-size: 0.95rem;
+    color: var(--muted);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
 
-    /* ── WHO ── */
-    .who {
-      padding: 7rem 5%;
-      background: var(--sand);
-    }
+  .fit-col ul li::before {
+    content: "→";
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
 
-    .who-inner { max-width: 1100px; margin: 0 auto; }
+  .fit-col.no ul li { color: #555450; }
+  .fit-col.no ul li::before { content: "×"; color: #555450; }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      margin-top: 0.5rem;
-    }
+  /* PROOF */
+  .proof-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2.5rem;
+  }
 
-    .who-col h3 {
-      font-family: var(--serif);
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: var(--dusk);
-    }
+  .proof-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
 
-    .who-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+  .proof-card p:last-child { margin-bottom: 0; }
+  .proof-card strong { color: var(--text); font-weight: 500; }
 
-    .who-list li {
-      font-size: 0.92rem;
-      color: var(--ash);
-      padding-left: 1.6rem;
-      position: relative;
-      line-height: 1.65;
-    }
+  .proof-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    margin: 0.25rem 0.25rem 0 0;
+  }
 
-    .who-list li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--clay);
-      font-weight: 700;
-    }
+  .proof-tags { margin-top: 1.25rem; }
 
-    .who-list li strong { color: var(--dusk); font-weight: 600; }
+  /* CTA */
+  .cta-section {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 6rem 2rem;
+    max-width: 780px;
+    margin: 0 auto;
+  }
 
-    /* ── CONTACT ── */
-    .contact {
-      background: var(--dusk);
-      color: var(--cream);
-      text-align: center;
-      padding: 9rem 5%;
-    }
+  .cta-section h2 { margin-bottom: 1rem; }
 
-    .contact-eye {
-      font-size: 0.7rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--clay-l);
-      margin-bottom: 1.5rem;
-    }
+  .cta-section p {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-    .contact h2 {
-      font-family: var(--serif);
-      font-size: clamp(2rem, 4.5vw, 3.8rem);
-      font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 1.2rem;
-      max-width: 20ch;
-      margin-left: auto;
-      margin-right: auto;
-      color: var(--cream);
-    }
+  .cta-email {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    border: 1px solid rgba(200, 240, 96, 0.3);
+    padding: 0.9rem 2rem;
+    border-radius: 100px;
+    transition: border-color 0.2s, background 0.2s;
+  }
 
-    .contact h2 em { font-style: italic; color: var(--clay-l); }
+  .cta-email:hover {
+    border-color: var(--accent);
+    background: rgba(200, 240, 96, 0.06);
+  }
 
-    .contact-sub {
-      font-size: 1rem;
-      color: #5a6478;
-      margin-bottom: 3rem;
-      max-width: 42ch;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.75;
-    }
+  .cta-note {
+    margin-top: 1.25rem;
+    font-size: 13px;
+    color: #555450;
+  }
 
-    .email-link {
-      display: inline-block;
-      color: var(--cream);
-      text-decoration: none;
-      font-family: var(--serif);
-      font-size: clamp(1.1rem, 2.2vw, 1.7rem);
-      font-style: italic;
-      border-bottom: 1px solid #2e3a50;
-      padding-bottom: 0.3rem;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .email-link:hover { color: var(--clay-l); border-color: var(--clay-l); }
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 13px;
+    color: var(--muted);
+  }
 
-    .langs {
-      margin-top: 4rem;
-      font-size: 0.68rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #2e3a50;
-    }
+  footer a { color: var(--muted); transition: color 0.2s; }
+  footer a:hover { color: var(--text); }
 
-    /* ── FOOTER ── */
-    footer {
-      background: #131929;
-      padding: 1.8rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.74rem;
-      color: #3a4560;
-    }
+  .lang-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
-    footer a { color: #4a5578; text-decoration: none; }
-    footer a:hover { color: var(--clay-l); }
+  .lang-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--muted);
+  }
 
-    /* ── REVEAL ── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      .hero {
-        grid-template-columns: 1fr;
-        min-height: auto;
-      }
-      .hero-left { padding: 6rem 5% 3rem; }
-      .hero-photo-panel {
-        min-height: 420px;
-        order: -1;
-      }
-      .story-inner { grid-template-columns: 1fr; gap: 3rem; }
-      .story-hed { position: static; }
-      .grid-3 { grid-template-columns: 1fr; }
-      .grid-3 .card { border-right: none; border-bottom: 1px solid var(--rule); }
-      .grid-3 .card:last-child { border-bottom: none; }
-      .grid-2 { grid-template-columns: 1fr; gap: 3rem; }
-      footer { flex-direction: column; gap: 0.75rem; text-align: center; }
-    }
-  </style>
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+</style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="/" class="nav-logo">JozEV Labs</a>
-    <a href="mailto:josejoserojas@proton.me" class="nav-cta">Get in touch</a>
-  </nav>
+<nav>
+  <span class="nav-brand">JozEV Labs</span>
+  <a href="mailto:josejoserojas@proton.me" class="nav-cta">Get in touch</a>
+</nav>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-left">
-      <div class="eyebrow">Solutions Engineering &nbsp;·&nbsp; Amsterdam</div>
-      <h1 class="hero-name">
-        Jose Jose
-        <span>Rojas</span>
-      </h1>
-      <p class="hero-tagline">
-        I help B2B tech companies <strong>close enterprise deals</strong> — by making complex technology click for the people who buy it.
-      </p>
-      <a href="mailto:josejoserojas@proton.me" class="btn-primary">
-        Let's talk
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-    </div>
-
-    <div class="hero-photo-panel">
-      <img
-        class="hero-photo"
-        src="avatar.jpg"
-        alt="Jose Jose Rojas"
-        onerror="this.style.display='none'"
-      />
-      <div class="photo-caption">
-        <div class="name">Jose Jose Rojas</div>
-        <div class="role">Founder, JozEV Labs &nbsp;·&nbsp; Amsterdam</div>
-      </div>
-    </div>
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-label">Solutions Engineering · Amsterdam</p>
+  <h1>You built something real.<br><em>Now sell it</em> to enterprise.</h1>
+  <p class="hero-sub">
+    IoT and mobility startups hire me when their product works but enterprise deals keep stalling.
+    I've been on the other side of that table for 15 years —
+    <strong>at TomTom, with OEM customers like Mercedes-Benz and BYD.</strong>
+    I know exactly where it breaks.
+  </p>
+  <div class="hero-actions">
+    <a href="mailto:josejoserojas@proton.me" class="btn-primary">Let's talk</a>
+    <a href="#story" class="btn-ghost">How I work →</a>
   </div>
+</div>
 
-  <!-- QUOTE BAND -->
-  <div class="quote-band">
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <div class="proof-item">
+    <span class="num">15+</span>
+    <span class="label">Years in enterprise tech</span>
+  </div>
+  <div class="proof-item">
+    <span class="num">OEM</span>
+    <span class="label">Mercedes · BYD · Automotive</span>
+  </div>
+  <div class="proof-item">
+    <span class="num">3</span>
+    <span class="label">Continents · EMEA, APAC, LatAm</span>
+  </div>
+  <div class="proof-item">
+    <span class="num">ES · EN</span>
+    <span class="label">Native Spanish · Fluent English</span>
+  </div>
+</div>
+
+<!-- STORY -->
+<section id="story">
+  <p class="section-label">The story</p>
+  <h2>I spent 15 years inside<br>a platform <em>like yours.</em></h2>
+  <div class="story-body">
+    <p>
+      I joined TomTom as a software engineer writing SDK code for Android and iOS.
+      Over 15 years I moved through every layer of the stack — engineering, product ownership, developer advocacy,
+      and finally principal-level technical advisory for strategic OEM accounts across Europe and Asia.
+    </p>
+    <p>
+      I've been in the rooms where enterprise deals get made or lost. I know what a CTO at an automotive OEM
+      actually needs to hear in a technical review. I know why pilots stall at procurement.
+      I know what "we need to see a PoC" really means.
+    </p>
+
     <blockquote>
       "People don't connect with technology. They connect with the person who makes it make sense."
     </blockquote>
+
+    <p>
+      In 2026, I founded JozEV Labs to bring that same discipline to startups —
+      and to build my own: <strong>JozEV is an electric motorcycle brand I'm developing in Amsterdam</strong>,
+      with a proprietary hubless drivetrain and a 2026 prototype target.
+      I'm not just advising on hardware-meets-enterprise. I'm living it.
+    </p>
   </div>
+</section>
 
-  <!-- STORY -->
-  <section class="story">
-    <div class="story-inner">
-      <div>
-        <div class="section-label">The story</div>
-        <h2 class="story-hed">
-          Twenty years.<br>One <em>constant</em><br>thread.
-        </h2>
-        <div class="stats reveal">
-          <div><div class="stat-n">20+</div><div class="stat-l">Years in tech</div></div>
-          <div><div class="stat-n">500</div><div class="stat-l">Room in Zurich</div></div>
-          <div><div class="stat-n">3</div><div class="stat-l">Continents</div></div>
-        </div>
-      </div>
-      <div class="story-body reveal">
-        <p>I started writing code. Then I started building products. Then I realized what I loved most was the moment when a room full of skeptical engineers or C-level executives <strong>suddenly got it</strong> — and trusted us enough to build on top of what we'd made.</p>
-        <p>I still remember standing in front of 500 people in Zurich, introducing TomTom's APIs at a hackathon. What I remember most isn't the presentation itself — it's what happened after. Developers and product leaders came to our booth. Not just to ask about the product, but because <strong>something had clicked for them</strong>.</p>
-        <p>I've done that for automotive OEMs across Europe and Asia — in boardrooms, workshops, and executive demo sessions for companies like Mercedes-Benz and BYD.</p>
-        <p>In 2026, I founded JozEV Labs to do it on my own terms.</p>
-      </div>
+<hr>
+
+<!-- SERVICES -->
+<section id="services">
+  <p class="section-label">What I do</p>
+  <h2>Three ways to<br><em>work together.</em></h2>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <p class="service-num">01</p>
+      <h3>Fractional Principal SE</h3>
+      <p>
+        I embed with your team 2–3 days a week and own or support your enterprise technical sales motion.
+        Discovery calls, architecture discussions, live demos, PoC delivery — I handle the technical conversation
+        so your AEs can close. Includes a repeatable playbook you keep when we're done.
+      </p>
+      <span class="service-price">€8,000 / month · 90-day minimum</span>
     </div>
-  </section>
 
-  <!-- SERVICES -->
-  <section class="services">
-    <div class="services-inner">
-      <div class="section-label reveal">What I do</div>
-      <div class="grid-3">
-        <div class="card reveal">
-          <div class="card-num">01</div>
-          <h3>Solutions Engineering as a Service</h3>
-          <p>I embed with your sales team to run technical pre-sales for enterprise or OEM clients. Discovery calls, architecture discussions, live demos — I handle the technical conversation so your deal moves forward.</p>
-          <div class="price">Monthly retainer &nbsp;·&nbsp; from €4,000</div>
-        </div>
-        <div class="card reveal">
-          <div class="card-num">02</div>
-          <h3>Integration Playbooks</h3>
-          <p>I document and package your API or SDK onboarding process into a repeatable, licensable system. Less time re-explaining. Faster client adoption. Fewer support headaches.</p>
-          <div class="price">Fixed project &nbsp;·&nbsp; €8,000–€12,000</div>
-        </div>
-        <div class="card reveal">
-          <div class="card-num">03</div>
-          <h3>Discovery Sprint</h3>
-          <p>Not sure where to start? In two weeks I audit your pre-sales or technical onboarding process, identify the gaps, and give you a clear roadmap. Fast, focused, no fluff.</p>
-          <div class="price">Flat fee &nbsp;·&nbsp; €2,500</div>
-        </div>
-      </div>
+    <div class="service-card">
+      <p class="service-num">02</p>
+      <h3>Integration Playbook</h3>
+      <p>
+        Your API or SDK onboarding is costing you deals and support hours.
+        I audit the end-to-end developer and enterprise integration experience,
+        then package it into a documented, repeatable system — demo flow, PoC templates,
+        technical objection guide, and onboarding materials.
+      </p>
+      <span class="service-price">Fixed project · €8,000–€12,000</span>
     </div>
-  </section>
 
-  <!-- WHO -->
-  <section class="who">
-    <div class="who-inner">
-      <div class="section-label reveal">Who I work with</div>
-      <div class="grid-2">
-        <div class="who-col reveal">
-          <h3>You're a good fit if...</h3>
-          <ul class="who-list">
-            <li>Your <strong>product is strong</strong> but not landing with enterprise buyers the way it should</li>
-            <li>You're entering <strong>European or Latin American markets</strong> and need a trusted technical face</li>
-            <li>You need <strong>executive-level demos</strong> that build confidence, not just show features</li>
-            <li>Your team is great at building but <strong>struggles to translate</strong> that into a signed deal</li>
-            <li>You're in <strong>B2B SaaS, APIs, SDKs, or mobility</strong> with real enterprise ambition</li>
-          </ul>
-        </div>
-        <div class="who-col reveal">
-          <h3>Languages &amp; markets</h3>
-          <ul class="who-list">
-            <li><strong>Spanish (native)</strong> — full client engagement across Latin America</li>
-            <li><strong>English (fluent)</strong> — Europe, US, Asia-Pacific</li>
-            <li><strong>Dutch (basic)</strong> — local Netherlands context</li>
-            <li>Based in <strong>Amsterdam</strong>, available to travel for key engagements</li>
-            <li>Remote-first, with the energy of someone who shows up in the room</li>
-          </ul>
-        </div>
-      </div>
+    <div class="service-card">
+      <p class="service-num">03</p>
+      <h3>Enterprise GTM Sprint</h3>
+      <p>
+        Not sure where your enterprise motion is breaking? In two weeks I audit your pre-sales process,
+        talk to your team, map where deals stall, and hand you a clear prioritised action plan.
+        Fast, focused, no fluff. Good starting point before a longer engagement.
+      </p>
+      <span class="service-price">Flat fee · €2,500</span>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CONTACT -->
-  <section class="contact">
-    <div class="contact-eye">Let's work together</div>
-    <h2>Your product deserves to <em>land</em> the way it was built.</h2>
-    <p class="contact-sub">No contact forms. No discovery calls to book a discovery call. Just send me an email and let's talk.</p>
-    <a href="mailto:josejoserojas@proton.me" class="email-link">josejoserojas@proton.me</a>
-    <div class="langs">Available in English &nbsp;·&nbsp; Español &nbsp;·&nbsp; Nederlands</div>
-  </section>
+<hr>
 
-  <!-- FOOTER -->
-  <footer>
-    <span>© 2026 JozEV Labs · Jose Jose Rojas</span>
-    <span>Amsterdam, The Netherlands</span>
-    <a href="https://www.linkedin.com/in/jjrojas/" target="_blank" rel="noopener">LinkedIn ↗</a>
-  </footer>
+<!-- FIT -->
+<section id="fit">
+  <p class="section-label">Who I work with</p>
+  <h2>Good fit.<br><em>Not a fit.</em></h2>
 
-  <script>
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add('visible'), i * 100);
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-  </script>
+  <div class="fit-grid">
+    <div class="fit-col">
+      <h3>Right fit</h3>
+      <ul>
+        <li>IoT, mobility, or EV startup with a real product and enterprise ambitions</li>
+        <li>API or SDK platform that developers aren't adopting fast enough</li>
+        <li>Entering Southern Europe or LatAm — need a technical face who speaks the language</li>
+        <li>Selling to automotive OEMs, logistics, or fleet operators</li>
+        <li>Strong builders who struggle to translate that into a signed deal</li>
+        <li>Series A or B — past prototype, under pressure to show enterprise traction</li>
+      </ul>
+    </div>
+    <div class="fit-col no">
+      <h3>Not a fit</h3>
+      <ul>
+        <li>B2C or consumer product</li>
+        <li>Looking for a full-time hire</li>
+        <li>Early pre-product stage</li>
+        <li>Needs a generalist marketing consultant</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- PROOF OF DEPTH -->
+<section id="proof">
+  <p class="section-label">Proof of depth</p>
+  <h2>I build things too.<br><em>Not just advise on them.</em></h2>
+
+  <div class="proof-card">
+    <p>
+      <strong>WingDash</strong> — a GPS cockpit dashboard I built from scratch for my eMoped.
+      No cloud. No phone mount. A custom vector map engine running on a $10 ESP32 microcontroller
+      with 293KB of heap, reading OpenStreetMap data I converted with a Python pipeline I wrote myself.
+      Every layer — firmware, data engineering, hardware, UX — designed and built solo.
+    </p>
+    <p>
+      This isn't a side project footnote. It's what happens when you apply the same constraint-first
+      thinking to hardware that I apply to enterprise architecture.
+      <strong>I understand what's happening inside the device, not just in the pitch deck.</strong>
+    </p>
+    <div class="proof-tags">
+      <span class="proof-tag">ESP32 / C++</span>
+      <span class="proof-tag">Embedded firmware</span>
+      <span class="proof-tag">OpenStreetMap pipeline</span>
+      <span class="proof-tag">Edge computing</span>
+      <span class="proof-tag">Hardware prototyping</span>
+      <span class="proof-tag">No-RTOS bare metal</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <p class="section-label">Let's work together</p>
+  <h2>Your product deserves<br>to <em>land</em> the way it was built.</h2>
+  <p>No contact forms. No scheduling links. Send me an email and let's talk.</p>
+  <a href="mailto:josejoserojas@proton.me" class="cta-email">josejoserojas@proton.me</a>
+  <p class="cta-note">Available in English · Español · +31 6 198 51260</p>
+</div>
+
+<footer>
+  <span>© 2026 JozEV Labs · Amsterdam</span>
+  <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+    <div class="lang-tags">
+      <span class="lang-tag">ES native</span>
+      <span class="lang-tag">EN fluent</span>
+      <span class="lang-tag">NL basic</span>
+    </div>
+    <a href="https://www.linkedin.com/in/jjrojas/" target="_blank">LinkedIn ↗</a>
+    <a href="https://jozev-labs.com/moped" target="_blank">JozEV Moped ↗</a>
+  </div>
+</footer>
 
 </body>
 </html>
