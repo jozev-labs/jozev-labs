@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jozev-Pay — Card payments built for your table</title>
+<meta name="description" content="Jozev-Pay is a simple, honest card payment system for artists selling at conventions and craft fairs. One flat rate, real payouts to your IBAN, no monthly fees.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230b1b33'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23e8b84b' font-family='Georgia,serif'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#081426;
+    --navy:#0b1b33;
+    --navy-soft:#122845;
+    --navy-card:#14294a;
+    --navy-line:#22385c;
+    --gold:#e8b84b;
+    --gold-bright:#f2c766;
+    --gold-dim:#c99a3a;
+    --ink:#f5f2ec;
+    --muted:#a9b7cb;
+    --muted-2:#7f8fab;
+    --good:#7fd8a6;
+    --radius:16px;
+    --maxw:1120px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--navy);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.brand{
+    font-family:'Sora',system-ui,sans-serif;
+    line-height:1.15;
+    margin:0 0 0.5em;
+  }
+  a{color:inherit;}
+  img,svg{max-width:100%;display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    display:inline-block;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+  section{padding:96px 0;position:relative;}
+  @media (max-width:640px){ section{padding:64px 0;} }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(8,20,38,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  nav.wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-top:16px;padding-bottom:16px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-size:1.15rem;font-weight:700;color:var(--ink);
+    text-decoration:none;margin:0;
+  }
+  .brand .mark{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(155deg,var(--gold-bright),var(--gold-dim));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Sora',serif;font-weight:800;color:var(--navy-deep);
+    font-size:1.05rem;flex-shrink:0;
+  }
+  .nav-links{display:flex;gap:32px;align-items:center;}
+  .nav-links a{
+    color:var(--muted);text-decoration:none;font-size:0.94rem;font-weight:500;
+    transition:color .15s;
+  }
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{display:flex;align-items:center;gap:20px;}
+  .nav-toggle{display:none;background:none;border:none;color:var(--ink);font-size:1.6rem;cursor:pointer;}
+  @media (max-width:800px){
+    .nav-links{
+      position:absolute;top:100%;left:0;right:0;
+      background:var(--navy-soft);
+      flex-direction:column;align-items:stretch;
+      padding:8px 24px 20px;gap:4px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      display:none;
+    }
+    .nav-links.open{display:flex;}
+    .nav-links a{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+    .nav-toggle{display:block;}
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 26px;border-radius:999px;font-weight:700;font-size:0.95rem;
+    text-decoration:none;cursor:pointer;border:none;transition:transform .15s, box-shadow .15s, background .15s;
+    font-family:inherit;
+  }
+  .btn-primary{
+    background:linear-gradient(155deg,var(--gold-bright),var(--gold-dim));
+    color:var(--navy-deep);
+    box-shadow:0 8px 24px -8px rgba(232,184,75,0.55);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(232,184,75,0.7);}
+  .btn-ghost{
+    background:transparent;color:var(--ink);border:1px solid var(--navy-line);
+  }
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+  .btn-sm{padding:10px 18px;font-size:0.85rem;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding-top:88px;padding-bottom:60px;position:relative;}
+  .hero::before{
+    content:"";position:absolute;top:-120px;right:-160px;width:520px;height:520px;
+    background:radial-gradient(circle,rgba(232,184,75,0.16),transparent 65%);
+    pointer-events:none;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;
+  }
+  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+  .hero h1{font-size:clamp(2.1rem,4.6vw,3.4rem);font-weight:800;}
+  .hero h1 .accent{color:var(--gold);}
+  .hero p.lead{color:var(--muted);font-size:1.12rem;max-width:52ch;margin-bottom:32px;}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:22px;}
+  .hero-note{color:var(--muted-2);font-size:0.88rem;}
+  .hero-note strong{color:var(--gold);}
+
+  /* hero visual */
+  .hero-visual{position:relative;display:flex;justify-content:center;}
+  .card-stack{position:relative;width:100%;max-width:340px;}
+  .paycard{
+    border-radius:20px;padding:24px;
+    background:linear-gradient(140deg,var(--navy-card),var(--navy-soft));
+    border:1px solid var(--navy-line);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.55);
+  }
+  .paycard .row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;}
+  .paycard .chip{width:38px;height:28px;border-radius:6px;background:linear-gradient(155deg,var(--gold-bright),var(--gold-dim));}
+  .paycard .wave{color:var(--gold);font-size:1.3rem;}
+  .paycard .num{letter-spacing:0.18em;color:var(--muted);font-size:1.05rem;margin-bottom:22px;}
+  .paycard .row2{display:flex;justify-content:space-between;color:var(--muted-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;}
+  .paycard .row2 span:last-child{color:var(--ink);font-size:0.95rem;text-transform:none;letter-spacing:0;font-family:'Sora',sans-serif;font-weight:700;}
+  .float-badge{
+    position:absolute;background:var(--navy-card);border:1px solid var(--navy-line);
+    border-radius:12px;padding:10px 16px;font-size:0.82rem;font-weight:600;
+    box-shadow:0 12px 30px -12px rgba(0,0,0,0.6);
+    display:flex;align-items:center;gap:8px;
+  }
+  .float-badge.b1{top:-18px;left:-20px;color:var(--good);}
+  .float-badge.b2{bottom:-16px;right:-18px;color:var(--gold);}
+  @media (max-width:900px){ .float-badge{display:none;} }
+
+  /* ---------- LOGOS / TRUST STRIP ---------- */
+  .trust-strip{
+    border-top:1px solid rgba(255,255,255,0.06);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    padding:26px 0;
+  }
+  .trust-strip .wrap{
+    display:flex;flex-wrap:wrap;gap:14px 40px;justify-content:center;align-items:center;
+    color:var(--muted-2);font-size:0.82rem;letter-spacing:0.03em;text-align:center;
+  }
+  .trust-strip strong{color:var(--muted);}
+
+  /* ---------- SECTION HEAD ---------- */
+  .section-head{max-width:640px;margin-bottom:52px;}
+  .section-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+  .section-head h2{font-size:clamp(1.6rem,3.2vw,2.3rem);}
+  .section-head p{color:var(--muted);font-size:1.02rem;}
+
+  /* ---------- PROBLEM ---------- */
+  .problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  @media (max-width:800px){ .problem-grid{grid-template-columns:1fr;} }
+  .problem-card{
+    background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:var(--radius);
+    padding:28px;
+  }
+  .problem-card .ico{
+    width:44px;height:44px;border-radius:12px;background:rgba(232,184,75,0.12);
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:var(--gold);
+  }
+  .problem-card h3{font-size:1.05rem;font-weight:700;}
+  .problem-card p{color:var(--muted);font-size:0.94rem;margin:0;}
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;counter-reset:step;
+  }
+  @media (max-width:900px){ .steps{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .steps{grid-template-columns:1fr;} }
+  .step{position:relative;padding:28px 22px;background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:var(--radius);}
+  .step .step-num{
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(155deg,var(--gold-bright),var(--gold-dim));
+    color:var(--navy-deep);font-family:'Sora',sans-serif;font-weight:800;
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:0.95rem;
+  }
+  .step h3{font-size:1.02rem;font-weight:700;}
+  .step p{color:var(--muted);font-size:0.9rem;margin:0;}
+
+  /* ---------- PRICING ---------- */
+  .pricing-wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:stretch;}
+  @media (max-width:900px){ .pricing-wrap{grid-template-columns:1fr;} }
+  .price-card{
+    background:linear-gradient(160deg,var(--navy-card),var(--navy-soft));
+    border:1px solid var(--navy-line);border-radius:20px;padding:40px;
+    position:relative;overflow:hidden;
+  }
+  .price-card::after{
+    content:"";position:absolute;bottom:-80px;right:-80px;width:220px;height:220px;
+    background:radial-gradient(circle,rgba(232,184,75,0.14),transparent 70%);
+  }
+  .price-big{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .price-big .num{font-family:'Sora',sans-serif;font-weight:800;font-size:3.6rem;color:var(--gold);}
+  .price-big .unit{color:var(--muted);font-size:1rem;}
+  .price-card .caption{color:var(--muted);margin-bottom:28px;font-size:0.95rem;}
+  .price-list{list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:12px;}
+  .price-list li{display:flex;gap:10px;font-size:0.95rem;color:var(--ink);}
+  .price-list li .check{color:var(--good);flex-shrink:0;}
+  .founding-banner{
+    background:rgba(232,184,75,0.1);border:1px solid rgba(232,184,75,0.35);
+    border-radius:12px;padding:16px 18px;font-size:0.9rem;color:var(--ink);
+  }
+  .founding-banner strong{color:var(--gold);}
+
+  .compare{background:var(--navy-soft);border:1px solid var(--navy-line);border-radius:20px;padding:32px;}
+  .compare h3{font-size:1.05rem;margin-bottom:20px;}
+  table.compare-table{width:100%;border-collapse:collapse;font-size:0.88rem;}
+  table.compare-table th, table.compare-table td{
+    text-align:left;padding:12px 8px;border-bottom:1px solid var(--navy-line);color:var(--muted);
+  }
+  table.compare-table th{color:var(--muted-2);font-weight:600;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;}
+  table.compare-table tr.you td{color:var(--ink);font-weight:600;}
+  table.compare-table tr.you td:first-child{color:var(--gold);}
+  .yes{color:var(--good);}
+  .no{color:#e07a7a;}
+
+  /* ---------- TRUST ---------- */
+  .trust-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;}
+  @media (max-width:800px){ .trust-grid{grid-template-columns:1fr;} }
+  .trust-card{padding:26px;border-left:2px solid var(--gold);background:var(--navy-soft);border-radius:0 var(--radius) var(--radius) 0;}
+  .trust-card h3{font-size:1rem;font-weight:700;}
+  .trust-card p{color:var(--muted);font-size:0.92rem;margin:0;}
+
+  /* ---------- FAQ ---------- */
+  .faq{max-width:760px;margin:0 auto;}
+  .faq-item{border-bottom:1px solid var(--navy-line);}
+  .faq-q{
+    width:100%;text-align:left;background:none;border:none;color:var(--ink);
+    font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;padding:20px 0;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;
+  }
+  .faq-q .plus{color:var(--gold);font-size:1.3rem;transition:transform .2s;flex-shrink:0;}
+  .faq-item.open .faq-q .plus{transform:rotate(45deg);}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+  .faq-a p{color:var(--muted);font-size:0.94rem;padding-bottom:20px;margin:0;max-width:60ch;}
+  .faq-item.open .faq-a{max-height:280px;}
+
+  /* ---------- WAITLIST ---------- */
+  .waitlist-section{
+    background:linear-gradient(180deg,var(--navy-soft),var(--navy));
+    border-top:1px solid rgba(255,255,255,0.06);
+  }
+  .waitlist-box{max-width:640px;margin:0 auto;text-align:center;}
+  .form-embed{
+    margin:32px 0 16px;border-radius:var(--radius);overflow:hidden;
+    border:1px solid var(--navy-line);background:#fff;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,0.5);
+  }
+  .form-fallback{color:var(--muted);font-size:0.9rem;}
+  .form-fallback a{color:var(--gold);text-decoration:underline;}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:48px 0 32px;border-top:1px solid rgba(255,255,255,0.06);}
+  .footer-grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:center;margin-bottom:24px;}
+  .footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+  .footer-links a{color:var(--muted);text-decoration:none;font-size:0.9rem;}
+  .footer-links a:hover{color:var(--gold);}
+  .footer-bottom{color:var(--muted-2);font-size:0.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="#top" class="brand"><span class="mark">J</span>Jozev-Pay</a>
+    <button class="nav-toggle" aria-label="Toggle menu" id="navToggle">&#9776;</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#how-it-works">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#waitlist" class="btn btn-primary btn-sm">Join the waitlist</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">For artists who sell in person</span>
+        <h1>Take cards at your table.<br>Keep more of <span class="accent">every sale</span>.</h1>
+        <p class="lead">Jozev-Pay is a simple, honest payment system built for artists selling at conventions, craft fairs, and pop-up markets — not repurposed retail software. One flat rate, real payouts straight to your bank account, no monthly fees.</p>
+        <div class="hero-actions">
+          <a href="#waitlist" class="btn btn-primary">Join the waitlist</a>
+          <a href="#how-it-works" class="btn btn-ghost">See how it works ↓</a>
+        </div>
+        <p class="hero-note">🎉 <strong>Founding Artist rate: 2.9%</strong> on your first event — limited to our early sign-up cohort.</p>
+      </div>
+      <div class="hero-visual">
+        <div class="card-stack">
+          <div class="float-badge b1">✓ Paid out to your IBAN</div>
+          <div class="paycard">
+            <div class="row1">
+              <div class="chip"></div>
+              <div class="wave">))) </div>
+            </div>
+            <div class="num">•••• •••• •••• 4471</div>
+            <div class="row2">
+              <span>Artist<br>Jamie Rivers</span>
+              <span>€24.00</span>
+            </div>
+          </div>
+          <div class="float-badge b2">3.5% flat · no hidden fees</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trust-strip">
+    <div class="wrap">
+      <span><strong>Built for</strong> comic cons</span>
+      <span><strong>Built for</strong> artist alleys</span>
+      <span><strong>Built for</strong> craft fairs</span>
+      <span><strong>Built for</strong> pop-up markets</span>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <section id="problem">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Why we built this</span>
+        <h2>Card payments weren't designed for your table</h2>
+        <p>Most payment tools are built for shops with a fixed till — not for someone setting up a table for a weekend and packing it away Sunday night.</p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="ico">€</div>
+          <h3>Fixed fees crush small tickets</h3>
+          <p>A flat per-swipe fee sounds small until you're selling €3 stickers all day — it can eat your entire margin on your smallest, most popular items.</p>
+        </div>
+        <div class="problem-card">
+          <div class="ico">⏳</div>
+          <h3>Onboarding built for companies</h3>
+          <p>Most processors expect a registered business. Independent artists selling under their own name shouldn't need paperwork they don't have.</p>
+        </div>
+        <div class="problem-card">
+          <div class="ico">📉</div>
+          <h3>"Intro rates" that climb later</h3>
+          <p>A low rate to get you signed up, then a jump once you're relying on it. We'd rather tell you the real number up front.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">How it works</span>
+        <h2>From sign-up to sold out, in four steps</h2>
+        <p>No business registration, no dashboard to babysit — just a table, a phone, and your art.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Sign up in minutes</h3>
+          <p>Verify your identity once — name, address, ID, and IBAN. No company registration required.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Get set up</h3>
+          <p>Install the Jozev-Pay app and pair your card reader. Ready before doors open.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Sell at your table</h3>
+          <p>Accept tap, chip, and contactless. Customers get an instant digital receipt.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Get paid out</h3>
+          <p>Your sales land straight in your IBAN account — no separate payout app, no waiting on a dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Pricing</span>
+        <h2>One flat rate. That's the whole pricing page.</h2>
+        <p>No fixed fee per transaction, no monthly minimum, no surprise tier once you're relying on it.</p>
+      </div>
+      <div class="pricing-wrap">
+        <div class="price-card">
+          <div class="price-big"><span class="num">3.5%</span><span class="unit">per transaction</span></div>
+          <p class="caption">Charged only when you make a sale. Nothing to pay if your table is quiet.</p>
+          <ul class="price-list">
+            <li><span class="check">✓</span> No fixed fee on top of the percentage</li>
+            <li><span class="check">✓</span> No monthly or account fees</li>
+            <li><span class="check">✓</span> No setup cost</li>
+            <li><span class="check">✓</span> EUR payouts included</li>
+            <li><span class="check">✓</span> +1.5% only if you need payout in a different currency</li>
+          </ul>
+          <div class="founding-banner">
+            🎉 <strong>Founding Artist rate: 2.9%</strong> for your first event — reserved for artists who join during our early sign-up period.
+            <!-- TODO: confirm exact cutoff date or spot cap for the Founding Artist offer, then state it explicitly here. -->
+          </div>
+        </div>
+        <div class="compare">
+          <h3>How this compares</h3>
+          <table class="compare-table">
+            <thead>
+              <tr><th>&nbsp;</th><th>Per-sale fee</th><th>Fixed fee/tap</th><th>Monthly fee</th></tr>
+            </thead>
+            <tbody>
+              <tr class="you">
+                <td>Jozev-Pay</td><td>3.5%</td><td class="yes">None</td><td class="yes">None</td>
+              </tr>
+              <tr>
+                <td>Typical "intro rate" apps</td><td>Low at first, rises later</td><td class="yes">None</td><td class="yes">None</td>
+              </tr>
+              <tr>
+                <td>Generic retail card readers</td><td>~1.5–2.9%</td><td class="no">+fixed fee</td><td class="no">Often</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="color:var(--muted-2);font-size:0.78rem;margin-top:16px;margin-bottom:0;">Illustrative comparison based on publicly typical pricing structures in the category, not a specific competitor quote.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section id="trust">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Built on trust</span>
+        <h2>Your money, handled properly</h2>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <h3>Regulated payment infrastructure</h3>
+          <p>Transactions run through licensed, EU-regulated payment providers — not a homegrown system holding your funds.</p>
+        </div>
+        <div class="trust-card">
+          <h3>Passwordless login</h3>
+          <p>Sign in with a magic link or SMS code. No password to remember, reuse, or lose.</p>
+        </div>
+        <div class="trust-card">
+          <h3>Straight to your IBAN</h3>
+          <p>Your sales settle directly into your own bank account — no separate wallet you have to remember to withdraw from.</p>
+        </div>
+        <div class="trust-card">
+          <h3>Not based in the EU? Still welcome</h3>
+          <p>Plenty of artists travel in for European conventions from outside the EU. As long as you can receive an IBAN payout, you can sign up the same way everyone else does.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">FAQ</span>
+        <h2>Good to know</h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item">
+          <button class="faq-q">What do I need to get started? <span class="plus">+</span></button>
+          <div class="faq-a"><p>A smartphone and a compatible card reader. We'll walk you through pairing it with the Jozev-Pay app during sign-up.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What kind of events does this work for? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Comic cons, artist alleys, craft fairs, pop-up markets — anywhere you're selling in person and want to accept cards without a full retail setup.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Do I need to live in the EU to use Jozev-Pay? <span class="plus">+</span></button>
+          <div class="faq-a"><p>No. Plenty of artists travel in for European conventions from outside the EU. What you do need is an IBAN to receive payouts — if you don't already have one, artists commonly open a free EUR account with a service like Wise or Revolut just for this. Your payout currency, not your home country, is what determines the rate.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What currencies are supported? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Payouts in EUR are included in the standard 3.5% rate, no matter where you live. Prefer a different payout currency? That carries a 1.5% surcharge.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">When do I actually get paid? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Sales settle straight to your IBAN on a regular payout schedule.</p></div>
+          <!-- TODO: state the exact payout timing (e.g. "within 2 business days") once confirmed. -->
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is there a monthly or account fee? <span class="plus">+</span></button>
+          <div class="faq-a"><p>No. You only ever pay the per-transaction rate — nothing else, whether you sell once a year or every weekend.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What's the Founding Artist rate? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Artists who join during our early sign-up period get 2.9% instead of 3.5% for their first event, as a thank-you for getting on board early.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAITLIST -->
+  <section id="waitlist" class="waitlist-section">
+    <div class="wrap waitlist-box">
+      <span class="eyebrow">Be first in line</span>
+      <h2>Get on the waitlist</h2>
+      <p style="color:var(--muted);">We're onboarding artists ahead of upcoming conventions. Leave your details and we'll reach out with next steps.</p>
+
+      <!--
+        IMPORTANT: as of this writing, the form at this ID has "Limit to 1 response"
+        turned on in Settings -> Responses, which forces visitors to sign into a
+        Google account before they can fill it in. Turn that off (and leave
+        "Collect email addresses" off too) so anonymous visitors from this page
+        aren't blocked by a login wall. See the chat for details.
+      -->
+      <div class="form-embed">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdRJ6Gnskj1O1dU6fhrJvLGW1XJjobaJE80zzdg1ja-vTdA5g/viewform?embedded=true"
+                width="100%" height="640" frameborder="0" marginheight="0" marginwidth="0" style="display:block;">
+          Loading…
+        </iframe>
+      </div>
+
+      <p class="form-fallback">Prefer email? Reach out to <a href="mailto:hello@jozev-labs.com">hello@jozev-labs.com</a> and we'll add you to the list.</p>
+      <!-- TODO: confirm hello@jozev-labs.com is the right inbox for this (vs. a jozev-pay.com address, if you set one up). -->
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#top" class="brand"><span class="mark">J</span>Jozev-Pay</a>
+      <div class="footer-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="#waitlist">Join the waitlist</a>
+      </div>
+    </div>
+    <div class="footer-bottom wrap" style="padding:0;">
+      <span>© 2026 Jozev-Pay. Currently onboarding pilot artists ahead of launch.</span>
+      <span>Made for artists, by people who go to the same conventions.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('navToggle').addEventListener('click', function(){
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(a){
+    a.addEventListener('click', function(){ document.getElementById('navLinks').classList.remove('open'); });
+  });
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    item.querySelector('.faq-q').addEventListener('click', function(){
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(o){ o.classList.remove('open'); });
+      if(!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+
+</body>
+</html>
