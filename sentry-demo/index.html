@@ -71,9 +71,9 @@ body {
   font-size: 15px;
   line-height: 1.45;
 }
-.wrap { max-width: 1240px; margin: 0 auto; padding: 18px 16px 28px; }
-header h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
-header p { margin: 0; color: var(--muted); max-width: 78ch; }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 12px 16px 24px; }
+header h1 { margin: 0 0 2px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+header p { margin: 0; color: var(--muted); max-width: 110ch; font-size: 13px; }
 .badge {
   display: inline-block;
   margin-left: 8px;
@@ -85,7 +85,7 @@ header p { margin: 0; color: var(--muted); max-width: 78ch; }
   font-weight: 500;
   vertical-align: middle;
 }
-.toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 16px 0 14px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 10px 0 10px; }
 .toolbar label { display: inline-flex; gap: 7px; align-items: center; cursor: pointer; }
 .pill { padding: 1px 10px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--muted); }
 .pill.on { border-color: var(--fence); color: var(--fence); }
@@ -114,7 +114,7 @@ button:hover { background: var(--tint); }
 .beatline { margin: 0 0 10px; color: var(--muted); font-size: 14px; min-height: 20px; }
 button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--fence); outline-offset: 2px; }
 button[aria-pressed="true"] { border-color: var(--ghost); color: var(--ghost); }
-.grid { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 16px; align-items: start; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 12px; align-items: start; }
 @media (max-width: 920px) { .grid { grid-template-columns: minmax(0, 1fr); } }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
 .mapcard { padding: 8px; }
@@ -146,6 +146,15 @@ h2 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
 .log .k.warn { background: var(--late); }
 .log .k.alert { background: var(--ghost); }
 .empty { color: var(--muted); font-size: 14px; }
+.main { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.controls { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 12px; align-items: stretch; }
+.controls .card { display: flex; flex-direction: column; }
+.btngrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.btngrid button { text-align: left; padding: 8px 10px; font-size: 14px; line-height: 1.3; }
+.controls .btns button { padding: 10px 12px; font-weight: 600; }
+.main .log { max-height: 210px; }
+@media (max-width: 920px) { .controls { grid-template-columns: minmax(0, 1fr); } .btngrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 </style>
 </head>
 <body>
@@ -173,7 +182,35 @@ h2 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
   </div>
 
   <div class="grid">
-    <div class="card mapcard"><canvas id="map" aria-label="Map of the ranch with pastures, gateways and cows"></canvas></div>
+    <div class="main">
+      <div class="card mapcard"><canvas id="map" aria-label="Map of the ranch with pastures, gateways and cows"></canvas></div>
+
+      <div class="controls">
+        <section class="card" aria-labelledby="h-run">
+          <h2 id="h-run">Scripted run</h2>
+          <p class="beatline" id="beatStatus">Steps through the demo one beat at a time.</p>
+          <div class="btns"><button type="button" id="btnBeat">Start the scripted run</button></div>
+        </section>
+
+        <section class="card" aria-labelledby="h-break">
+          <h2 id="h-break">Break something</h2>
+          <div class="btngrid">
+            <button type="button" id="btnG0" aria-pressed="false">Take Gateway 1 offline</button>
+            <button type="button" id="btnG1" aria-pressed="false">Take Gateway 2 offline</button>
+            <button type="button" id="btnG2" aria-pressed="false">Take Gateway 3 offline</button>
+            <button type="button" id="btnGhost">Send ghost signals from 3 collars</button>
+            <button type="button" id="btnDrop" aria-pressed="false">Drop the next fence update for 8 collars</button>
+            <button type="button" id="btnReset">Reset the herd</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="card" aria-labelledby="h-log">
+        <h2 id="h-log">Alerts</h2>
+        <ul class="log" id="log" aria-live="polite"></ul>
+        <p class="empty" id="logEmpty">Nothing to report yet.</p>
+      </section>
+    </div>
 
     <div class="side">
       <section class="card" aria-labelledby="h-herd">
@@ -207,32 +244,10 @@ h2 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
         <ul class="misslist" id="missList"></ul>
       </section>
 
-      <section class="card" aria-labelledby="h-run">
-        <h2 id="h-run">Scripted run</h2>
-        <p class="beatline" id="beatStatus">Steps through the demo one beat at a time.</p>
-        <div class="btns"><button type="button" id="btnBeat">Start the scripted run</button></div>
-      </section>
-
-      <section class="card" aria-labelledby="h-break">
-        <h2 id="h-break">Break something</h2>
-        <div class="btns">
-          <button type="button" id="btnG0" aria-pressed="false">Take Gateway 1 offline</button>
-          <button type="button" id="btnG1" aria-pressed="false">Take Gateway 2 offline</button>
-          <button type="button" id="btnG2" aria-pressed="false">Take Gateway 3 offline</button>
-          <button type="button" id="btnGhost">Send ghost signals from 3 collars</button>
-          <button type="button" id="btnDrop" aria-pressed="false">Drop the next fence update for 8 collars</button>
-          <button type="button" id="btnReset">Reset the herd</button>
-        </div>
-      </section>
-
-      <section class="card" aria-labelledby="h-log">
-        <h2 id="h-log">Alerts</h2>
-        <ul class="log" id="log" aria-live="polite"></ul>
-        <p class="empty" id="logEmpty">Nothing to report yet.</p>
-      </section>
     </div>
   </div>
 </div>
+
 
 <script src="sentry-config.js"></script>
 <script src="vendor/sentry.js"></script>
@@ -256,7 +271,7 @@ h2 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
   var LATE = 9;
   var SILENT = 16;
   var MOVE_EVERY = 60;
-  var ACK_TIMEOUT = 25;
+  var ACK_TIMEOUT = 15;
   var SWEEP_PATCH = 40;
   var SWEEP_TRANSFER = 55;
   var LANE = 20;
