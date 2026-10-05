@@ -760,7 +760,7 @@ h2 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
     var pending = m.n - m.executed, pct = m.executed / m.n;
     var pushed = S.t >= m.pushAt, after = S.t >= m.checkAt, st;
     if (!pushed) st = 'planned';
-    else if (!fixOn) st = pct >= 0.8 ? 'executed' : 'pushed';
+    else if (!fixOn) st = pct >= 0.95 ? 'executed' : 'pushed'; // changin to 0.95 to increase restriction
     else st = pending === 0 ? 'executed' : (after ? 'partial' : 'pushed');
     return { st: st, pending: pending, pct: pct, acked: m.executed };
   }
