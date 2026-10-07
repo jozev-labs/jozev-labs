@@ -256,28 +256,30 @@ h2 { margin: 0 0 10px; font-size: 15px; font-weight: 600; }
 (function () {
   'use strict';
 
-  var W = 1000, H = 600;
-  var M_PER_UNIT = 4;
-  var HA_PER_UNIT2 = M_PER_UNIT * M_PER_UNIT / 10000;
-  var K = 2;
-  var ORDER = [0, 1, 2, 3, 7, 6, 5, 4];
-  var NAMES = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'];
-  var GATES = [
-    { name: 'Gateway 1', x: 170, y: 300, down: false },
-    { name: 'Gateway 2', x: 500, y: 300, down: false },
-    { name: 'Gateway 3', x: 830, y: 300, down: false }
-  ];
-  var N = 48;
-  var REPORT = 6;
-  var LATE = 9;
-  var SILENT = 16;
-  var MOVE_EVERY = 60;
-  var ACK_TIMEOUT = 30;
-  var SWEEP_PATCH = 40;
-  var SWEEP_TRANSFER = 55;
-  var LANE = 20;
-  var RATE = 2;
-  var MAX_SPEED = 80;
+ // Time in this file is simulated minutes, not real minutes.
+
+var W = 1000, H = 600;                 // Size of the map in map units. Everything is drawn in this 1000 by 600 world and scaled to the screen. Also the limits for ghost positions.
+var M_PER_UNIT = 4;                    // Meters per map unit, so the map is 4 km by 2.4 km. Affects the hectares shown and the speed check in meters (my reading: a higher number makes normal walking look faster, so cows may get flagged).
+var HA_PER_UNIT2 = M_PER_UNIT * M_PER_UNIT / 10000;  // Turns a polygon's area into hectares. Calculated from the line above, so do not edit it. Feeds the "New patch: X hectares" line.
+var K = 2;                             // Patches (strips) each pasture is cut into. A pasture change comes every K-th move, and fewer patches means bigger patches. Your guide says every third move, which is K = 3.
+var ORDER = [0, 1, 2, 3, 7, 6, 5, 4];  // The order the herd visits the pastures, as positions in NAMES: A1, A2, A3, A4, B4, B3, B2, B1, then back to A1. Also decides which way each pasture's strips run.
+var NAMES = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'];  // The labels drawn on the map and used in alert text. Same order as the eight pasture shapes.
+var GATES = [                          // The three radio towers. Each collar is heard by its nearest gateway, so the positions decide which collars go quiet when one is offline.
+  { name: 'Gateway 1', x: 170, y: 300, down: false },   // name shows in the alerts and in Sentry. down is set by the Take offline buttons.
+  { name: 'Gateway 2', x: 500, y: 300, down: false },
+  { name: 'Gateway 3', x: 830, y: 300, down: false }
+];
+var N = 48;                            // Number of collars and cows. Also the "planned" total in a fence move. 
+var REPORT = 6;                        // A collar reports about every 6 minutes, give or take 15 percent.
+var LATE = 9;                          // Minutes without a report before the dot turns amber ("late, one report missed").
+var SILENT = 16;                       // Minutes without a report before the dot turns grey and counts as silent. This starts the gateway alert.
+var MOVE_EVERY = 60;                   // Minutes from the start of one fence move to the next. Drives the "Next move in X min" countdown.
+var ACK_TIMEOUT = 30;                  // Minutes the system waits for a collar to confirm after the push. Sets the pink "old fence" ring, the unconfirmed-update warning, and when the move turns partial.
+var SWEEP_PATCH = 40;                  // Minutes the fence takes to sweep from one patch to the next inside a pasture.
+var SWEEP_TRANSFER = 55;               // Minutes the fence takes to sweep from one pasture to the next. Both sweep times are shorter than MOVE_EVERY.
+var LANE = 20;                         // Width in map units of the corridor that opens between pastures during a pasture change.
+var RATE = 2;                          // Simulated minutes per real second at 1x. Speeds up the clock, the fence and the reports, but not how fast the cows walk.
+var MAX_SPEED = 80;                    // Meters per minute. A position that implies a faster move, or exactly 0, 0, is held back as a ghost.
 
   var $ = function (id) { return document.getElementById(id); };
   var cv = $('map');
