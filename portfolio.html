@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jose Rojas | JozEV Labs</title>
+<meta name="description" content="Solutions engineer in Amsterdam. Fifteen years at TomTom. I build small working versions of things, then show people.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f5f6f3;
+  --ink: #15222a;
+  --muted: #55646c;
+  --navy: #1f3a5f;
+  --field: #3f7d4e;
+  --rule: #cdd5d8;
+  --pasture-a: #dfe9dc;
+  --pasture-b: #d1e0d2;
+}
+:root[data-theme="dark"] {
+  --paper: #10181d;
+  --ink: #e6ecee;
+  --muted: #9aaab2;
+  --navy: #8fb0dc;
+  --field: #7fbf8c;
+  --rule: #2a3a43;
+  --pasture-a: #1a2a24;
+  --pasture-b: #1f3229;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10181d;
+    --ink: #e6ecee;
+    --muted: #9aaab2;
+    --navy: #8fb0dc;
+    --field: #7fbf8c;
+    --rule: #2a3a43;
+    --pasture-a: #1a2a24;
+    --pasture-b: #1f3229;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+}
+a { color: var(--navy); text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--field); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 700px) { .wrap { padding: 0 32px; } }
+
+header.top { padding: 20px 0; border-bottom: 1px solid var(--rule); }
+header.top .wrap { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.brand { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; font-weight: 700; font-size: 1.05rem; text-decoration: none; color: var(--ink); }
+nav a { margin-left: 20px; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+nav a:hover { color: var(--ink); text-decoration: underline; }
+
+.hero { padding: 56px 0 48px; display: grid; gap: 40px; }
+@media (min-width: 820px) { .hero { grid-template-columns: 1.1fr 0.9fr; align-items: center; } }
+h1 {
+  font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
+  max-width: 14ch;
+}
+.lede { font-size: 1.1rem; max-width: 52ch; margin: 0 0 20px; }
+.status { border-left: 4px solid var(--field); padding: 2px 0 2px 14px; max-width: 52ch; margin: 0; color: var(--ink); }
+
+figure.map { margin: 0; }
+figure.map svg { width: 100%; height: auto; display: block; }
+figure.map figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 8px; }
+.p-a { fill: var(--pasture-a); stroke: var(--rule); stroke-width: 1; }
+.p-b { fill: var(--pasture-b); stroke: var(--rule); stroke-width: 1; }
+.fence { fill: none; stroke: var(--navy); stroke-width: 2; stroke-dasharray: 7 5; transform-box: fill-box; transform-origin: center; }
+.fence-old { fill: none; stroke: var(--navy); stroke-width: 1; stroke-dasharray: 2 6; opacity: 0.45; }
+.cow { fill: var(--ink); }
+.cow-silent { fill: var(--pasture-a); stroke: var(--ink); stroke-width: 1.6; }
+.lane { stroke: var(--field); stroke-width: 12; stroke-linecap: round; opacity: 0.3; }
+.gw { fill: var(--navy); }
+.gw-wave { fill: none; stroke: var(--navy); stroke-width: 1.5; stroke-linecap: round; }
+@media (prefers-reduced-motion: no-preference) {
+  .fence { animation: shrink 2.4s cubic-bezier(.3,.1,.2,1) 0.5s both; }
+  @keyframes shrink { from { transform: scale(1.22); } to { transform: scale(1); } }
+}
+
+section { padding: 44px 0; border-top: 1px solid var(--rule); }
+h2 { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; font-weight: 700; font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 24px; }
+h3 { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; font-weight: 600; font-size: 1.2rem; line-height: 1.25; margin: 0 0 4px; }
+
+.project { display: grid; gap: 10px 40px; padding: 26px 0; border-top: 1px solid var(--rule); }
+.project:first-of-type { border-top: 0; padding-top: 0; }
+@media (min-width: 760px) { .project { grid-template-columns: 13rem 1fr; } }
+.project .state { color: var(--muted); font-size: 0.92rem; margin: 0; }
+.project p { margin: 0 0 12px; max-width: 64ch; }
+.project p:last-child { margin-bottom: 0; }
+
+.facts { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; max-width: 68ch; }
+.facts li { padding-left: 18px; position: relative; }
+.facts li::before { content: ""; position: absolute; left: 0; top: 0.8em; width: 8px; height: 2px; background: var(--field); }
+
+.contact p { max-width: 60ch; margin: 0 0 12px; }
+footer { padding: 28px 0 48px; color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--rule); }
+footer p { margin: 0; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">JozEV Labs</a>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#background">Background</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>I build the small version first, then show people.</h1>
+        <p class="lede">I'm Jose Rojas, Lood to friends. I'm a solutions engineer in Amsterdam. I spent fifteen years at TomTom, nine in engineering and six working with customers. I speak English and Spanish fluently and Dutch at a basic level.</p>
+        <p class="status">Open to remote solutions engineer and solutions architect roles. I can also work from another location for weeks at a time.</p>
+      </div>
+      <figure class="map">
+        <svg viewBox="0 0 520 380" role="img" aria-labelledby="mapTitle mapDesc">
+          <title id="mapTitle">Sketch of the cattle dashboard</title>
+          <desc id="mapDesc">Four pastures with cows shown as dots. In the top left pasture a dashed fence is shrinking to move the cows. In the bottom right pasture three hollow dots mark collars that never received the fence update.</desc>
+          <polygon class="p-a" points="30,40 190,25 225,110 170,170 50,150"/>
+          <polygon class="p-b" points="270,35 470,60 490,150 400,185 285,140"/>
+          <polygon class="p-b" points="60,215 210,200 240,300 150,350 40,310"/>
+          <polygon class="p-a" points="290,230 470,215 495,320 380,355 295,320"/>
+          <path class="lane" d="M118,168 L128,216"/>
+          <polygon class="fence-old" points="45,50 188,36 218,110 166,164 58,146"/>
+          <polygon class="fence" points="62,62 175,52 200,105 160,150 76,136"/>
+          <g class="cow">
+            <circle cx="82" cy="92" r="3.4"/><circle cx="120" cy="102" r="3.4"/><circle cx="150" cy="82" r="3.4"/>
+            <circle cx="112" cy="126" r="3.4"/><circle cx="142" cy="128" r="3.4"/><circle cx="96" cy="76" r="3.4"/>
+            <circle cx="330" cy="82" r="3.4"/><circle cx="380" cy="96" r="3.4"/><circle cx="425" cy="112" r="3.4"/>
+            <circle cx="362" cy="140" r="3.4"/><circle cx="440" cy="92" r="3.4"/>
+            <circle cx="100" cy="252" r="3.4"/><circle cx="150" cy="262" r="3.4"/><circle cx="132" cy="302" r="3.4"/>
+            <circle cx="190" cy="252" r="3.4"/><circle cx="82" cy="286" r="3.4"/>
+            <circle cx="330" cy="262" r="3.4"/><circle cx="360" cy="250" r="3.4"/><circle cx="400" cy="270" r="3.4"/>
+            <circle cx="430" cy="256" r="3.4"/><circle cx="446" cy="292" r="3.4"/><circle cx="410" cy="316" r="3.4"/>
+            <circle cx="350" cy="302" r="3.4"/><circle cx="322" cy="284" r="3.4"/>
+          </g>
+          <g class="cow-silent">
+            <circle cx="381" cy="287" r="3.8"/><circle cx="422" cy="237" r="3.8"/><circle cx="458" cy="302" r="3.8"/>
+          </g>
+          <rect class="gw" x="246" y="186" width="14" height="14" rx="2"/>
+          <path class="gw-wave" d="M266,190 q6,7 0,14"/>
+          <path class="gw-wave" d="M272,186 q10,11 0,22"/>
+        </svg>
+        <figcaption>Filled dots answered. Hollow dots never got the fence update. The screen still said done.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <h2>Work</h2>
+
+      <article class="project">
+        <div>
+          <h3>Virtual fencing dashboard</h3>
+          <p class="state">Live demo, simulated data</p>
+        </div>
+        <div>
+          <p>A browser simulation of a ranch: 48 collared cows, 8 pastures, 3 radio gateways. A fence shrinks to move the herd to the next field. Then things break. A gateway goes offline, GPS (Global Positioning System) signals lie, and a fence update never reaches 8 collars.</p>
+          <p>It started as an unpaid interview exercise for a cattle startup. My job was the database design. Two decisions were mine. Every table carries an organization id, so one platform can serve many ranchers. And a fence move goes through three states: planned, pushed, executed. For the exercise I also learned to read Bluetooth Low Energy and LoRa (long-range radio) messages and tested them on a couple of real devices I own.</p>
+          <p>The brief called a move done when 80% of collars confirmed. I think that's too low, because the other 20% are cows standing in the wrong field. So the demo judges each collar and shows the move as partial.</p>
+          <p>The company changed focus before I could show them any of it, so I rebuilt it as a simulation. I designed it and directed it. Claude wrote the code.</p>
+          <p><a href="/sentry-demo/">Open the live demo</a></p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
+          <h3>JozEV electric moped</h3>
+          <p class="state">Prototype stage, Ride JozEV B.V.</p>
+        </div>
+        <div>
+          <p>A premium electric moped in the L1e class, the EU category for light mopeds (the Dutch bromfiets). Steel frame, naked-bike look, throttle, lights, motor, controller and battery. The first goal is a working prototype that meets the minimum rules for road registration.</p>
+          <p>It's my company, so this is the project where I'm the engineer, the product owner and the one fixing the wiring.</p>
+          <p><a href="/moped">See the moped page</a></p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
+          <h3>WingDash</h3>
+          <p class="state">In progress</p>
+        </div>
+        <div>
+          <p>A GPS cockpit display for a Segway E110 electric moped. It runs on an ESP32 (a small microcontroller with WiFi and Bluetooth), a touchscreen and a GPS module.</p>
+          <p>Running WiFi, Bluetooth, radar and the map together used up the memory, so I cut it down to two modes: a WiFi setup portal and a ride screen. The setup portal and the radar screen work today. The map view is being rebuilt.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="background">
+    <div class="wrap">
+      <h2>Background</h2>
+      <ul class="facts">
+        <li>Fifteen years at TomTom. I started as a software engineer and moved through Scrum Master, Product Owner and Technical Program Manager. Later I worked with enterprise and car-maker customers on discovery calls, demos, workshops and proofs of concept.</li>
+        <li>I ran a four-person documentation and enablement team spread across the EU and hired two of the four. Seventeen API (Application Programming Interface) engineering teams depended on our work. Documentation release time dropped 15% and new developer onboarding time dropped 40%.</li>
+        <li>I ran a YouTube channel on my own for three years. 65 videos, 3,600 subscribers, and 4,000 to 5,000 views per video.</li>
+        <li>I hold a CSPO (Certified Scrum Product Owner) certification.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <h2>Contact</h2>
+      <p>If you're hiring for a solutions engineer or solutions architect, or you want to talk about the moped, write to me.</p>
+      <p>
+        <!-- Replace both placeholders before uploading -->
+        <a href="mailto:REPLACE_WITH_YOUR_EMAIL">REPLACE_WITH_YOUR_EMAIL</a><br>
+        <a href="https://www.linkedin.com/in/REPLACE_WITH_YOUR_HANDLE">LinkedIn</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Built by hand and with Claude. Jose Rojas, Amsterdam.</p>
+  </div>
+</footer>
+
+</body>
+</html>
