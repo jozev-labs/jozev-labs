@@ -133,20 +133,18 @@
     align-items: center;
   }
 
-  .hero-work {
-    margin-top: 1.5rem;
-    font-family: var(--mono);
-    font-size: 13px;
-  }
-
-  .hero-work a {
+  .btn-outline {
+    display: inline-block;
+    border: 1px solid var(--accent);
     color: var(--accent);
-    border-bottom: 1px solid rgba(200, 240, 96, 0.3);
-    padding-bottom: 1px;
-    transition: border-color 0.2s;
+    font-weight: 600;
+    font-size: 14px;
+    padding: calc(0.75rem - 1px) calc(1.75rem - 1px);
+    border-radius: 100px;
+    transition: background 0.2s, transform 0.15s;
   }
 
-  .hero-work a:hover { border-color: var(--accent); }
+  .btn-outline:hover { background: rgba(200, 240, 96, 0.08); transform: translateY(-1px); }
 
   .btn-primary {
     display: inline-block;
@@ -380,51 +378,6 @@
 
   .proof-tags { margin-top: 1.25rem; }
 
-  /* WINGDASH PHOTOS */
-  .wing-photos {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
-
-  @media (min-width: 600px) {
-    .wing-photos { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  .photo-slot {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    background: dimgray;
-  }
-
-  .photo-slot img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-
-  .slot-label {
-    display: none;
-    position: absolute;
-    inset: 0.5rem;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0.75rem;
-    border: 1px dashed rgba(255, 255, 255, 0.6);
-    border-radius: 6px;
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 1.5;
-    color: #fff;
-  }
-
-  /* The label shows only while the image is still the grey placeholder */
-  .photo-slot img[src^="data:"] + .slot-label { display: flex; }
-
   /* CTA */
   .cta-section {
     border-top: 1px solid var(--border);
@@ -523,10 +476,10 @@
     I know exactly where it breaks.
   </p>
   <div class="hero-actions">
+    <a href="/portfolio" class="btn-outline">See my work</a>
     <a href="mailto:josejoserojas@proton.me" class="btn-primary">Let's talk</a>
     <a href="#story" class="btn-ghost">How I work →</a>
   </div>
-  <p class="hero-work"><a href="/portfolio">See my work</a></p>
 </div>
 
 <!-- PROOF STRIP -->
@@ -649,58 +602,6 @@
         <li>Early pre-product stage</li>
         <li>Needs a generalist marketing consultant</li>
       </ul>
-    </div>
-  </div>
-</section>
-
-<hr>
-
-<!-- PROOF OF DEPTH -->
-<section id="proof">
-  <p class="section-label">Proof of depth</p>
-  <h2>I build things too.<br><em>Not just advise on them.</em></h2>
-
-  <div class="proof-card">
-    <p>
-      <strong>WingDash</strong> — a GPS cockpit dashboard I built from scratch for my eMoped.
-      No cloud. No phone mount. A custom vector map engine running on a $10 ESP32 microcontroller
-      with 293KB of heap, reading OpenStreetMap data I converted with a Python pipeline I wrote myself.
-      Every layer — firmware, data engineering, hardware, UX — designed and built solo.
-    </p>
-
-    <!--
-      WingDash photo placeholders.
-      To use a real photo, replace the whole src="data:..." value of the image
-      with the path to your file, for example src="/images/wingdash-ride-screen.jpg".
-      The grey label disappears by itself once src no longer starts with "data:".
-    -->
-    <div class="wing-photos">
-      <figure class="photo-slot">
-        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%203'%3E%3C/svg%3E" width="400" height="300" alt="The WingDash ride screen on the cockpit display" loading="lazy">
-        <span class="slot-label">Photo goes here:<br>ride screen on the cockpit display</span>
-      </figure>
-      <figure class="photo-slot">
-        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%203'%3E%3C/svg%3E" width="400" height="300" alt="The WingDash circuit board, GPS module and screen laid out on a desk" loading="lazy">
-        <span class="slot-label">Photo goes here:<br>circuit board, GPS module and screen on my desk</span>
-      </figure>
-      <figure class="photo-slot">
-        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%203'%3E%3C/svg%3E" width="400" height="300" alt="The WingDash display mounted on the Segway E110 electric moped" loading="lazy">
-        <span class="slot-label">Photo goes here:<br>display mounted on the Segway E110 moped</span>
-      </figure>
-    </div>
-
-    <p>
-      This isn't a side project footnote. It's what happens when you apply the same constraint-first
-      thinking to hardware that I apply to enterprise architecture.
-      <strong>I understand what's happening inside the device, not just in the pitch deck.</strong>
-    </p>
-    <div class="proof-tags">
-      <span class="proof-tag">ESP32 / C++</span>
-      <span class="proof-tag">Embedded firmware</span>
-      <span class="proof-tag">OpenStreetMap pipeline</span>
-      <span class="proof-tag">Edge computing</span>
-      <span class="proof-tag">Hardware prototyping</span>
-      <span class="proof-tag">No-RTOS bare metal</span>
     </div>
   </div>
 </section>
