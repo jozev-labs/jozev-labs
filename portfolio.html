@@ -104,6 +104,14 @@ h3 { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; f
 .project p { margin: 0 0 12px; max-width: 64ch; }
 .project p:last-child { margin-bottom: 0; }
 
+.wing-photos { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 16px 0 0; max-width: 64ch; }
+@media (min-width: 600px) { .wing-photos { grid-template-columns: repeat(3, 1fr); } }
+.photo-slot { position: relative; margin: 0; border-radius: 6px; overflow: hidden; background: dimgray; }
+.photo-slot img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.slot-label { display: none; position: absolute; inset: 8px; align-items: center; justify-content: center; text-align: center; padding: 10px; border: 1px dashed rgba(255, 255, 255, 0.65); border-radius: 4px; font-size: 0.82rem; line-height: 1.45; color: #fff; }
+/* The label shows only while the image is still the grey placeholder */
+.photo-slot img[src^="data:"] + .slot-label { display: flex; }
+
 .facts { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; max-width: 68ch; }
 .facts li { padding-left: 18px; position: relative; }
 .facts li::before { content: ""; position: absolute; left: 0; top: 0.8em; width: 8px; height: 2px; background: var(--field); }
@@ -131,7 +139,7 @@ footer p { margin: 0; }
     <div class="hero">
       <div>
         <h1>I build the small version first, then show people.</h1>
-        <p class="lede">I'm Jose Rojas, Lood to friends. I'm a solutions engineer in Amsterdam. I spent fifteen years at TomTom, nine in engineering and six working with customers. I speak English and Spanish fluently and Dutch at a basic level.</p>
+        <p class="lede">I'm Jose Rojas. I'm a solutions engineer in Amsterdam. I spent fifteen years at TomTom, nine in engineering and six working with customers. I speak English and Spanish fluently and Dutch at a basic level.</p>
         <p class="status">Open to remote solutions engineer and solutions architect roles. I can also work from another location for weeks at a time.</p>
       </div>
       <figure class="map">
@@ -206,6 +214,27 @@ footer p { margin: 0; }
         <div>
           <p>A GPS cockpit display for a Segway E110 electric moped. It runs on an ESP32 (a small microcontroller with WiFi and Bluetooth), a touchscreen and a GPS module.</p>
           <p>Running WiFi, Bluetooth, radar and the map together used up the memory, so I cut it down to two modes: a WiFi setup portal and a ride screen. The setup portal and the radar screen work today. The map view is being rebuilt.</p>
+
+          <!--
+            WingDash photo placeholders.
+            To use a real photo, replace the whole src="data:..." value of the image
+            with the path to your file, for example src="/images/wingdash-ride-screen.jpg".
+            The grey label disappears by itself once src no longer starts with "data:".
+          -->
+          <div class="wing-photos">
+            <figure class="photo-slot">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%203'%3E%3C/svg%3E" width="400" height="300" alt="The WingDash ride screen on the cockpit display" loading="lazy">
+              <span class="slot-label">Photo goes here:<br>ride screen on the cockpit display</span>
+            </figure>
+            <figure class="photo-slot">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%203'%3E%3C/svg%3E" width="400" height="300" alt="The WingDash circuit board, GPS module and screen laid out on a desk" loading="lazy">
+              <span class="slot-label">Photo goes here:<br>circuit board, GPS module and screen on my desk</span>
+            </figure>
+            <figure class="photo-slot">
+              <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%203'%3E%3C/svg%3E" width="400" height="300" alt="The WingDash display mounted on the Segway E110 electric moped" loading="lazy">
+              <span class="slot-label">Photo goes here:<br>display mounted on the Segway E110 moped</span>
+            </figure>
+          </div>
         </div>
       </article>
     </div>
@@ -228,9 +257,8 @@ footer p { margin: 0; }
       <h2>Contact</h2>
       <p>If you're hiring for a solutions engineer or solutions architect, or you want to talk about the moped, write to me.</p>
       <p>
-        <!-- Replace both placeholders before uploading -->
         <a href="mailto:josejoserojas@proton.me">josejoserojas@proton.me</a><br>
-        <a href="https://www.linkedin.com/in/jjrojas">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/jjrojas/">LinkedIn</a>
       </p>
     </div>
   </section>
