@@ -3,457 +3,289 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CHAdeMO Finder</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<title>Jose Rojas | JozEV Labs</title>
+<meta name="description" content="Solutions engineer in Amsterdam. Fifteen years at TomTom. I build small working versions of things, then show people.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* Layout: header, map across the top, then a chooser list beside a detail panel (stacked on phones). */
-  :root {
-    --bg: #f5f7f6;
-    --panel: #ffffff;
-    --fg: #14211f;
-    --muted: #5b6b68;
-    --line: #d6dedc;
-    --accent: #0b6b61;
-    --accent-fg: #ffffff;
-    --sel: #e3f1ee;
-    --ok: #17803d;
-    --warn: #a15c00;
-    --bad: #b42318;
-    --code-bg: #eaf0ee;
-    --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    color-scheme: light;
+:root {
+  --paper: #f5f6f3;
+  --ink: #15222a;
+  --muted: #55646c;
+  --navy: #1f3a5f;
+  --field: #3f7d4e;
+  --rule: #cdd5d8;
+  --pasture-a: #dfe9dc;
+  --pasture-b: #d1e0d2;
+}
+:root[data-theme="dark"] {
+  --paper: #10181d;
+  --ink: #e6ecee;
+  --muted: #9aaab2;
+  --navy: #8fb0dc;
+  --field: #7fbf8c;
+  --rule: #2a3a43;
+  --pasture-a: #1a2a24;
+  --pasture-b: #1f3229;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10181d;
+    --ink: #e6ecee;
+    --muted: #9aaab2;
+    --navy: #8fb0dc;
+    --field: #7fbf8c;
+    --rule: #2a3a43;
+    --pasture-a: #1a2a24;
+    --pasture-b: #1f3229;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f1716;
-      --panel: #172220;
-      --fg: #e6efed;
-      --muted: #9bb0ab;
-      --line: #2b3b38;
-      --accent: #4fc3b4;
-      --accent-fg: #06201c;
-      --sel: #1e3733;
-      --ok: #5fd08a;
-      --warn: #f0b255;
-      --bad: #ff8a80;
-      --code-bg: #1d2b29;
-      color-scheme: dark;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font-family: var(--font); font-size: 15px; line-height: 1.5;
-    padding-block: 24px 48px;
-    padding-left: max(16px, env(safe-area-inset-left, 0px));
-    padding-right: max(16px, env(safe-area-inset-right, 0px));
-  }
-  main { max-width: 1100px; margin: 0 auto; display: grid; gap: 16px; }
-  h1 { margin: 0; font-size: 26px; letter-spacing: -0.01em; text-wrap: balance; }
-  .sub { margin: 4px 0 0; color: var(--muted); max-width: 68ch; }
-  .bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
-  .bar label { display: flex; gap: 6px; align-items: center; font-size: 14px; }
-  select { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
-  button.act {
-    font: inherit; font-weight: 600; cursor: pointer; border-radius: 6px; padding: 7px 12px;
-    border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg);
-  }
-  button.act.ghost { background: transparent; color: var(--accent); }
-  button:disabled { opacity: 0.55; cursor: progress; }
-  :is(button, select, summary, a, input):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .status { min-height: 1.5em; font-size: 14px; }
-  .status.err { color: var(--bad); }
-  #map { height: 56vh; min-height: 340px; border: 1px solid var(--line); border-radius: 10px; z-index: 0; }
-  .split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 16px; align-items: start; }
-  @media (max-width: 860px) { .split { grid-template-columns: minmax(0, 1fr); } }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
-  ul.list { list-style: none; margin: 0; padding: 0; max-height: 520px; overflow-y: auto; }
-  ul.list li + li { border-top: 1px solid var(--line); }
-  .item { all: unset; box-sizing: border-box; display: grid; gap: 2px; width: 100%; padding: 10px 14px; cursor: pointer; }
-  .item:hover { background: var(--sel); }
-  .item[aria-pressed="true"] { background: var(--sel); box-shadow: inset 3px 0 0 var(--accent); }
-  .item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-  .item .t { font-weight: 600; }
-  .item .m { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 10px; }
-  .dist { font-family: var(--mono); white-space: nowrap; }
-  .detail { padding: 16px; display: grid; gap: 10px; }
-  .detail h2 { margin: 0; font-size: 18px; }
-  .addr, .hint { color: var(--muted); font-size: 14px; }
-  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
-  .pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); } .pill.bad { color: var(--bad); }
-  dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: 14px; }
-  dt { color: var(--muted); } dd { margin: 0; overflow-wrap: anywhere; }
-  .tablewrap { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
-  th, td { text-align: left; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
-  th { color: var(--muted); font-weight: 600; }
-  tr.cha td { font-weight: 600; }
-  .links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
-  a { color: var(--accent); }
-  details { padding: 12px 16px; }
-  summary { cursor: pointer; font-weight: 600; }
-  pre { margin: 10px 0 0; padding: 12px; background: var(--code-bg); border-radius: 6px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; }
-  .placeholder { padding: 18px 16px; color: var(--muted); }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+}
+a { color: var(--navy); text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--field); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 700px) { .wrap { padding: 0 32px; } }
+
+header.top { padding: 20px 0; border-bottom: 1px solid var(--rule); }
+header.top .wrap { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.brand { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; font-weight: 700; font-size: 1.05rem; text-decoration: none; color: var(--ink); }
+nav a { margin-left: 20px; color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+nav a:hover { color: var(--ink); text-decoration: underline; }
+
+.hero { padding: 56px 0 48px; display: grid; gap: 40px; }
+@media (min-width: 820px) { .hero { grid-template-columns: 1.1fr 0.9fr; align-items: center; } }
+h1 {
+  font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
+  max-width: 14ch;
+}
+.lede { font-size: 1.1rem; max-width: 52ch; margin: 0 0 20px; }
+.status { border-left: 4px solid var(--field); padding: 2px 0 2px 14px; max-width: 52ch; margin: 0; color: var(--ink); }
+
+figure.map { margin: 0; }
+figure.map svg { width: 100%; height: auto; display: block; }
+figure.map figcaption { font-size: 0.88rem; color: var(--muted); margin-top: 8px; }
+.p-a { fill: var(--pasture-a); stroke: var(--rule); stroke-width: 1; }
+.p-b { fill: var(--pasture-b); stroke: var(--rule); stroke-width: 1; }
+.fence { fill: none; stroke: var(--navy); stroke-width: 2; stroke-dasharray: 7 5; transform-box: fill-box; transform-origin: center; }
+.fence-old { fill: none; stroke: var(--navy); stroke-width: 1; stroke-dasharray: 2 6; opacity: 0.45; }
+.cow { fill: var(--ink); }
+.cow-silent { fill: var(--pasture-a); stroke: var(--ink); stroke-width: 1.6; }
+.lane { stroke: var(--field); stroke-width: 12; stroke-linecap: round; opacity: 0.3; }
+.gw { fill: var(--navy); }
+.gw-wave { fill: none; stroke: var(--navy); stroke-width: 1.5; stroke-linecap: round; }
+@media (prefers-reduced-motion: no-preference) {
+  .fence { animation: shrink 2.4s cubic-bezier(.3,.1,.2,1) 0.5s both; }
+  @keyframes shrink { from { transform: scale(1.22); } to { transform: scale(1); } }
+}
+
+section { padding: 44px 0; border-top: 1px solid var(--rule); }
+h2 { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; font-weight: 700; font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 24px; }
+h3 { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; font-weight: 600; font-size: 1.2rem; line-height: 1.25; margin: 0 0 4px; }
+
+.project { display: grid; gap: 10px 40px; padding: 26px 0; border-top: 1px solid var(--rule); }
+.project:first-of-type { border-top: 0; padding-top: 0; }
+@media (min-width: 760px) { .project { grid-template-columns: 13rem 1fr; } }
+.project .state { color: var(--muted); font-size: 0.92rem; margin: 0; }
+.project p { margin: 0 0 12px; max-width: 64ch; }
+.project p:last-child { margin-bottom: 0; }
+
+.wing-photos { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 16px 0 0; max-width: 64ch; }
+@media (min-width: 600px) { .wing-photos { grid-template-columns: repeat(3, 1fr); } }
+.photo-slot { position: relative; margin: 0; border-radius: 6px; overflow: hidden; background: dimgray; }
+.photo-slot img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.slot-label { display: none; position: absolute; inset: 8px; align-items: center; justify-content: center; text-align: center; padding: 10px; border: 1px dashed rgba(255, 255, 255, 0.65); border-radius: 4px; font-size: 0.82rem; line-height: 1.45; color: #fff; }
+/* The label shows only while the image is still the grey placeholder */
+.photo-slot img[src^="data:"] + .slot-label { display: flex; }
+
+.app-banner { margin: 16px 0 0; max-width: 64ch; }
+.app-banner img { display: block; width: 100%; height: auto; border-radius: 6px; }
+
+.facts { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; max-width: 68ch; }
+.facts li { padding-left: 18px; position: relative; }
+.facts li::before { content: ""; position: absolute; left: 0; top: 0.8em; width: 8px; height: 2px; background: var(--field); }
+
+.contact p { max-width: 60ch; margin: 0 0 12px; }
+footer { padding: 28px 0 48px; color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--rule); }
+footer p { margin: 0; }
 </style>
 </head>
 <body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">JozEV Labs</a>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#background">Background</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
 <main>
-  <header>
-    <h1>CHAdeMO Finder</h1>
-    <p class="sub">CHAdeMO connector around you, for Outlander PHEV.</p>
-  </header>
-
-  <div class="bar">
-    <label for="radius">Radius
-      <select id="radius">
-        <option value="5">5 km</option>
-        <option value="10">10 km</option>
-        <option value="25" selected>25 km</option>
-        <option value="50">50 km</option>
-      </select>
-    </label>
-    <label for="hideOut"><input id="hideOut" type="checkbox" checked> Hide chargers reported out of service</label>
-    <button class="act" id="mapCenter" type="button">Search around map center</button>
-    <button class="act ghost" id="locate" type="button">Use my location</button>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>I build the small version first, then show people.</h1>
+        <p class="lede">I'm Jose Rojas. I'm a solutions engineer in Amsterdam. I spent fifteen years at TomTom, nine in engineering and six working with customers. I speak English and Spanish fluently and Dutch at a basic level.</p>
+        <p class="status">Open to remote solutions engineer and solutions architect roles. I can also work from another location for weeks at a time.</p>
+      </div>
+      <figure class="map">
+        <svg viewBox="0 0 520 380" role="img" aria-labelledby="mapTitle mapDesc">
+          <title id="mapTitle">Sketch of the cattle dashboard</title>
+          <desc id="mapDesc">Four pastures with cows shown as dots. In the top left pasture a dashed fence is shrinking to move the cows. In the bottom right pasture three hollow dots mark collars that never received the fence update.</desc>
+          <polygon class="p-a" points="30,40 190,25 225,110 170,170 50,150"/>
+          <polygon class="p-b" points="270,35 470,60 490,150 400,185 285,140"/>
+          <polygon class="p-b" points="60,215 210,200 240,300 150,350 40,310"/>
+          <polygon class="p-a" points="290,230 470,215 495,320 380,355 295,320"/>
+          <path class="lane" d="M118,168 L128,216"/>
+          <polygon class="fence-old" points="45,50 188,36 218,110 166,164 58,146"/>
+          <polygon class="fence" points="62,62 175,52 200,105 160,150 76,136"/>
+          <g class="cow">
+            <circle cx="82" cy="92" r="3.4"/><circle cx="120" cy="102" r="3.4"/><circle cx="150" cy="82" r="3.4"/>
+            <circle cx="112" cy="126" r="3.4"/><circle cx="142" cy="128" r="3.4"/><circle cx="96" cy="76" r="3.4"/>
+            <circle cx="330" cy="82" r="3.4"/><circle cx="380" cy="96" r="3.4"/><circle cx="425" cy="112" r="3.4"/>
+            <circle cx="362" cy="140" r="3.4"/><circle cx="440" cy="92" r="3.4"/>
+            <circle cx="100" cy="252" r="3.4"/><circle cx="150" cy="262" r="3.4"/><circle cx="132" cy="302" r="3.4"/>
+            <circle cx="190" cy="252" r="3.4"/><circle cx="82" cy="286" r="3.4"/>
+            <circle cx="330" cy="262" r="3.4"/><circle cx="360" cy="250" r="3.4"/><circle cx="400" cy="270" r="3.4"/>
+            <circle cx="430" cy="256" r="3.4"/><circle cx="446" cy="292" r="3.4"/><circle cx="410" cy="316" r="3.4"/>
+            <circle cx="350" cy="302" r="3.4"/><circle cx="322" cy="284" r="3.4"/>
+          </g>
+          <g class="cow-silent">
+            <circle cx="381" cy="287" r="3.8"/><circle cx="422" cy="237" r="3.8"/><circle cx="458" cy="302" r="3.8"/>
+          </g>
+          <rect class="gw" x="246" y="186" width="14" height="14" rx="2"/>
+          <path class="gw-wave" d="M266,190 q6,7 0,14"/>
+          <path class="gw-wave" d="M272,186 q10,11 0,22"/>
+        </svg>
+        <figcaption>Filled dots answered. Hollow dots never got the fence update. The screen still said done.</figcaption>
+      </figure>
+    </div>
   </div>
-  <div id="status" class="status" role="status" aria-live="polite"></div>
 
-  <div id="map" aria-label="Map of CHAdeMO chargers"></div>
+  <section id="work">
+    <div class="wrap">
+      <h2>Work</h2>
 
-  <div class="split">
-    <section class="panel" aria-label="Charge points, nearest first">
-      <ul id="list" class="list"><li class="placeholder">Results appear here once the search runs.</li></ul>
-    </section>
-    <section id="detail" class="panel detail" aria-live="polite">
-      <div class="placeholder" style="padding:0">Select a charge point on the map or in the list to see its data.</div>
-    </section>
-  </div>
+      <article class="project">
+        <div>
+          <h3>Virtual fencing dashboard</h3>
+          <p class="state">Live demo, simulated data</p>
+        </div>
+        <div>
+          <p>A browser simulation of a ranch: 48 collared cows, 8 pastures, 3 radio gateways. A fence shrinks to move the herd to the next field. Then things break. A gateway goes offline, GPS (Global Positioning System) signals lie, and a fence update never reaches 8 collars.</p>
+          <p>It started as an unpaid interview exercise for a cattle startup. My job was the database design. Two decisions were mine. Every table carries an organization id, so one platform can serve many ranchers. And a fence move goes through three states: planned, pushed, executed. For the exercise I also learned to read Bluetooth Low Energy and LoRa (long-range radio) messages and tested them on a couple of real devices I own.</p>
+          <p>The brief called a move done when 80% of collars confirmed. I think that's too low, because the other 20% are cows standing in the wrong field. So the demo judges each collar and shows the move as partial.</p>
+          <p>The company changed focus before I could show them any of it, so I rebuilt it as a simulation. I designed it and directed it. Claude wrote the code.</p>
+          <p><a href="/sentry-demo/">Open the live demo</a></p>
+        </div>
+      </article>
 
-  <details class="panel" id="dev" hidden>
-    <summary>Developer view: request and raw response</summary>
-    <pre id="req"></pre>
-    <pre id="raw"></pre>
-  </details>
+      <article class="project">
+        <div>
+          <h3>JozEV electric moped</h3>
+          <p class="state">Prototype stage, Ride JozEV B.V.</p>
+        </div>
+        <div>
+          <p>A premium electric moped in the L1e class, the EU category for light mopeds (the Dutch bromfiets). Steel frame, naked-bike look, throttle, lights, motor, controller and battery. The first goal is a working prototype that meets the minimum rules for road registration.</p>
+          <p>It's my company, so this is the project where I'm the engineer, the product owner and the one fixing the wiring.</p>
+          <p><a href="/moped">See the moped page</a></p>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
+          <h3>WingDash</h3>
+          <p class="state">In progress</p>
+        </div>
+        <div>
+          <p>A GPS cockpit display for a Segway E110 electric moped. It runs on an ESP32 (a small microcontroller with WiFi and Bluetooth), a touchscreen and a GPS module.</p>
+          <p>Running WiFi, Bluetooth, radar and the map together used up the memory, so I cut it down to two modes: a WiFi setup portal and a ride screen. The setup portal and the radar screen work today. The map view is being rebuilt.</p>
+
+          <!--
+            WingDash photo placeholders.
+            To use a real photo, replace the whole src="data:..." value of the image
+            with the path to your file, for example src="/images/wingdash-ride-screen.jpg".
+            The grey label disappears by itself once src no longer starts with "data:".
+          -->
+          <div class="wing-photos">
+            <figure class="photo-slot">
+              <img src="images/wingdash-ride-screen.png" width="400" height="300" alt="The WingDash ride screen on the cockpit display" loading="lazy">
+              
+            </figure>
+            <figure class="photo-slot">
+              <img src="images/wingdash-desk-board.png" width="400" height="300" alt="The WingDash circuit board, GPS module and screen laid out on a desk" loading="lazy">
+              
+            </figure>
+            <figure class="photo-slot">
+              <img src="images/wingdash-moped-mount.png" width="400" height="300" alt="The WingDash display mounted on the Segway E110 electric moped" loading="lazy">
+              
+            </figure>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
+          <h3>CHAdeMO charger finder</h3>
+          <p class="state">Small app, live</p>
+        </div>
+        <div>
+          <p>A small web app that finds CHAdeMO connectors around me. CHAdeMO is the DC fast-charging plug my Outlander uses, so the app answers one question: where can I plug in nearby.</p>
+          <p><a href="https://jozev-labs.com/chademo">Open the app</a></p>
+          <figure class="app-banner">
+            <img src="/images/chademo.png" width="988" height="241" alt="The CHAdeMO finder showing a map near Muiden and a result card for the Fastned Honswijck charger, 3.5 km away, operational, up to 50 kW" loading="lazy">
+          </figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="background">
+    <div class="wrap">
+      <h2>Background</h2>
+      <ul class="facts">
+        <li>Fifteen years at TomTom. I started as a software engineer and moved through Scrum Master, Product Owner and Technical Program Manager. Later I worked with enterprise and car-maker customers on discovery calls, demos, workshops and proofs of concept.</li>
+        <li>I ran a four-person documentation and enablement team spread across the EU and hired two of the four. Seventeen API (Application Programming Interface) engineering teams depended on our work. Documentation release time dropped 15% and new developer onboarding time dropped 40%.</li>
+        <li>I ran a YouTube channel on my own for three years. 65 videos, 3,600 subscribers, and 4,000 to 5,000 views per video.</li>
+        <li>I hold a CSPO (Certified Scrum Product Owner) certification.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <h2>Contact</h2>
+      <p>If you're hiring for a solutions engineer or solutions architect, or you want to talk about the moped, write to me.</p>
+      <p>
+        <a href="mailto:josejoserojas@proton.me">josejoserojas@proton.me</a><br>
+        <a href="https://www.linkedin.com/in/jjrojas/">LinkedIn</a>
+      </p>
+    </div>
+  </section>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-<script>
-(function () {
-  
-  var OCM_API_KEY_B64 = "ZjNkMWMyY2ItMDAxZS00NzY3LTk1N2EtZGZjNGI4MDMxYjI2";
+<footer>
+  <div class="wrap">
+    <p>Built by hand and with Claude. Jose Rojas, Amsterdam.</p>
+  </div>
+</footer>
 
-  function readKey() {
-    try {
-      var k = atob(OCM_API_KEY_B64.trim());
-      return /^[A-Za-z0-9-]{8,}$/.test(k) ? k : "";
-    } catch (e) {
-      return "";
-    }
-  }
-
-  var FALLBACK = { lat: 51.9225, lon: 4.4792, name: "central Rotterdam" };
-  var CHADEMO = 2; // Open Charge Map connection type id for CHAdeMO
-  var COLORS = { ok: "#17803d", warn: "#c77700", bad: "#c62828" };
-
-  var $ = function (id) { return document.getElementById(id); };
-  function el(tag, cls, text) {
-    var n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text !== undefined && text !== null) n.textContent = text;
-    return n;
-  }
-  function setStatus(text, isErr) {
-    var s = $("status");
-    s.textContent = text;
-    s.className = "status" + (isErr ? " err" : "");
-  }
-  function safeUrl(u) { return typeof u === "string" && /^https?:\/\//i.test(u) ? u : null; }
-  function tone(poi) {
-    var st = poi.StatusType;
-    return st && st.IsOperational === true ? "ok" : (st && st.IsOperational === false ? "bad" : "warn");
-  }
-
-  if (typeof L === "undefined") {
-    setStatus("The map library did not load. Check your connection and reload.", true);
-    return;
-  }
-
-  var map = L.map("map").setView([FALLBACK.lat, FALLBACK.lon], 11);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
-  }).addTo(map);
-
-  var origin = { lat: FALLBACK.lat, lon: FALLBACK.lon };
-  var originMarker = L.circleMarker([origin.lat, origin.lon], {
-    radius: 8, color: "#ffffff", weight: 3, fillColor: "#1769e0", fillOpacity: 1
-  }).addTo(map).bindTooltip("Search point");
-  var markers = {};   // poi id -> marker
-  var items = {};     // poi id -> list button
-  var pois = {};      // poi id -> poi data
-  var selectedId = null;
-  var layer = L.layerGroup().addTo(map);
-
-  function setOrigin(lat, lon) {
-    origin = { lat: lat, lon: lon };
-    originMarker.setLatLng([lat, lon]);
-  }
-
-  function chademoRows(poi) {
-    return (poi.Connections || []).filter(function (c) {
-      return c.ConnectionTypeID === CHADEMO || (c.ConnectionType && c.ConnectionType.ID === CHADEMO);
-    });
-  }
-  function maxKw(rows) {
-    var kw = 0;
-    rows.forEach(function (c) { if (typeof c.PowerKW === "number" && c.PowerKW > kw) kw = c.PowerKW; });
-    return kw;
-  }
-
-  function styleMarker(id) {
-    var m = markers[id];
-    if (!m) return;
-    var sel = id === selectedId;
-    m.setStyle({
-      radius: sel ? 12 : 8,
-      weight: sel ? 4 : 2,
-      color: sel ? "#14211f" : "#ffffff",
-      fillColor: COLORS[tone(pois[id])],
-      fillOpacity: 0.95
-    });
-    if (sel) m.bringToFront();
-  }
-
-  function select(id, panMap) {
-    var prev = selectedId;
-    selectedId = id;
-    if (prev !== null && items[prev]) items[prev].setAttribute("aria-pressed", "false");
-    if (items[id]) {
-      items[id].setAttribute("aria-pressed", "true");
-      items[id].scrollIntoView({ block: "nearest" });
-    }
-    if (prev !== null) styleMarker(prev);
-    styleMarker(id);
-    if (panMap && markers[id]) map.panTo(markers[id].getLatLng());
-    renderDetail(pois[id]);
-  }
-
-  function addRow(dl, label, value) {
-    if (value === undefined || value === null || value === "") return;
-    dl.appendChild(el("dt", null, label));
-    dl.appendChild(el("dd", null, String(value)));
-  }
-
-  function renderDetail(poi) {
-    var box = $("detail");
-    box.textContent = "";
-    var a = poi.AddressInfo || {};
-    box.appendChild(el("h2", null, a.Title || "Unnamed charge point"));
-    var addr = [a.AddressLine1, a.AddressLine2, a.Postcode, a.Town, a.StateOrProvince].filter(Boolean).join(", ");
-    if (addr) box.appendChild(el("div", "addr", addr));
-
-    var st = poi.StatusType;
-    var pillWrap = el("div");
-    var pill = el("span", "pill " + tone(poi), st && st.Title ? st.Title : "Status unknown");
-    pillWrap.appendChild(pill);
-    if (typeof a.Distance === "number") {
-      var d = el("span", "hint", "  " + a.Distance.toFixed(1) + " km from the search point");
-      pillWrap.appendChild(d);
-    }
-    box.appendChild(pillWrap);
-
-    var dl = el("dl");
-    var cha = chademoRows(poi);
-    addRow(dl, "CHAdeMO", cha.length ? (maxKw(cha) ? "up to " + maxKw(cha) + " kW" : "power not listed") : "");
-    addRow(dl, "Charge points", poi.NumberOfPoints);
-    addRow(dl, "Operator", poi.OperatorInfo && poi.OperatorInfo.Title);
-    addRow(dl, "Access", poi.UsageType && poi.UsageType.Title);
-    if (poi.UsageType) {
-      if (poi.UsageType.IsMembershipRequired) addRow(dl, "Membership", "Required");
-      if (poi.UsageType.IsAccessKeyRequired) addRow(dl, "Access key", "Required");
-    }
-    addRow(dl, "Cost", poi.UsageCost);
-    addRow(dl, "Phone", a.ContactTelephone1);
-    addRow(dl, "Data provider", poi.DataProvider && poi.DataProvider.Title);
-    if (poi.DateLastStatusUpdate) {
-      var dt = new Date(poi.DateLastStatusUpdate);
-      if (!isNaN(dt)) addRow(dl, "Status updated", dt.toISOString().slice(0, 10));
-    }
-    if (poi.GeneralComments) addRow(dl, "Notes", poi.GeneralComments);
-    box.appendChild(dl);
-
-    var conns = poi.Connections || [];
-    if (conns.length) {
-      var wrap = el("div", "tablewrap");
-      var table = el("table");
-      var head = el("tr");
-      ["Connector", "Power", "Current", "Qty", "Status"].forEach(function (h) { head.appendChild(el("th", null, h)); });
-      table.appendChild(head);
-      conns.forEach(function (c) {
-        var isCha = c.ConnectionTypeID === CHADEMO || (c.ConnectionType && c.ConnectionType.ID === CHADEMO);
-        var tr = el("tr", isCha ? "cha" : "");
-        tr.appendChild(el("td", null, (c.ConnectionType && c.ConnectionType.Title) || ("Type " + c.ConnectionTypeID)));
-        tr.appendChild(el("td", null, typeof c.PowerKW === "number" ? c.PowerKW + " kW" : "-"));
-        tr.appendChild(el("td", null, (c.CurrentType && c.CurrentType.Title) || "-"));
-        tr.appendChild(el("td", null, typeof c.Quantity === "number" ? c.Quantity : "-"));
-        tr.appendChild(el("td", null, (c.StatusType && c.StatusType.Title) || "-"));
-        table.appendChild(tr);
-      });
-      wrap.appendChild(table);
-      box.appendChild(wrap);
-    }
-
-    var links = el("div", "links");
-    if (typeof a.Latitude === "number" && typeof a.Longitude === "number") {
-      var g = el("a", null, "Directions");
-      g.href = "https://www.google.com/maps/dir/?api=1&destination=" + a.Latitude + "," + a.Longitude;
-      g.target = "_blank"; g.rel = "noopener";
-      links.appendChild(g);
-    }
-    if (poi.ID) {
-      var o = el("a", null, "Open Charge Map page");
-      o.href = "https://map.openchargemap.io/?id=" + encodeURIComponent(poi.ID);
-      o.target = "_blank"; o.rel = "noopener";
-      links.appendChild(o);
-    }
-    var site = safeUrl(a.RelatedURL);
-    if (site) {
-      var w = el("a", null, "Operator website");
-      w.href = site; w.target = "_blank"; w.rel = "noopener noreferrer";
-      links.appendChild(w);
-    }
-    box.appendChild(links);
-  }
-
-  function clearResults() {
-    layer.clearLayers();
-    markers = {}; items = {}; pois = {}; selectedId = null;
-    $("list").textContent = "";
-    $("detail").textContent = "";
-    $("detail").appendChild(el("div", "placeholder", "Select a charge point on the map or in the list to see its data.")).style.padding = "0";
-  }
-
-  async function search() {
-    var key = readKey();
-    if (!key) {
-      setStatus("NO key , no fun..no glory!!!", true);
-      return;
-    }
-    var km = parseFloat($("radius").value);
-    var params = new URLSearchParams({
-      output: "json", latitude: origin.lat, longitude: origin.lon, distance: km, distanceunit: "KM",
-      connectiontypeid: CHADEMO, maxresults: 60, compact: "false", verbose: "false", key: key
-    });
-    var url = "https://api.openchargemap.io/v3/poi/?" + params.toString();
-    var shown = url.replace(encodeURIComponent(key), "YOUR_KEY");
-
-    $("mapCenter").disabled = true;
-    clearResults();
-    setStatus("Searching within " + km + " km...", false);
-    var t0 = performance.now(), res, text;
-    try {
-      res = await fetch(url);
-      text = await res.text();
-    } catch (e) {
-      $("mapCenter").disabled = false;
-      setStatus("Could not reach the Open Charge Map API. Check your connection and try again.", true);
-      return;
-    }
-    $("mapCenter").disabled = false;
-    $("req").textContent = "GET " + shown + "\n-> HTTP " + res.status + " in " + Math.round(performance.now() - t0) + " ms";
-    $("dev").hidden = false;
-
-    if (!res.ok) {
-      $("raw").textContent = text.slice(0, 1500);
-      setStatus(res.status === 401 || res.status === 403 ? "The API rejected the key (HTTP " + res.status + "). Check it was pasted in full."
-        : res.status === 429 ? "Too many requests (HTTP 429). Wait a minute and try again."
-        : "The API returned HTTP " + res.status + ".", true);
-      return;
-    }
-    var data;
-    try { data = JSON.parse(text); } catch (e) { data = null; }
-    if (!Array.isArray(data)) { $("raw").textContent = text.slice(0, 1500); setStatus("The API answered, but the response was not a list.", true); return; }
-    $("raw").textContent = data.length ? "First of " + data.length + " results:\n" + JSON.stringify(data[0], null, 2).slice(0, 6000) : "[]";
-
-    var list = $("hideOut").checked
-      ? data.filter(function (p) { return !(p.StatusType && p.StatusType.IsOperational === false); })
-      : data;
-    var hidden = data.length - list.length;
-    if (!list.length) {
-      $("list").appendChild(el("li", "placeholder", "No CHAdeMO chargers in range. New CHAdeMO installs are rare in Europe, so try a larger radius."));
-      setStatus("No CHAdeMO chargers within " + km + " km.", false);
-      return;
-    }
-
-    var bounds = L.latLngBounds([[origin.lat, origin.lon]]);
-    var frag = document.createDocumentFragment();
-    list.forEach(function (poi) {
-      var a = poi.AddressInfo || {};
-      if (typeof a.Latitude !== "number" || typeof a.Longitude !== "number") return;
-      var id = poi.ID;
-      pois[id] = poi;
-      var m = L.circleMarker([a.Latitude, a.Longitude], { radius: 8 }).addTo(layer);
-      m.bindTooltip(a.Title || "Charge point");
-      m.on("click", function () { select(id, false); });
-      markers[id] = m;
-      styleMarker(id);
-      bounds.extend([a.Latitude, a.Longitude]);
-
-      var li = el("li");
-      var b = el("button", "item");
-      b.type = "button";
-      b.setAttribute("aria-pressed", "false");
-      b.appendChild(el("span", "t", a.Title || "Unnamed charge point"));
-      var meta = el("span", "m");
-      var kw = maxKw(chademoRows(poi));
-      meta.appendChild(el("span", null, [a.Town, kw ? kw + " kW" : null, poi.StatusType && poi.StatusType.Title].filter(Boolean).join(" · ")));
-      meta.appendChild(el("span", "dist", typeof a.Distance === "number" ? a.Distance.toFixed(1) + " km" : ""));
-      b.appendChild(meta);
-      b.addEventListener("click", function () { select(id, true); });
-      items[id] = b;
-      li.appendChild(b);
-      frag.appendChild(li);
-    });
-    $("list").appendChild(frag);
-    map.fitBounds(bounds, { padding: [30, 30], maxZoom: 13 });
-    setStatus(list.length + " CHAdeMO location" + (list.length === 1 ? "" : "s") + " within " + km + " km"
-      + (hidden ? " (" + hidden + " hidden as out of service)" : "")
-      + ". Community data: confirm status before you drive.", false);
-  }
-
-  function locate() {
-    if (!navigator.geolocation) {
-      setStatus("This browser has no location support. Searching around " + FALLBACK.name + ".", true);
-      setOrigin(FALLBACK.lat, FALLBACK.lon);
-      map.setView([FALLBACK.lat, FALLBACK.lon], 11);
-      search();
-      return;
-    }
-    setStatus("Asking for your location...", false);
-    navigator.geolocation.getCurrentPosition(function (pos) {
-      setOrigin(pos.coords.latitude, pos.coords.longitude);
-      map.setView([origin.lat, origin.lon], 11);
-      search();
-    }, function () {
-      setStatus("Location was blocked or unavailable. Searching around " + FALLBACK.name + ". Move the map and use Search around map center.", true);
-      setOrigin(FALLBACK.lat, FALLBACK.lon);
-      map.setView([FALLBACK.lat, FALLBACK.lon], 11);
-      search();
-    }, { timeout: 10000, maximumAge: 60000 });
-  }
-
-  $("locate").addEventListener("click", locate);
-  $("mapCenter").addEventListener("click", function () {
-    var c = map.getCenter();
-    setOrigin(c.lat, c.lng);
-    search();
-  });
-  $("radius").addEventListener("change", search);
-  $("hideOut").addEventListener("change", search);
-
-  locate(); // the browser asks for location as soon as the page opens
-})();
-</script>
 </body>
 </html>
