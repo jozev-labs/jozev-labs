@@ -112,6 +112,9 @@ h3 { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; f
 /* The label shows only while the image is still the grey placeholder */
 .photo-slot img[src^="data:"] + .slot-label { display: flex; }
 
+.app-banner { margin: 16px 0 0; max-width: 64ch; }
+.app-banner img { display: block; width: 100%; height: auto; border-radius: 6px; }
+
 .facts { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; max-width: 68ch; }
 .facts li { padding-left: 18px; position: relative; }
 .facts li::before { content: ""; position: absolute; left: 0; top: 0.8em; width: 8px; height: 2px; background: var(--field); }
@@ -246,6 +249,9 @@ footer p { margin: 0; }
         <div>
           <p>A small web app that finds CHAdeMO connectors around me. CHAdeMO is the DC fast-charging plug my Outlander uses, so the app answers one question: where can I plug in nearby.</p>
           <p><a href="https://jozev-labs.com/chademo">Open the app</a></p>
+          <figure class="app-banner">
+            <img src="https://jozev-labs.com/images/chademo.png" width="988" height="241" alt="The CHAdeMO finder showing a map near Muiden and a result card for the Fastned Honswijck charger, 3.5 km away, operational, up to 50 kW" loading="lazy">
+          </figure>
         </div>
       </article>
     </div>
