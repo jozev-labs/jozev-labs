@@ -114,6 +114,7 @@ h3 { font-family: "Bricolage Grotesque", "Public Sans", system-ui, sans-serif; f
 
 .app-banner { margin: 16px 0 0; max-width: 64ch; }
 .app-banner img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.app-banner.photo-slot img { aspect-ratio: 988 / 241; }
 
 .facts { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; max-width: 68ch; }
 .facts li { padding-left: 18px; position: relative; }
@@ -185,6 +186,23 @@ footer p { margin: 0; }
 
       <article class="project">
         <div>
+          <h3>Little Green Planet</h3>
+          <p class="state">Published demo, plays in the browser</p>
+        </div>
+        <div>
+          <p>A space strategy game. Your home planet is running out of resources, so you scout new star systems and colonize planets to keep your civilization alive. An enemy faction, the Rouges, invades planet by planet, and you have to push them back.</p>
+          <p>You send ships from any planet you hold, and you can assign powerup cards to planets. The number next to each planet is its assets, which a defender has to overcome to hold it. Ships can collide mid-flight. Along the way you meet a friend whose intentions look more suspicious the further the mission goes.</p>
+          <p>It's an older project of mine, published on itch.io as a demo. In the browser you drag and zoom with the mouse. There is also a Windows download.</p>
+          <p><a href="https://loodico.itch.io/little-green-planet">Play it on itch.io</a></p>
+
+          <figure class="app-banner photo-slot">
+            <img src="https://jozev-labs.com/images/green-planet.png" width="988" height="241" alt="Screenshot of Little Green Planet Ep.1 showing planets and ships in space" loading="lazy">
+          </figure>
+        </div>
+      </article>
+
+      <article class="project">
+        <div>
           <h3>Virtual fencing dashboard</h3>
           <p class="state">Live demo, simulated data</p>
         </div>
@@ -250,7 +268,7 @@ footer p { margin: 0; }
           <p>A small web app that finds CHAdeMO connectors around me. CHAdeMO is the DC fast-charging plug my Outlander uses, so the app answers one question: where can I plug in nearby.</p>
           <p><a href="https://jozev-labs.com/chademo">Open the app</a></p>
           <figure class="app-banner">
-            <img src="https://jozev-labs.com/images/chademo.png" width="988" height="241" alt="The CHAdeMO finder showing a map near Muiden and a result card for the Fastned Honswijck charger, 3.5 km away, operational, up to 50 kW" loading="lazy">
+            <img src="images/chademo-banner.png" width="988" height="241" alt="The CHAdeMO finder showing a map near Muiden and a result card for the Fastned Honswijck charger, 3.5 km away, operational, up to 50 kW" loading="lazy">
           </figure>
         </div>
       </article>
