@@ -1,0 +1,65 @@
+Step-by-step installation & test
+
+1. Ensure admin account (RK) exists
+Confirm the RK account exists.
+This account is assumed to be the local administrator.
+Set a secure password for RK.
+
+2. Create guest user (HushuGuest)
+Create the standard user account:
+New-LocalUser -Name "HushuGuest" -NoPassword
+Add-LocalGroupMember -Group "Users" -Member "HushuGuest"
+Ensure:
+It is NOT in Administrators
+It is a standard restricted user
+
+3. Prepare deployment media
+Copy the full script set (main script + cleanup script if separate) to a USB stick.
+
+4. Initialize user profile
+Log in as HushuGuest once.
+This creates:
+C:\Users\HushuGuest
+Registry SID/profile mappings
+
+5. Return to admin
+Log out from HushuGuest
+Log back in as RK
+
+6. Run the setup script (IMPORTANT)
+Open PowerShell as Administrator
+Navigate to the script location
+Run:
+.\YourScriptName.ps1
+If blocked:
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+7. Verify guest environment restrictions
+Log out and log in as HushuGuest
+
+Test:
+
+CMD → should be blocked
+PowerShell → should be blocked
+Settings → should be restricted
+Adult websites → should be blocked (DNS filtering)
+
+8. Create test files
+
+While logged in as HushuGuest, create files in:
+
+Desktop
+Documents
+Downloads
+
+9. Trigger cleanup
+Log out
+Log back in as HushuGuest
+
+10. Verify cleanup
+Check the same folders:
+Desktop
+Documents
+Downloads
+
+✅ Files should be gone
